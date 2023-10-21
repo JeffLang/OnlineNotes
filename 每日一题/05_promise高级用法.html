@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>promise高级用法</title>
+</head>
+
+<body>
+  <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+  <div id="app">{{message}}</div>
+  <script>
+    /*
+    
+    */
+
+    const request1 = function () {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve('request1')
+          console.log('request1')
+        }, 3000)
+      })
+    }
+    const request2 = function () {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve('request2')
+          console.log('request2')
+        }, 2000)
+      })
+    }
+    const request3 = function () {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve('request3')
+          console.log('request3')
+        }, 1000)
+      })
+    }
+
+    const requestAry = [request1, request2, request3];
+
+    /**
+     * 1.Promise数组串行执行
+     **/
+    for (const requestItem of requestAry) {
+      (async () => {
+        await requestItem();
+      })()
+    }
+    const promiseList = requestAry.reduce((prev, now) => {
+      // promise.then返回的是一个成功的promise
+      return prev.then(() => now())
+    }, Promise.resolve())
+
+    /**
+     * 2.在new Promise作用域外更改状态
+     **/
+
+    /*
+   const { provide, createApp, ref, reactive, inject } = Vue;
+ 
+   const App = {
+     template:
+       `
+ <div @click="test">hahah</div>
+ `,
+     setup() {
+       const test = inject('test');
+       return {
+         test
+       }
+     }
+   }
+ 
+ 
+   const Index = {
+     template: `<div><button @click="handleClick">填写信息</button>
+   <div class="modal" v-show="visible">
+   <div>
+     用户姓名：<input v-model="info.name" />
+   </div>
+    <button button @click="handleCancel" > 取消</button>
+      <button @click="handleConfirm" > 提交</button >
+</div >
+    <App />
+  </div >`,
+    setup() {
+
+      const visible = ref(false);
+      const info = reactive({
+        name: ''
+      });
+
+      let resolveFn, rejectFn
+
+      provide('test', () => {
+        alert(123)
+      })
+
+
+      // 将信息收集函数函数传到下面
+      const getInfoByModal = () => {
+        visible.value = true;
+        return new Promise((resolve, reject) => {
+          // 将两个函数赋值给外部，突破promise作用域
+          resolveFn = resolve;
+          rejectFn = reject;
+        });
+      }
+
+      const handleConfirm = () => {
+        resolveFn && resolveFn(info);
+      };
+      const handleCancel = () => {
+        rejectFn && rejectFn(new Error('用户已取消'));
+      };
+
+
+      // 
+      const handleClick = async () => {
+        // 调用后将显示模态框，用户点击确认后会将promise改为fullfilled状态，从而拿到用户信息
+        const info = await getInfoByModal();
+      }
+      return {
+        visible,
+        info,
+        handleConfirm,
+        handleCancel,
+        handleClick,
+        getInfoByModal
+      }
+    },
+    components: { App },
+  }
+
+  createApp(Index).mount('#app')
+
+  */
+
+
+    /**
+     * async/await的另类用法
+     *  1.async函数调用时用await接收返回值，但不知道async函数其实就是一个返回promise的函数
+     */
+    const fn1 = async () => 1
+    console.log(fn1())
+      ; (async () => {
+        Promise.resolve().then(() => {
+          console.log(1);
+        });
+        // await 后一行开始的代码将会被放到promise中执行
+        await console.log(2);
+      })()
+
+    /**
+     * Promise实现请求共享
+     * 当一个请求已发出但还未响应时，又发起了相同请求，就会造成了请求浪费，此时我们就可以将第一个请求的响应共享给第二个请求。
+     */
+
+    // 定义一个储存未响应接口的对象
+    const pendingPromises = {};
+    function request(type, url, data) {
+      // 使用请求信息作为唯一的请求key，缓存正在请求的promise对象
+      // 相同key的请求将复用promise
+      const requestKey = JSON.stringify([type, url, data]);
+      // 判断当前是否有相同的请求
+      if (pendingPromises[requestKey]) {
+        return pendingPromises[requestKey];
+      }
+      // 如果当前没有相同的请求,返回当前请求的promise对象
+      const fetchPromise = fetch(url, {
+        method: type,
+        data: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .finally(() => {
+          delete pendingPromises[requestKey];
+        });
+      return pendingPromises[requestKey] = fetchPromise;
+    }
+
+    /**
+     * 同时调用resolve和reject
+     * promise的状态由pending变为另外一种状态之后就不可能会在更改.
+     */
+
+  </script>
+</body>
+
+</html>

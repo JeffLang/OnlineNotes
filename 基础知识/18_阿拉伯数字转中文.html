@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>阿拉伯数字转中文</title>
+</head>
+
+<body>
+  <script>
+    // 阿拉伯数字转中文
+    const number2Chinese = function (num) {
+      // 定义中文数字
+      const chineseNums = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九']
+      // 定义中文单位
+      const chineseUnits = ['', '十', '百', '千', '万', '十万', '百万', '千万', '亿']
+      // 定义初始值
+      let result = '';
+      // 判断前一位是否是0,默认是0
+      let preNumIsZero = true;
+      // 位数
+      let unitIndex = 0
+      // 循环处理
+      while (num > 0) {
+        // 取当前位数值,从个位数开始取
+        const currNum = num % 10;
+        // 判断当前位值是否为0
+        if (currNum === 0) {
+          // 在判断前一位是都为0,如果为0,则不处理
+          if (!preNumIsZero) {
+            result = chineseNums[currNum] + result
+          }
+          preNumIsZero = true
+        } else {
+          result = chineseNums[currNum] + chineseUnits[unitIndex] + result
+        }
+
+        // 位数+1
+        unitIndex++;
+        // num减掉一位(向下取整)
+        num = Math.floor(num / 10);
+      }
+      // 针对一十? 进行处理
+      if (result.startsWith('一十')) {
+        result.slice(1)
+      }
+      return result
+    }
+  </script>
+</body>
+
+</html>

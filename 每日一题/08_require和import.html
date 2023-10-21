@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>require和import</title>
+  <script src="https://requirejs.org/docs/release/2.3.6/r.js"></script>
+</head>
+
+<body>
+  <div>
+    <p class=""></p>
+    <button id="requireBtn">require按钮</button>
+  </div>
+  <button id="testBtn">按钮</button>
+  <script type="module">
+    /**
+     * require和import在日常的开发过程中是经常使用的模块引入的方式
+     * 1.require/export
+     * 
+     */
+
+    // 此处引入模块
+    require(["./08_module"], function () {
+      var { counts,
+        sayHello } = require("08_module");
+      // 注意此处的代码结果
+      const click = () => {
+        console.log('counts: ', counts) // 每次点击事件，打印的 counts 始终为 1
+        sayHello(); // 1  ==》 3秒钟后 =>> 3
+      }
+      const btn = document.getElementById('testBtn')
+      btn.addEventListener("click", click)
+
+    });
+
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>new操作符</title>
+</head>
+
+<body>
+
+  <script>
+    /* 
+    new操作符
+      在JavaScript中，new操作符用于创建一个给定构造函数的示例对象
+      new关键字主要做了一下工作
+        1- 创建一个新的对象obj
+        2-将对象与构造函数通过原型链连接起来
+        3-将构造函数的this绑定到新建的obj上
+        根据构造函数返回值做判断，如果是原始值则被忽略，如果是返回对象，需要正常处理
+    */
+    function Person(name, age) {
+      this.age = age
+      this.name = name
+    }
+    const p1 = new Person('jeff', 18)
+    console.log('p1', p1)
+
+    // 手写一个new
+    const myNew = function (func, ...args) {
+      
+      // 做一些优化判断,func必须传入的一个构造函数
+      if(typeof func !== "function"){
+        throw Error(func + ' is not a constructor')
+      }
+      // 创建一个新的对象
+      const obj = {}
+      // 绑定原型链
+      obj.__proto__ = func.prototype
+      // 执行构造函数,并且将this指向创建的对象,使用apply,因为apply接收是的数组
+      const funcRes = func.apply(obj,args);
+      // 判断返回的参数是否是对象,如果构造函数本身返回的是对象,则需要返回构造函数本身的返回值 特殊判断null 因为null使用typeof也会是一个对象
+      return typeof funcRes ==="object" && funcRes !== null ? funcRes : obj
+    }
+
+    function fn1 (name){
+      this.name= name
+      return null
+    }
+
+
+
+    const myNewRes = myNew(fn1, '123')
+    const nativeNewRes = new fn1('123')
+    console.log('myNewRes', myNewRes)
+    console.log('nativeNewRes', nativeNewRes)
+  </script>
+</body>
+
+</html>

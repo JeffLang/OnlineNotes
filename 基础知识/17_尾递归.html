@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>尾递归</title>
+</head>
+
+<body>
+  <script>
+    /*
+    递归
+      在数学和计算机科学中,是指在函数的定义中使用函数自身的方法
+      在函数内部,可以调用其他函数。如果在一个函数内部调用自身本身，这个函数就是递归函数
+      其核心思想就是把一个大型复杂的问题层层转换为一个与原问题相似的规模较小的问题来求解
+      一般来说，递归需要有边界条件，递归进行阶段和递归返回阶段。当边界条件不满足时，递归前进；当边界条件满足时，递归返回
+    */
+
+    /*
+    实现一个函数 pow(x, y)，计算x的y次方、
+    */
+    // 使用迭代的方法
+    const pow1 = function (x, y) {
+      let result = 1
+      for (let index = 1; index <= y; index++) {
+        result = result * x
+      }
+      return result
+    }
+    // console.log(pow1(3, 3))
+
+    /* 
+    使用递归的方法
+    分析 例如 pow2()
+
+    */
+    const pow2 = (x, y) => {
+      // 进行边界判断
+      if (y === 1) {
+        return x
+      } else {
+        return x * pow2(x, y - 1)
+      }
+    }
+    // console.log(pow2(3, 3))
+    // 递归深拷贝
+    const obj = { key1: 'key1' }
+    obj.key2 = obj
+    function deepClone(obj, hash = new WeakMap()) {
+      if (obj === null) return obj; // 如果是null或者undefined我就不进行拷贝操作
+      if (obj instanceof Date) return new Date(obj)
+      if (obj instanceof RegExp) return new RegExp(obj)
+      // 可能是对象或者普通的值  如果是函数的话是不需要深拷贝
+      if (typeof obj !== "object") return obj;
+      // 是对象的话就要进行深拷贝
+      // 防止对象无限嵌套自身的情况
+      const hashObj = hash.get(obj)
+      if (hashObj) return hashObj
+      let cloneObj = new obj.constructor()
+      // 找到的是所属类原型上的constructor,而原型上的 constructor指向的是当前类本身
+      hash.set(obj, cloneObj) // 此时是一个空对象 {}
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          // 实现一个递归拷贝
+          cloneObj[key] = deepClone(obj[key], hash) // 此时是 {key1: }
+        }
+      }
+      return cloneObj
+    }
+    // const newObj = deepClone1(obj)
+    // console.log(newObj)
+
+    // 手写一个深拷贝
+    /*
+    深拷贝
+      1.null和undefined直接返回
+      2.Date不拷贝
+      3.RegExp不拷贝
+      4.typeof不是object (function)不拷贝
+      5.特殊判断,自身嵌套自身的对象
+    */
+    function deepClone1(obj, hash = new WeakMap()) {
+      // null和undefined不进行拷贝
+      if (obj == null) return obj
+      // Date不进行拷贝
+      if (obj instanceof Date) return obj
+      // RegExp不进行拷贝
+      if (obj instanceof RegExp) return obj
+      // 函数不会被拷贝这部会留下 数组和对象
+      if (typeof obj !== 'object') return obj
+      // 特殊情况判断,是否存在
+      if (hash.get(obj)) return hash.get(obj)
+      // 创建新的对象
+      const cloneObj = new obj.constructor()
+      // 将当前对象保存到hash
+      hash.set(obj, cloneObj)
+      // 开始拷贝
+      for (const key in object) {
+        if (Object.hasOwnProperty(key)) {
+          cloneObj[key] = deepClone1(object[key], hash);
+        }
+      }
+      return cloneObj
+    }
+
+    // 数组求和
+    // console.log(deepClone1(obj))
+    function sumArray(arr, total = 0) {
+      console.log('total', total);
+      console.log('arr', arr);
+      if (arr.length === 1) {
+        return total + arr[0]
+      }
+      return sumArray(arr, total + arr.pop())
+    }
+
+    // console.log(sumArray([1, 2, 3, 4, 5]))
+
+    // 数组扁平化
+    const arr = [1, 2, [3, 4, [5, 6], 7], 8, 9]
+
+    // 自定义数组扁平化
+    function flat(arr = [], result = []) {
+      arr.forEach((item, index) => {
+        if (Array.isArray(item)) {
+          result = result.concat(flat(item, []))
+        } else {
+          result.push(item)
+        }
+      })
+      return result
+    }
+    // console.log(flat(arr))
+
+    // 数组对象格式化
+  </script>
+</body>
+
+</html>

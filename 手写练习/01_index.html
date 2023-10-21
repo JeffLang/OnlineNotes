@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>手写练习</title>
+</head>
+
+<body>
+
+  <script>
+
+    /**
+     * 1.compose
+     */
+    function compose(...fn) { // fn是一个数组
+      // 没传入的情况
+      if (!fn.length) return
+      if (fn.length === 0) return fn[0]
+      return fn.reduce((prev, now) => {
+        return (x) => now(prev(x))
+      })
+    }
+    const fn1 = function (x) {
+      return x + 1
+    }
+    const fn2 = function (x) {
+      return x + 2
+    }
+    const fn3 = function (x) {
+      return x + 3
+    }
+    const fn4 = function (x) {
+      return x + 4
+    }
+
+    // 返回的是一个函数
+    const a = compose(fn1, fn2, fn3, fn4)
+    console.log(a(1))
+
+    /**
+     * 2.setTimeout模拟实现setInterval
+     * 使用set
+     */
+
+  </script>
+</body>
+
+</html>

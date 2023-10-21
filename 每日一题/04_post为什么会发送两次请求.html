@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>为什么post会发送两次请求</title>
+</head>
+<body>
+  <script>
+    /* 
+    什么是同源策略
+      同源策略是一个重要的安全策略,如果两个url的协议,主机和端口号都相同,我们就称为这两个url同源
+    同源策略主要表现在以下三个方面
+      DOM访问限制
+      web数据限制
+      网络通讯限制
+
+    CORS
+      对于浏览器限制这个词,不一定是浏览器限制了请求的发送,也可能是浏览器可以正常发送请求,但是返回结果被浏览器拦截了.
+      浏览器将不同域的内容隔离在不同的进程中,网络进程负责下载并将其送到渲染进程中,但由于跨域限制,某些资源可能被阻止加载到渲染进程.
+
+      跨源资源共享（Cross-Origin Resource Sharing，CORS）是一种机制，允许在受控的条件下，不同源的网页能够请求和共享资源。由于浏览器的同源策略限制了跨域请求，CORS 提供了一种方式来解决在 Web 应用中进行跨域数据交换的问题。
+
+      CORS的基本思想是: 服务器在响应中提供一个标头,指示哪些资源被允许访问资源,浏览器在发起跨域请求时会先发送一个预检请求(options请求),简单请求不会触发CORS预检请求
+
+      简单请求: 满足以下所有请求
+        1.GET,HEAD,POST请求
+        2.表头限制: Accept、Accept-Language、Content-Language、Last-Event-ID(有些资料没有这个字段)、Content-Type（仅限于 application/x-www-form-urlencoded、multipart/form-data、text/plain）。
+                   HTML 头部 header field 字段：DPR、Download、Save-Data、Viewport-Width、WIdth。如果请求使用了其他标头，同样不再被视为简单请求。
+            http标头
+              Accept: 告知服务器客户端能接受的"媒体类型","媒体类型"又分为 文本类型,图片类型,视频类型,还有二进制
+              Accept-Language: 客户端可接受的自然语言,也可以理解为优先处理的语言
+              Content-Language: 该字段会告诉客户端,实体主体使用的自然语言(中文或者英文等语言)
+              Last-Event-ID: 
+              Content-Type: 
+                  application/x-www-form-urlencoded、
+                  multipart/form-data、
+                  text/plain
+            html字段:
+              DPR
+              Download
+              Save-Data
+              Viewport-Width
+              Width
+        3.请求中没有ReadableStream(用于处理流式数据) 对象
+        4.不使用自定义请求标头:请求不能包含用户自定义的标头
+        5.请求中的任意 XMLHttpRequestUpload 对象均没有注册任何事件监听器；XMLHttpRequestUpload 对象可以使用 XMLHttpRequest.upload 属性访问
+
+
+
+    */
+  </script>
+</body>
+</html>

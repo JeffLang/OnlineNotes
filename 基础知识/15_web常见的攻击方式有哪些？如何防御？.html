@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>web攻击方式</title>
+</head>
+
+<body>
+  <input type="text">
+  <button>搜索</button>
+  <div>
+    您搜索的关键词是：<span></span>
+
+  </div>
+  <script>
+    /*
+    常见的web攻击方式有
+      - XSS（Cross Site Scripting）跨站脚本攻击
+      - CSRF（Cross-site Request Forgery）跨站请求伪造
+      - SQL注入攻击
+
+    根据攻击的来源，XSS攻击可以分为
+      - 存储型
+      - 反射型
+      - DOM型
+    */
+    // window.addEventListener('message', function (event) {
+    //   console.log('123', event)
+    //   localStorage.setItem('token', event.data)
+    // }, false);
+  </script>
+</body>
+
+</html>

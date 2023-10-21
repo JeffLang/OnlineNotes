@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>原型链</title>
+  <style>
+    .img {
+      width: 500px;
+    }
+  </style>
+</head>
+
+<body>
+  <img class="img"
+    src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/122d6f9bbcc44751a253b210cfa3a998~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp"
+    alt="">
+  <script>
+    console.dir(Function.prototype)
+    // fn1 其实箱单故意是 new Function 得到的
+    function fn1() {
+      console.log('fn1')
+    }
+    console.dir(fn1.__proto__)
+    console.log(fn1.__proto__ === Function.prototype)
+  </script>
+</body>
+
+</html>

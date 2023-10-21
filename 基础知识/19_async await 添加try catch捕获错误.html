@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function getUserInfo() {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve('请求异常')
+        }, 1000)
+      })
+    }
+
+    async function logined() {
+      try {
+        let userInfo = await getUserInfo()
+        // 执行中断
+        // let pageInfo = await getPageInfo(userInfo?.userId)
+        console.log('userInfo', userInfo.a.split('.'));
+      } catch (e) {
+        console.warn(e)
+      }
+    }
+    // async function logined1() {
+    //   let userInfo = await getUserInfo().catch(e => {
+    //     console.warn(e)
+    //     return Promise.reject(e) // 会导致控制台出现 uncaught (in promise) 报错信息
+    //   })
+    //   // 执行中断
+    //   let pageInfo = await getPageInfo(userInfo?.userId)
+    // }
+    logined()
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>单点登录</title>
+</head>
+
+<body>
+  <script>
+    /*
+    单点登录
+      单点登录（Single Sign On）SSO，是目前比较流行的企业业务整合的解决方案之一
+      SSO的定义是在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统
+      SSO一般都需要一个独立的认证中心（passport），子系统的登录均得通过passport，子系统本身将不参与登录操作
+
+    实现
+      同域名下的单点登录
+          cookie的domain属性设置为当前域的父域，并且父域的cookie会被子域所共享。
+        path属性默认为web应用的上下文路径
+          利用cookie的这个特点，我们只需要将Cookie的domain属性设置为父域名（主域名），同时将
+        cookir的path属性设置为根路径，将SessionId（或Token）保存在父域中。这样所有的子域应用就都可以访问到这个cookie
+          不过这要求应用系统的域名建立在一个共同的主域名之下，如tieba.baidu.com和map.baidu.com，他们的主域名为.baidu.com
+      不同域名下的单点登录
+        1. 如果是不同域的情况下，cookie是不共享的，这里我们可以部署一个认证中心，用于专门处理登录请求的独立的web服务
+           用户统一在认证中心
+    */
+
+    // 获取 token
+    var token = 12345;
+
+    // 动态创建一个不可见的iframe，在iframe中加载一个跨域HTML
+    var iframe = document.createElement("iframe");
+    iframe.src = "http://127.0.0.1:5500";
+    iframe.id = 'iframe'
+    iframe.style.display = 'none'
+    document.body.append(iframe);
+    // 使用postMessage()方法将token传递给iframe
+    setTimeout(function () {
+      iframe.contentWindow.postMessage(token, "http://127.0.0.1:5500");
+    }, 4000);
+    // setTimeout(function () {
+    //   iframe.remove();
+    // }, 6000);
+    // 在这个iframe所加载的HTML中绑定一个事件监听器，当事件被触发时，把接收到的token数据写入localStorage
+    iframe.contentWindow.addEventListener('message', function (event) {
+      console.log('123', event)
+      localStorage.setItem('token1', event.data)
+    }, false);
+  </script>
+</body>
+
+</html>

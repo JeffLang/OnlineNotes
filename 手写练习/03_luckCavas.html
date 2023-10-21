@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <div id="my-lucky1"></div>
+  <div id="my-lucky2"></div>
+  <script src="https://cdn.jsdelivr.net/npm/lucky-canvas@1.7.7"></script>
+  <script>
+    const myLucky1 = new LuckyCanvas.LuckyWheel('#my-lucky1', {
+      width: '400px',
+      height: '400px',
+      blocks: [{ padding: '20px', background: '#869cfa' }],
+      prizes: [
+        // { fonts: [{ text: '谢谢惠顾' }], background: '#e9e8fe' },
+        { fonts: [{ text: '谢谢惠顾' }], background: 'linear-gradient(red 40%, yellow 30%, blue 65%);' },
+        // { fonts: [{ text: '谢谢惠顾' }], background: 'linear-gradient(to left, #333, #333 5 %, #eee 75 %, #333 75 %)' },
+        { fonts: [{ text: 'IPhone 13 Pro' }], background: '#b8c5f2' },
+        { fonts: [{ text: '520红包' }], background: '#e9e8fe' },
+        { fonts: [{ text: '么么哒一个' }], background: '#b8c5f2' },
+        { fonts: [{ text: '口红一支' }], background: '#e9e8fe' },
+        { fonts: [{ text: '香水一瓶' }], background: '#b8c5f2' },
+        { fonts: [{ text: '清空购物车' }], background: '#e9e8fe' },
+        { fonts: [{ text: '洗袜子一个月' }], background: '#b8c5f2' },
+      ],
+      //抽奖按钮
+      buttons: [
+        { disabled: true },
+        { radius: '30%', background: '#617df2' },
+        { radius: '25%', background: '#afc8ff' },
+        {
+          radius: '20%', background: '#f0f0f0', pointer: true,
+          fonts: [{ text: '开始\n抽奖', top: '-20px' }],
+
+        },
+      ],
+      //默认样式
+      defaultStyle: {
+        background: '#b8c5f2',//格子背景颜色
+      },
+      //默认配置
+      defaultConfig: {
+        speed: 15,//旋转速度峰值
+        accelerationTime: 4000,
+        decelerationTime: 4000
+      },
+      //开始抽奖前
+      start: function () {
+        myLucky1.play()//开始抽奖
+        // 假设接口的请求速度是1s
+        // setTimeout(_ => {
+        //缓慢通知
+        myLucky1.stop(Math.floor((Math.random() * 6)))
+        // }, 5000)
+      },
+      //抽奖结束后
+      end: function (prize) {
+        alert('恭喜中奖: ' + prize.fonts[0].text)
+      }
+    })
+    const myLucky2 = new LuckyCanvas.LuckyGrid('#my-lucky2', {
+      width: '400px',
+      height: '400px',
+      blocks: [
+        { padding: '10px', background: '#869cfa' },
+        { padding: '10px', background: '#e9e8fe' },
+      ],
+      prizes: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 2, y: 1 },
+        { x: 2, y: 2 },
+        { x: 1, y: 2 },
+        { x: 0, y: 2 },
+        { x: 0, y: 1 },
+      ],
+      buttons: [
+        {
+          x: 1, y: 1,
+          background: '#9c9dd8',
+          fonts: [{ text: '开始', top: '25%' }],
+        },
+      ],
+      defaultStyle: {
+        background: '#b8c5f2'
+      },
+      start: function () {
+        // 开始游戏
+        myLucky2.play()
+        // 使用定时器模拟接口
+        setTimeout(() => {
+          // 结束游戏, 并抽第0号奖品
+          myLucky2.stop(2)
+        }, 3000)
+      }
+    })
+
+  </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

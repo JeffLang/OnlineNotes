@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>==和===的区别</title>
+</head>
+
+<body>
+  <script>
+    /*
+    1、==等于操作符：会先进行类型转换，再确定操作数是否相等
+      遵循以下原则：
+    */
+
+    // 规则一：如果任一操作数是布尔值，则将其转换为数值在比较是否相等
+    let result1 = (true == '1')
+    // console.log('result1', result1)
+    // 规则二：如果一个是字符串，一个是数值，则转换为数值再进行比较
+    let result2 = ('111' == 111)
+    // console.log('result2', result2)
+    // 规则三：如果一个操作数是对象，另一个操作数不是，则调用对象的valueOf方法取得其原始值，在进行比较
+    // const result3 = ({ valueOf: function () { return 1 } } == 1)
+    const result3 = ({} == '[object Object]')
+
+    // console.log('result3', result3)
+    // 规则四：null和undefined相等
+    const result4 = (null == undefined)
+    // console.log('result4', result4);
+    // 规则五：NaN和NaN比较返回false
+    const result5 = (NaN == NaN)
+    // console.log('result5', result5);
+    // 规则六：如果两个都是对象，则比较的是对象的地址值
+    const obj1 = {}
+    const result6 = (obj1 == {})
+    // console.log('result6', result6);
+    // console.log('false.toString()', false.toString())
+    /*
+    等于操作符总结：
+    - 两个都为简单数据类型，如果同类型则直接比较，如果不同类型先转换为数值，在进行比较
+    - 一个是引用数据类型，对象转换为原始类型的值（调用引用数据类型的valueOf，或者在调用valueOf, 转换为），在进行比较
+    - 两个都为应用数据类型,则比较的是他们的地址值
+    - null 和 undefined相等
+    - 存在NaN则返回false
+    */
+    // 保存原始的valueOf
+    var valueOf = Object.prototype.valueOf;
+    var toString = Object.prototype.toString;
+
+    // 添加valueOf日志
+    Object.prototype.valueOf = function () {
+      console.log('valueOf');
+      return valueOf.call(this);
+    };
+    // 添加toString日志
+    Object.prototype.toString = function () {
+      console.log('toString');
+      return toString.call(this);
+    };
+    // var a = {};
+    // console.log(a == '1')
+
+    /*
+    2.全等操作符
+     首先判断两个数据的数据类型是否相等，如果不相等则直接返回false
+    */
+
+    /**
+     * 3.扩展
+     * 
+    */
+    class A {
+      constructor(count) {
+        this.count = count
+      }
+      valueOf() {
+        return 2
+      }
+      toString() {
+        return '哈哈哈'
+      }
+      // 我在这里
+      // [Symbol.toPrimitive](hint) {
+      //   if (hint == "number") {
+      //     return 10;
+      //   }
+      //   if (hint == "string") {
+      //     return "Hello Libai";
+      //   }
+      //   return true;
+      // }
+    }
+
+    // const a = new A(10)  // {count: 10}
+    // console.log('a', a);
+    // console.log(a + '')
+
+    /* class A {
+      constructor(value) {
+        this.value = value;
+      }
+      valueOf() {
+        return this.value++;
+      }
+    }
+    const a = new A(1);
+    if (a == 1 && a == 2 && a == 3) {
+      console.log("Hi Libai!");
+    } */
+    let value = 1;
+    Object.defineProperty(window, 'a', {
+      get() {
+        console.log('哈哈哈')
+        return value++
+      }
+    })
+    // console.log('a', a);
+    if (a === 1 && a === 2 && a === 3) {
+      console.log('a', a);
+      console.log("Hi Libai!")
+    }
+
+  </script>
+</body>
+
+</html>

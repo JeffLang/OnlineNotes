@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root">123</div>
+  <script type="text/babel">
+    /**
+   * useCallback
+   *    如何使用useCallback缓存函数
+   *      1.react在父组件更新的时候,会对子组件进行全量的更新,我们可以使用memo对子组件进行缓存,在更新的时候浅层比较一下props,如果props没有变化,就不会更新子组件,如果props中有函数,我们就需要使用useCallback缓存一下这个父组件传给子组件的函数
+   *      2.如果useEffect中可能会有依赖函数的场景,这个时候就需要使用useCallback缓存这个函数,避免useEffect的无限调用
+   *      3.我们在自定义hooks需要返回函数的时候,建议使用useCallback缓存一下,因为我们不知道用户拿我们返回的函数去干了什么,万一他给加到他的useEffect的依赖里就会出现问题
+   *
+   */
+    const { useState, useRef, useEffect } = React
+
+    // 把倒计时抽离做为自定义hook,接受一个倒计时时间
+    const useCountDown = (initCount) =>{
+      const [count, setCount]=useState(0)
+      const timerId = useRef()
+
+      useEffect(()=>{
+        return ()=>{
+          clearInterval(timerId.current)
+        }
+      }, [])
+
+      const start = ()=>{
+        setCount(initCount)
+        timerId.current = setInterval(()=>{
+          setCount((count)=>{
+            if(count === 1){
+              clearInterval(timerId.current)
+            }
+            return count - 1
+          })
+        }, 1000)
+      }
+
+      // 返回一个倒计时函数和当前的秒数
+      return [count, start]
+
+    }
+
+    function MessageBtn() {
+      const [count,start] = useCountDown(3)
+      
+      const message = count ? `${count}s后重试` : '点击获取验证码'
+      const disabled = !!count
+
+      const timerId = useRef()
+
+
+      useEffect(() => {
+        return () => {
+          clearInterval(timerId.current)
+        }
+      }, [])
+
+      return <>
+        <button disabled={disabled} onClick={start}>
+          {message}
+        </button>
+      </>
+    }
+
+    function MyApp() {
+      const [show, setShow] = useState(true)
+
+      const onClick = () => {
+        setShow(!show)
+      }
+      return <>
+        {show && <MessageBtn />}
+        <hr />
+        <button onClick={onClick}>销毁</button>
+      </>;
+    }
+
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<MyApp />);
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>es6class</title>
+</head>
+
+<body>
+  <script>
+    // 构造函数写法
+    function Person1(name, age) {
+      this.name = name;
+      this.age = age
+    }
+    const p1 = new Person1('吴彦祖', '18')
+    Person1.prototype.sayHello = () => {
+      console.log('我是构造函数的sayHello方法')
+    }
+    console.log('p1', p1)
+    // class语法糖写法
+    class Person2 {
+      // constructor 构造方法
+      constructor(name, age) {
+        // this代表的是new出来的对象
+        this.name = name;
+        this.age = age;
+      }
+      // 静态方法: 把类当成一个对象
+      static sayHi() {
+        console.log('Person2的静态方法')
+        console.log('this', this)
+      }
+      sayHello() {
+        console.log('我是类的sayHello方法')
+      }
+    }
+    const p2 = new Person2('吴彦祖', '28');
+    console.log('p2', p2);
+    console.log(typeof Person1);
+    // 类的typeof也是function
+    console.log(typeof Person2);
+    console.log(p1.constructor === Person1)
+    Person2.sayHi()
+    class Person3 extends Person2 { }
+    Person3.sayHi()
+    // class不存在变量提升
+    // const p3 = new Person4
+    // class Person4 { }
+
+
+    // 继承
+    class Animal {
+      // c
+      constructor() {
+
+      }
+    }
+
+  </script>
+</body>
+
+</html>

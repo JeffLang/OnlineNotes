@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ajax原理</title>
+</head>
+
+<body>
+  <script>
+    /*
+    一、是什么
+      AJAX 全程（Async Javascr And XML）
+      即异步的JavaScript和XML，是一种创建交互式的网页开发技术，可以在不重新加载整个网页的情况下，与服务器交换数据，并且更新部分网页
+
+      AJAX的原理简单来说就是通过XmlHttpRequest对象来向服务器发送异步请求，从服务器获得数据，然后用JavaScript来操作dom从而更新页面
+
+      Ajax实现过程
+        - 创建Ajax的核心对象XMLHttpRequest对象
+          const xhr = new XMLHttprequest()
+        - 通过XMLHttpRequest对象的open()方法与服务器建立连接，open方法可以接收一下参数
+          - xhr.open(method, url[,async][,user][,password])
+            - method: string 请求方式 GET POST 等
+            - url：string 请求地址
+            - async：boolean 表示是否执行异步操作
+            - user：可选的用户名用于认证用途，默认为null
+            - password：可选的密码用于认证用途，默认为null
+        - 构建请求所需的数据内容，并通过XMLHttpRequest对象的send()方法发送给服务器
+          - xhr.send([body])
+            - body：在XHR请求中要发送的数据体，如果不传递数据则为null
+            - 如果使用GET请求，则
+              - 将请求数据拼接到xhr.open()方法中的url
+        - 通过XMLHttpRequest对象提供的 onreadystatechange 事件来监听 一半肯定是先监听，主要监听的属性为xhr.readyState
+          - xhr.readyState的值对应的状态为
+            - 0：未打开 xhr.open()方法未执行
+            - 1：未发送 xhr.send()方法未执行
+            - 2：已获取响应头，hr.send()已被调用，并且已经获取响应头
+            - 3：正在下载响应头
+            - 4：请求完成
+    */
+    // 创建XMLHttpRequest对象
+    function myAjax(){
+      // 第一步:创建XmlHttpRequest对象
+      // 通过
+    }
+
+  </script>
+
+</body>
+
+</html>

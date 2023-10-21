@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>防抖节流</title>
+  <style>
+    .box {
+      width: 100px;
+      height: 100px;
+      background-color: #bfa;
+    }
+
+    .btn {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box"></div>
+  <button class="btn">按钮</button>
+  <input type="text" value="123" oninput="inputOnchang()">
+  <script>
+    /*
+    节流：throttle n秒内只触发一次,如果在n秒内被多次触发，指挥生效一次
+    防抖：debounce n秒后触发事件,如果在n秒内被重复触发,则时间会被重置
+    */
+
+    // 自定义节流，利用时间戳方式，第一次会立即执行
+    const throttle1 = function (fn, delay) {
+      let startTime = Date.now()
+      return function (...args) {
+        // 获取当前事件触发事件
+        const currTime = Date.now()
+        // 保存this
+        if (currTime - startTime >= delay) {
+          fn.apply(this, args)
+          startTime = Date.now()
+        }
+      }
+    }
+
+    // 自定义节流，使用定时器方式，刚开始不会执行，事件触发结束后会执行一次
+    const throttle2 = function (fn, delay) {
+      let timerId = null
+      return function (...args) {
+        const context = this
+        // timerId为null说明距离上一次执行已经超过delay
+        if (!timerId) {
+          timerId = setTimeout(() => {
+            fn.apply(context, args)
+            timerId = null
+          }, delay)
+        }
+
+      }
+    }
+
+    // 使用时间戳加定时器，实现更加精准的控制，刚开始会触发一次，结束也会触发一次
+    const throttle3 = function (fn, delay) {
+      let timterId;
+      let startTime = Date.now()
+      return function () {
+        const currTime = Date.now()
+        // 到下一次事件剩余的时间
+        const remaining = delay - (currTime - startTime)
+        // 清除上一次的定时器
+        clearTimeout(timterId)
+        // 判断剩余时间
+        if (remaining <= 0) {
+          // 剩余时间小于等于0，直接执行
+        } else {
+
+        }
+      }
+    }
+
+    // 自定义防抖，利用定时器写，此写法触发不会立即执行
+    const debounce1 = (fn, delay) => {
+      let timterId;
+      return function () {
+        const context = this // 保存this
+        const arg = arguments
+        // 每次进来就清除掉
+        clearTimeout(timterId)
+        timterId = setTimeout(() => {
+          console.log('context', context);
+          console.log('arg', arg);
+          fn.apply(context, arg)
+        }, delay)
+      }
+    }
+    // 自定义防抖，加入立即执行判断
+    const debounce2 = (fn, delay, immediate) => {
+      let timerId;
+      return function () {
+        const context = this;
+        const arg = arguments
+        if (timerId) clearTimeout(timerId)
+        // 是否立即执行
+        if (immediate) {
+          if (!timerId) {
+            fn.apply(context, arg)
+          }
+          timerId = setTimeout(() => {
+            timerId = null
+          }, delay)
+
+        } else {
+          timterId = setTimeout(() => {
+            fn.apply(context, arg)
+            timerId = null
+          }, delay)
+        }
+      }
+    }
+    const debounce3 = (fn, delay, immediate) => {
+      let timerId;
+      return function () {
+        const context = this;
+        const args = arguments
+        if (timerId) clearTimeout(timerId)
+
+        // 是否立即执行
+        if (immediate) {
+          let callNow = !timerId; // 第一次会立即执行，以后只有事件执行后才会再次触发
+          timerId = setTimeout(function () {
+            timerId = null;
+          }, delay)
+          if (callNow) {
+            fn.apply(context, args)
+          }
+        } else {
+          timterId = setTimeout(() => {
+            fn.apply(context, args)
+            timerId = null
+          }, delay)
+        }
+      }
+    }
+    // 给box绑定事件
+    const boxNode = document.getElementsByClassName('box');
+    console.log('boxNode', boxNode);
+    // dom0绑定事件
+    boxNode[0].onmousemove = debounce1(() => {
+      console.log(1)
+    }, 500)
+
+    // 给input绑定事件
+    const inputOnchang = throttle2(() => {
+      console.log('onchange')
+    }, 500)
+    const current = Date()
+    console.log(current)
+    console.log(JSON.stringify(Date()))
+    console.log(JSON.parse(JSON.stringify(Date())))
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文字省略</title>
+  <style>
+    .textWrap {
+      position: relative;
+      max-width: 200px;
+      height: 30px;
+      border: 1px solid red;
+      /* 文字单行省略，必须这个同时设置 */
+      /* text-overflow: "..."; */
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .text {
+      font-size: 20px;
+      line-height: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="textWrap">
+    <!-- <span class="text">这是一个简单的测试，看看文字溢出的情况如何处理</span> -->
+    这是一个简单的测试，看看文字溢出的情况如何处理
+  </div>
+
+</body>
+<script>
+  let a = 1
+  console.log(a++ === 1 && a++ === 2 && a++ === 3)
+</script>
+
+</html>

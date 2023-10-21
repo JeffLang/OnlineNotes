@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>柯里化</title>
+</head>
+
+<body>
+  <script>
+    // 多参数柯里化；
+    const curry = function (fn) {
+      return function curriedFn(...args) {
+        // 第一次执行，args是 【1】
+        // console.log('args', args);
+        if (args.length < fn.length) {
+          // 第一次执行走这里,返回的是一个函数
+          console.log('args', args);
+          return function () {
+            return curriedFn(...args.concat([...arguments]));
+          }
+        }
+        return fn(...args);
+      }
+    }
+    const fn = (x, y, z, a) => x + y + z + a;
+    const myfn = curry(fn);
+    console.log(myfn(1));
+  </script>
+</body>
+
+</html>

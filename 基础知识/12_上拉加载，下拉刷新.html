@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上拉加载，下拉刷新</title>
+  <style>
+    .box {
+      width: 100%;
+      height: 1000px;
+
+    }
+
+    .refreshText {
+      position: fixed;
+      top: 0;
+      transform: translateY();
+      z-index: -1;
+    }
+
+    #refreshContainer {
+      background-color: #bfa;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- <div class='box'>这个是内容区</div> -->
+  <p class="refreshText"></p>
+  <ul id="refreshContainer">
+    <li>111</li>
+    <li>222</li>
+    <li>333</li>
+    <li>444</li>
+    <li>555</li>
+  </ul>
+  <script>
+    /*
+    上拉加载
+      上拉加载本质是页面触底，或者快要触底时的动作
+      判断页面触底我们需要了解一下几个属性
+        - scrollTop: 当前可视页面的顶部
+        - clientHeight: 当前可视高度
+        - scrollHeight：元素的总高度
+        - 他们之间的关系：scrollHeight + clientHeight <= scrollHeight
+    */
+    // const boxNode = document.documentElement.getElementsByClassName('box')[0]
+    // console.log('boxNode', boxNode)
+    // document.onscroll = function () {
+    //   const scrollTop = document.documentElement.scrollTop
+    //   console.log('scrollTop', scrollTop);
+    //   const clientHeight = document.documentElement.clientHeight
+    //   console.log('clientHeight', clientHeight);
+    //   const scrollHeight = document.documentElement.scrollHeight
+    //   console.log('scrollHeight', scrollHeight);
+    //   if (scrollTop + clientHeight >= scrollHeight) {
+    //     console.log('设置高度');
+    //     boxNode.style.height = (boxNode.clientHeight + 50) + 'px'
+    //     console.log(boxNode.style.height);
+    //   }
+    // }
+
+    // var _element = document.getElementById('refreshContainer'),
+    //   _refreshText = document.querySelector('.refreshText'),
+    //   _startPos = 0,  // 初始的值
+    //   _transitionHeight = 0; // 移动的距离
+
+    // _element.addEventListener('touchstart', function (e) {
+    //   _startPos = e.touches[0].pageY; // 记录初始位置
+    //   _element.style.position = 'relative';
+    //   _element.style.transition = 'transform 0s';
+    // }, false);
+
+    // _element.addEventListener('touchmove', function (e) {
+    //   // e.touches[0].pageY 当前位置
+    //   _transitionHeight = (e.touches[0].pageY - _startPos) / 2; // 记录差值
+
+    //   if (_transitionHeight > 0 && _transitionHeight < 60) {
+    //     _refreshText.innerText = '下拉刷新';
+    //     _element.style.transform = 'translateY(' + _transitionHeight + 'px)';
+
+    //     if (_transitionHeight > 55) {
+    //       _refreshText.innerText = '释放更新';
+    //     }
+    //   }
+    // }, false);
+
+
+    // _element.addEventListener('touchend', function (e) {
+    //   _refreshText.innerText = '更新中...';
+    //   setTimeout(() => {
+    //     _refreshText.innerText = '更新完成...';
+    //     _element.style.transform = 'translateY(0px)';
+    //     _element.style.transition = 'transform 0.5s ease ';
+    //     setTimeout(() => {
+    //       _refreshText.innerText = '';
+    //     }, 500)
+    //   }, 500)
+
+    // }, false);
+
+    /*
+    下拉刷新
+      - 下拉刷新的本质是页面本身置于顶部时，用户下拉时需要触发的动作
+      - 关于下拉刷新的原生实现，主要分为三步
+        1.监听原生的touchstart事件,记录其原始位置的值 pageY
+        2.监听原生的touchmove事件,
+    */
+    // 需要下拉刷新的元素
+    const refreshElement = document.getElementById('refreshContainer')
+    // 下拉刷新暂时的文案
+    const refreshText = document.documentElement.getElementsByClassName('refreshText')
+    // 初始位置
+    let startY = 0
+    // 滚动的距离
+    let transitionHeight = 0
+    // 第一步,绑定touchstart事件
+    refreshElement.addEventListener('touchstart', function (e) {
+      // 获取触控位置，并且记录下其位置 pageY距离页面顶端距离，
+      startY = e.targetTouches[0].pageY
+    })
+    // 第二步，绑定 touchmove事件
+    refreshElement.addEventListener('touchmove', function (e) {
+      refreshText[0].textContent = "下拉刷新"
+      // 获取下拉移动的距离,移动使用transiform
+      transitionHeight = e.targetTouches[0].pageY - startY
+      // 判断下拉的最大距离
+      if (transitionHeight > 0 && transitionHeight <= 60) {
+        console.log('transitionHeight', transitionHeight);
+        // 使用transform进行位移
+        refreshElement.style.transform = `translateY(${transitionHeight}px)`
+      } else {
+        refreshText[0].textContent = "释放更新"
+        refreshElement.style.transform = `translateY(${60 + ((transitionHeight - 60) / 4)}px)`
+      }
+      // 第三步,绑定touchend事件
+      refreshElement.addEventListener('touchend', function (e) {
+        // 放手之后开始更新
+        refreshText[0].innerHTML = "更新中"
+        refreshElement.style.transition = `transform 0.5s`
+        setTimeout(() => {
+          refreshText[0].innerHTML = "刷新成功"
+          refreshElement.style.transform = `translateY(0px)`
+          setTimeout(() => {
+            refreshText[0].innerHTML = null
+            refreshElement.style.transition = null
+          }, 500)
+        }, 500)
+      })
+    })
+  </script>
+</body>
+
+</html>
