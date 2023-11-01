@@ -62,7 +62,7 @@
 
 - 肯定会遇到：101/200/301/302/304/400/401/403/404/500/502
 
-## 101 Switch Protocol
+### 101 Switch Protocol
 
 升级协议，如从 http 到 ws，此时需要反向代理支持，如 Nginx，在 Nginx 配置 websockt 如下:
 
@@ -74,7 +74,7 @@ location / {  proxy_http_version 1.1;  proxy_set_header Upgrade $http_upgrade;  
 
 ![101](https://shanyue.tech/assets/img/101.071b734b.png)
 
-## 200 Ok
+### 200 Ok
 
 表示资源请求成功，也是最常见到的状态码
 
@@ -84,11 +84,11 @@ location / {  proxy_http_version 1.1;  proxy_set_header Upgrade $http_upgrade;  
 $ curl https://shanyue.tech --headHTTP/2 200
 ```
 
-## 201 Created
+### 201 Created
 
 资源创建成功，多用于 POST 请求
 
-## 204 No Content
+### 204 No Content
 
 响应不会返回 Body，一般由以下两种情况
 
@@ -109,7 +109,7 @@ $ curl https://shanyue.tech --headHTTP/2 200
 curl 'https://www.zhihu.com/sc-profiler' \  -H 'content-type: application/json' \  --data-binary '[["i","production.heifetz.main.desktop.v1.Collector.screen.1536_960.count",1,1]]' \  --compressed -vvv< HTTP/2 204< server: CLOUD ELB 1.0.0< date: Thu, 22 Oct 2020 07:46:30 GMT< content-type: text/html< vary: Accept-Encoding< x-backend-response: 0.002< cache-control: no-cache, no-store, must-revalidate, private, max-age=0
 ```
 
-## 206 Partial Content
+### 206 Partial Content
 
 当请求多媒体数据数据较大时，会进行分片传输。当你在B站观看视频，打开开发者工具，会发现许多 206 状态码以及响应头 Content-Range
 
@@ -117,7 +117,7 @@ curl 'https://www.zhihu.com/sc-profiler' \  -H 'content-type: application/json' 
 
 ![B站上的视频资源请求状态码为206](https://shanyue.tech/assets/img/206.94474e79.png)
 
-## 301 Moved Permanently
+### 301 Moved Permanently
 
 永久重定向。http 转向 https时，有时会使用 301，如 B 站。
 
@@ -125,7 +125,7 @@ curl 'https://www.zhihu.com/sc-profiler' \  -H 'content-type: application/json' 
 $ curl www.bilibili.com -vvv< HTTP/1.1 301 Moved Permanently< Server: Tengine< Date: Thu, 22 Oct 2020 08:04:59 GMT< Content-Type: text/html< Content-Length: 239< Connection: keep-alive< Location: https://www.bilibili.com/
 ```
 
-## 302 Found
+### 302 Found
 
 暂时重定向。http 转向 https时，有时也会使用 302，如知乎
 
@@ -133,7 +133,7 @@ $ curl www.bilibili.com -vvv< HTTP/1.1 301 Moved Permanently< Server: Tengine< D
 $ curl www.zhihu.com -vvv< HTTP/1.1 302 Found< Location: https://www.zhihu.com/< Content-Length: 0< X-NWS-LOG-UUID: 16068764905156850032< Connection: keep-alive< Server: Lego Server< Date: Thu, 22 Oct 2020 08:20:29 GMT< X-Cache-Lookup: Return Directly
 ```
 
-## 304 Not Modified
+### 304 Not Modified
 
 资源已被缓存，与之相关的响应头部有：
 
@@ -142,7 +142,7 @@ $ curl www.zhihu.com -vvv< HTTP/1.1 302 Found< Location: https://www.zhihu.com/<
 
 一般用作 `index.html` 等不带 hash 的资源，由于示例太多，这里就不举例了
 
-## 307 Temporary Redirect
+### 307 Temporary Redirect
 
 暂时重定向。也可作为 http 到 https 的重定向。还有一种用途用作 HSTS，当谷歌浏览器发现某 http 资源已被加入到 HSTS 列表，浏览器内部会通过 307 作重定向
 
@@ -158,7 +158,7 @@ $ curl www.zhihu.com -vvv< HTTP/1.1 302 Found< Location: https://www.zhihu.com/<
 - 302，Found。临时重定向，但是会在重定向的时候改变 method: 把 POST 改成 GET，于是有了 307
 - 307，Temporary Redirect。临时重定向，在重定向时不会改变 method
 
-## 400 Bad Request
+### 400 Bad Request
 
 对于服务器无法理解的参数，将会使用 400 作为返回码
 
@@ -168,7 +168,7 @@ $ curl www.zhihu.com -vvv< HTTP/1.1 302 Found< Location: https://www.zhihu.com/<
 HTTP/1.1 400 Bad RequestContent-Length: 35{"message":"Problems parsing JSON"}
 ```
 
-## 401 Unauthorized
+### 401 Unauthorized
 
 当没有权限的用户请求需要带有权限的资源时，会返回 401，此时携带正确的权限凭证再试一次可以解决问题
 
@@ -184,7 +184,7 @@ HTTP/1.1 400 Bad RequestContent-Length: 35{"message":"Problems parsing JSON"}
 $ curl -i https://api.github.com -u foo:bar> HTTP/1.1 401 Unauthorized> {>   "message": "Bad credentials",>   "documentation_url": "https://developer.github.com/v3"> }
 ```
 
-## 403 Forbidden
+### 403 Forbidden
 
 我就是不想让你访问，不管你的权限凭证是否正确！
 
@@ -192,19 +192,19 @@ $ curl -i https://api.github.com -u foo:bar> HTTP/1.1 401 Unauthorized> {>   "me
 
 - [403与401状态码有什么区别(opens in a new tab)](https://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses)
 
-## 404 Not Found
+### 404 Not Found
 
 未找到资源
 
-## 405 Method Not Allowed
+### 405 Method Not Allowed
 
 我需要 POST 这条资源，你去 GET 个锤子
 
-## 413 Payload Too Large
+### 413 Payload Too Large
 
 不要给我扔这么大的 Body，我处理不过来
 
-## 418 I'm A Teapot
+### 418 I'm A Teapot
 
 我是一个茶壶
 
@@ -212,7 +212,7 @@ $ curl -i https://api.github.com -u foo:bar> HTTP/1.1 401 Unauthorized> {>   "me
 
 也可以用来处理不合法的参数校验，我想要个字符串，你给了我一个整数？
 
-## 422 Unprocessable Entity
+### 422 Unprocessable Entity
 
 常用来处理不合法的参数校验。
 
@@ -220,7 +220,7 @@ Github 上给某个项目点赞时，故意设置一个不正确的参数命名�
 
 ![422](https://shanyue.tech/assets/img/422.c4c88739.png)
 
-## 429 Too Many Request
+### 429 Too Many Request
 
 请求过多被限流。
 
@@ -228,18 +228,36 @@ Github 上给某个项目点赞时，故意设置一个不正确的参数命名�
 
 示例: 在 Sentry 中异常上报过于频繁被限流
 
-## 500 Internal Server Error
+### 500 Internal Server Error
 
 服务器内部错误，很有可能是应用层未捕获错误而导致整个服务挂掉
 
-## 502 Bad Gateway
+### 502 Bad Gateway
 
 Nginx 上常见，从上游应用层未返回响应，上游应用层挂了
 
-## 503 Service Unavailable
+### 503 Service Unavailable
 
 由于大量流量造成服务忙，稍等一下说不定就能用了
 
-## 504 Gateway Timeout
+### 504 Gateway Timeout
 
 网关超时，上游应用层迟迟未响应
+
+## 02_http状态码中301，302和307有什么区别
+
+- 301，永久重定向，该操作比较危险，需要谨慎操作：如果设置了301，但是一段时间后又想取消，但是浏览器中已经有了缓存，还是会重定向。
+- 302，临时重定向，但是会在重定向的时候改变method：把POST改为GET，于是有了307
+- 307，临时重定向，在重定向时不会改变method
+
+## 03_http状态码502和504有什么区别
+
+这两种异常状态都与网关Getway有关，首先明确两个概念
+
+- Proxy（Getaway），反向代理层或者网关层，在公司级应用中一般使用Nginx扮演这个角色
+- Application（upstream server）应用层服务，作为Proxy层的上游服务，在公司中一般为各种语言编写的服务应用，如Go/Java/Python/PHP/Node等
+
+此时关于502与504的区别就很显而易见了
+
+- `502 Bad Getaway`。一般表现为你自己写的应用层服务挂了，网关无法接收到相应
+- `504 Bad Getaway`。一般表现为网关层服务（upstream）超时，如查库操作耗时十分钟，超过了Nginx配置的超时时间
