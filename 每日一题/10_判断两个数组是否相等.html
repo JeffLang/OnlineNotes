@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /**
+       * 给定两个数组,判断两数组[内容]是否相等
+       * - 不使用排序
+       * - 不考虑元素位置
+       * - NaN视为同一个
+       * 例:
+       * [1,2,3]和[1,2,3] true
+       * [1,2,3]和[1,2,4] false
+       */
+
+      // -------------------------------- 方法一 --------------------------------
+      // 方法一:  直接遍历,这种是考虑了元素位置.如果要求元素位置需要一样,则能使用该方法
+      const comparisonArr1 = (arr1, arr2) => {
+        let result = true
+        // 判断长度
+        if (arr1.length !== arr2.length) return false
+        // 遍历
+        for (let i = 0; i < arr1.length; i++) {
+          // 判断一下两者是否都是数组,如果是数组则需要再次进行比较
+          if (Array.isArray(arr1[i]) && Array.isArray(arr2[i])) {
+            result = comparisonArr1(arr1[i], arr2[i])
+          } else if (arr1[i] !== arr2[i]) {
+            // 如果不是则进行正常的比较
+            result = false
+          }
+          if (!result) break
+        }
+        return result
+      }
+
+      // -------------------------------- 方法二 --------------------------------
+      // 使用some或者includes: 这种方法不能够判断有重复元素的数组
+      const comparisonArr2 = (arr1, arr2) => {
+        let result = true
+        // 判断长度
+        if (arr1.length != arr2.length) return false
+        // 便利比较
+        for (var i = 0; i < arr1.length; i++) {
+          if (!arr1.includes(arr2[i])) {
+            result = false
+            break
+          }
+        }
+        return result
+      }
+      // console.log(comparisonArr2([1, [1, 2, 3, [1, 2]], 3], [1, [1, 2, 3, [1, 2]], 3, 4]))
+
+      // -------------------------------- 方法三 --------------------------------
+      // 此种方法因为进行了数据类型转换,所以不能够进行
+      /**
+       * @param {*} arr 数组 元素重复 转换成val1, val2
+       * @returns
+       */
+      function updateArray(arr) {
+        const countMap = new Map()
+        const updatedArr = []
+
+        for (const item of arr) {
+          // countMap中没有该元素,说明该元素是第一次出现，如果有,则说明不是第一次出现了
+          if (!countMap.has(item)) {
+            // 如果元素是第一次出现，直接添加到结果数组,次数从0开始
+            countMap.set(item, 0)
+            // 推送到新的数组中
+            updatedArr.push(item)
+          } else {
+            // 如果元素已经出现过，添加带有编号的新元素到结果数组
+            const count = countMap.get(item) + 1
+            countMap.set(item, count)
+            updatedArr.push(`${item}-${count}`) // 这种方法因为会改变元素的数据类型,会修改为string类型,会出现问题的
+          }
+        }
+        console.log('countMap', countMap)
+        return updatedArr
+      }
+      // console.log(updateArray([1, 2, 4, 5, 1, 2, 3, 4, 5, 5, 6, 7, 1, 2]))
+
+      // -------------------------------- 方法四 --------------------------------
+
+      // 将统计数组元素出现次数的方法提取出来进行封装
+      const countArray = arr => {
+        const countMap = new Map()
+        for (let i = 0; i < arr.length; i++) {
+          /* // 判断元素是否存在
+                if (countMap.has(arr[i])) {
+                  // 存在,则需要将计数器+1
+                  countMap.set(arr[i], countMap.get(arr[i]) + 1)
+                } else {
+                  // 不存在,则需要添加, 计数从0开始
+                  countMap.set(arr[i], 0)
+                } */
+          // 优化统计计算方式
+          const val = (countMap.get(arr[i]) ?? 0) + 1
+          console.log('val', val)
+          countMap.set(arr[i], (countMap.get(arr[i]) ?? 0) + 1)
+        }
+        return countMap
+      }
+
+      // 统计元素次数
+      const comparisonArr3 = (arr1, arr2) => {
+        let result = true
+        // 判断长度
+        if (arr1.length !== arr2.length) return false
+        // 统计元素出现的次数
+        const countMap1 = countArray(arr1)
+        const countMap2 = countArray(arr2)
+        console.log('countMap1', countMap1)
+        console.log('countMap2', countMap2)
+
+        // 遍历两个计数对象
+        for (const [key, value] of countMap1) {
+          // 进行比较
+          if (countMap2.get(key) !== value) {
+            result = false
+            break
+          }
+        }
+        return result
+      }
+      // console.log('comparisonArr3', comparisonArr3([1, 2, 3, 4, 5, 3], [5, 4, 3, 2, 1, 2]))
+
+      // -------------------------------- 方法五 --------------------------------
+      // 只使用一个数组,对第一个数组进行统计的是+1,对第二个数组的时候进行-1,如果都为0,则说明这两个数组是相同的数组
+      const comparisonArr4 = (arr1, arr2) => {
+        let result = true
+        // 判断长度
+        if (arr1.length !== arr2.length) return false
+        // 统计元素出现的次数
+        const countMap = countArray(arr1)
+        // 遍历第二个数组,对countMap1进行-1处理
+        for (let i = 0; i < arr2.length; i++) {
+          // 获取该元素在Map中的统计次数
+          const val = countMap.get(arr2[i])
+          // 如果是undefined或者是小于等于0()则说明第一个数组的该元素小于大二个数组的该元素(由于数组长度相同,只需要判断小的就可以了,有小就一定有大的)
+          if (val === undefined || val <= 0) {
+            return false
+          }
+          // 执行-1操作
+          countMap.set(arr2[i], val - 1)
+        }
+        return result
+      }
+
+      // console.log(comparisonArr4([1, 2, 3, 4, 3], [1, 2, 3, 4, 2]))
+
+      // -------------------------------- 方法六 --------------------------------
+      // 操作第二个数组,遍历第一个,然后一次将第二个数组相同的元素删除掉,一次只删除一个元素
+      const comparisonArr5 = (arr1 = [], arr2 = []) => {
+        const newArr = [...arr2]
+        // 遍历第一个数组
+        for (let i = 0; i < arr1.length; i++) {
+          // 遍历第二个数组
+          const index = arr2.findIndex(item => arr1[i] === item)
+          if (index !== -1) {
+            // 找到了,删除该元素
+            arr2.splice(index, 1)
+          }
+        }
+        // 最后查看第二个个数组的长度,如果长度为0,则能说明两个数组是相等的
+        return arr2.length === 0
+      }
+      console.log(comparisonArr5([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]))
+    </script>
+  </body>
+</html>
