@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>水平垂直居中</title>
+    <style>
+      /* 
+      总体来说,垂直水平居中可以使用定位,flex,定位+transform等,但是此处重点暂时grid的方式
+      
+      总结: 使用display: grid的方式的时候,可以直接使用place-items: center; 进行垂直水平居中
+      place-items: center; --> algin-items 和 justify-items组成,也可以简写为center
+
+      还有一个是使用 flex + 子元素的margin: auto
+
+      */
+      .container {
+        width: 600px;
+        height: 600px;
+        border: 1px solid black;
+      }
+      /* grid方式 */
+      /* .container {
+        display: grid;
+        place-items: center end;  algin-items 和 justify-items的缩写
+      } */
+      /* flex方式 */
+      /* .container {
+        display: flex;
+      }
+      .item {
+        margin: auto;
+      } */
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item" style="width: 100px; height: 100px; background: #999">块状元素</div>
+    </div>
+
+    <div class="container">
+      <div class="item">不定高宽的块状元素</div>
+    </div>
+
+    <div class="container">
+      <span class="item">行内元素</span>
+    </div>
+  </body>
+</html>

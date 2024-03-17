@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>loading动画效果</title>
+    <style>
+      .loading {
+        width: 50px;
+        height: 50px;
+        animation: rotate 2s linear 0s infinite;
+      }
+      .path {
+        animation: dash 2s ease-in-out infinite; /* 使用名为 "dash" 的动画，持续时间为 2 秒，缓动函数为 ease-in-out，无限循环 */
+        stroke: #00b390; /* 描边颜色为 #00b390 */
+        stroke-width: 2; /* 描边宽度为 2 像素 */
+        stroke-dasharray: 1 150; /* 描边样式为虚线，每段长度为 90，间隔长度为 150 圆的话就是周长*/
+        stroke-dashoffset: 0; /* 描边偏移量为 0，即初始状态 */
+        stroke-linecap: round; /* 描边线帽样式为圆形 */
+      }
+      @keyframes rotate {
+        from {
+          tranform: rotate(0deg);
+        }
+        to {
+          tranform: rotate(360deg);
+        }
+      }
+
+      @keyframes dash {
+        0% {
+          stroke-dasharray: 1 150;
+          stroke-dashoffset: 0;
+        }
+        50% {
+          stroke-dasharray: 90 150;
+          stroke-dashoffset: -40px;
+        }
+        100% {
+          stroke-dasharray: 90 150;
+          stroke-dashoffset: -120px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <svg class="loading" viewbox="25 25 50 50">
+      <circle cx="50" cy="50" r="24" class="path" fill="none" />
+    </svg>
+  </body>
+</html>
