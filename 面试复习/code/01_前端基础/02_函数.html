@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 函数
+      /*
+            foo1()
+
+            var foo1 = function () {
+              console.log('var foo1')
+            }
+
+            // 函数声明比任意都提前
+            function foo1() {
+              console.log('function foo1')
+            }
+
+            console.log(a)
+            var a = 1
+
+            const foo = function bar() {
+              bar() // 正常运行
+            }
+            // bar() // 出错：ReferenceError
+
+            // this
+            console.log(this)
+
+            var obj = { me: this }
+            console.log(obj.me)
+
+            Foo.method = function () {
+              var that = this
+              function test() {
+                console.log('test this', this)
+                console.log('test that', that)
+                // this 将会被设置为全局对象（译者注：浏览器环境中也就是 window 对象）
+              }
+              test()
+            }
+
+            function Foo() {}
+            Foo.prototype.method = function () {
+              console.log('method this', this)
+            }
+
+            function Bar() {}
+            Bar.prototype = Foo.prototype
+
+            new Bar().method()
+
+
+
+            function foo() {
+              bar.call(null, 1, 2, 3)
+            }
+            function bar(a) {
+              // 干活
+              console.log(a)
+            }
+
+            foo(1, 2, 3)
+
+
+            // setTimeout
+            for (var i = 0; i < 9; i++) {
+              ;(function (i) {
+                setTimeout(function () {
+                  // console.log(i)
+                }, 1000)
+              })(i)
+            }
+            // 相当于
+            for (var i = 0; i < 9; i++) {
+              ;(function () {
+                var l = i
+                setTimeout(function () {
+                  console.log(l)
+                }, 1000)
+              })()
+            }
+            for (var i = 0; i < 9; i++) {
+              setTimeout(
+                (function (i) {
+                  return function () {
+                    console.log(i)
+                  }
+                })(i),
+                1000,
+                )
+              }
+
+              function Foo() {}
+
+              Foo.prototype.method = function (a, b, c) {
+                console.log(this, a, b, c)
+              }
+
+              // 创建一个解绑定的 "method"
+              // 输入参数为: this, arg1, arg2...argN
+              Foo.method = function () {
+                // 结果: Foo.prototype.method.call(this, arg1, arg2... argN)
+                Function.call.apply(Foo.prototype.method, arguments)
+                // 相当于
+              }
+              Foo.method()
+       */
+
+      // 手写call call传递的是一个个的参数
+      Function.prototype.myCall = function (context, ...args) {
+        // 保存this,默认为window
+        context = context || window
+        // 判断this是否是函数
+        // 将this作为context的一个方法
+        context.this = this
+        // 调用this,并且接受返回值
+        const result = context.this(...args)
+        // 返回
+        return result
+      }
+      function foo1() {
+        console.log('this', this)
+      }
+      foo1.myCall({ a: 1 })
+
+      // 手写bind,bind和call是返回修改this的函数
+      Function.prototype.myBind = function (context, ...args) {
+        // 保存this,此处的this是调用bind的函数
+        const fn = this
+        // 这个函数会有可能继续加参数
+        return function (...newArgs) {
+          return fn.apply(context, [...args, ...newArgs])
+        }
+      }
+    </script>
+  </body>
+</html>

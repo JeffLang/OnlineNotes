@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const num = 2
+      num.toString() // 会把2相当一个一个包装对象来进行解析
+      // 2.toString(); // 这里会当成一个浮点数解析,所以会报错
+      console.log((2).toString()) // 使用括号将2包起来就会先将将数字作为一个包装对象
+
+      const foo = {} // 一个空对象
+      const bar = { test: 12 } // 一个新对象,拥有一个属性名为test,值为12的自定义属性
+      // 访问属性 有两种方式来访问对象的属性,点操作符或者中括号操作符.
+
+      var obj = { bar: 1, foo: 2, baz: 3 }
+      obj.bar = undefined
+      obj.foo = null
+
+      delete obj.baz
+
+      // 遍历
+      for (const key in obj) {
+        console.log('key: ' + key + '; ' + 'value: ' + obj[key])
+      }
+      console.log(obj.baz)
+
+      var test = {
+        case: 'I am a keyword so I must be notated as a string',
+        delete: 'I am a keyword too so me', // 出错：SyntaxError
+      }
+
+      function Foo() {
+        this.value = 42
+      }
+
+      Foo.prototype = {
+        method: function () {},
+      }
+
+      function Bar() {}
+
+      // 设置Bar的prototype属性为Foo的实例对象, 这样bar就能继承Foo,但是如果编辑Bar的原型也不会影响到Foo的原型对象
+      Bar.prototype = new Foo()
+      const barObj = new Bar()
+
+      console.log(barObj.value)
+      console.log(barObj.method)
+
+      Bar.prototype = 1 // 会被忽略
+      console.log(barObj.__proto__)
+
+      // hasOwnProperty
+      Object.prototype.bar = 1
+      var fooObj = { goo: undefined }
+
+      console.log(fooObj.bar) // 1
+      console.log('bar' in fooObj) // true
+
+      console.log(fooObj.hasOwnProperty('bar')) // false
+      console.log(fooObj.hasOwnProperty('goo')) // true
+    </script>
+  </body>
+</html>
