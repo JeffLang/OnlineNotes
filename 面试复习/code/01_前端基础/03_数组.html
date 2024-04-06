@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03_数组</title>
+  </head>
+  <body>
+    <script>
+      /* 
+      const length = 110000000
+      const arr = new Array(length)
+      
+      // 生成数组
+      console.time('生成数组')
+      for (let i = 0; i < length; i++) {
+        arr[i] = i + 1
+      }
+      // console.log(arr) // 输出从 1 到 100000000 的数组
+      console.timeEnd('生成数组')
+      
+      // for遍历数据
+      console.time('for遍历数组')
+      for (var i = 0, l = length; i < l; i++) {}
+      console.timeEnd('for遍历数组')
+      
+      // forEach遍历数组
+      console.time('forEach遍历数组')
+      arr.forEach(element => {})
+      console.timeEnd('forEach遍历数组')
+      
+            console.log([1, 2, 3])
+            console.log(new Array(1, 2, 3))
+
+            const arr = new Array(1, 2, 3).join('#')
+            console.log(arr) // [empty × 3]
+            console.log(arr.length) // 3
+            console.log(1 in arr) // false
+            */
+      const object1 = {
+        toString() {
+          return 'toString'
+        },
+        // [Symbol.toPrimitive](hint) {
+        //   console.log('toPrimitive')
+        //   if (hint === 'number') {
+        //     return 41
+        //   }
+        //   return null
+        // },
+      }
+      console.log('--- number ---')
+      console.log(+object1)
+      console.log('--- string ---')
+      console.log('' + object1)
+      console.log('--- number() ---')
+      console.log(Number(object1))
+    </script>
+  </body>
+</html>

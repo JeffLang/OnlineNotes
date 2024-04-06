@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>04_类型</title>
+  </head>
+  <body>
+    <script>
+      /*
+      const obj = {}
+      console.log(typeof obj)
+
+      // console.log('对象的类定义')
+      function is(type, obj) {
+        const clas = Object.prototype.toString.call(obj).slice(8, -1)
+        return obj != undefined && type === clas
+      }
+      console.log(is('null', null))
+
+      function myToString(arg) {
+        return Object.prototype.toString.call(arg)
+      }
+
+      console.log(myToString(null))
+      console.log(myToString(undefined))
+
+      const foo = undefined
+
+      console.log(typeof foo !== 'undefined')
+      function Person() {}
+      const p1 = new Person()
+      console.log(p1 instanceof Person)
+      console.log(Person instanceof Function)
+      // 这个是一个数字包装对象
+      console.log(new Number(10) == 10) // true
+      console.log(10 == '10') // true
+      console.log(10 == '+10') // true
+      console.log(10 == '010') // true
+      console.log(isNaN(false) == false) // true
+
+      console.log(10 == 0o10) // 10 == 8 false
+      console.log(0o10)
+      */
+      // console.log(parseInt('101', 2))
+      function Person() {}
+      console.log(new Person() instanceof Person)
+      console.log({} instanceof Function)
+    </script>
+  </body>
+</html>

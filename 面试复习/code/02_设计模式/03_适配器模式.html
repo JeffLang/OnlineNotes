@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03_适配器模式</title>
+  </head>
+  <body>
+    <script>
+      /*
+
+
+            // 适配器模式: 插头
+            class Plug {
+              // 实例方法
+              getName() {
+                return '港版插头'
+              }
+            }
+            class Target1 {
+              constructor() {
+                this.plug = new Plug()
+              }
+              getName() {
+                return this.plug.getName() + ' 适配器转二脚插头'
+              }
+            }
+
+            // 适配器模式: 插头
+            class Adapter {
+              specificRequest() {
+                return '德国标准插头'
+              }
+            }
+            class Target2 {
+              constructor() {
+                this.adapter = new Adapter()
+              }
+              request() {
+                let info = `${this.adapter.specificRequest()}---转换成---中国插头`
+                return info
+              }
+            }
+            let target = new Target()
+            console.info(target.request())
+
+            const t1 = new Target1()
+            const t2 = new Target2()
+            console.info(t1.getName())
+            console.info(t2.getName())
+            */
+
+      // 地图接口之间的适配
+      const googleMap = {
+        show() {
+          // 方法是show
+          console.log('show 开始渲染谷歌地图')
+        },
+      }
+
+      const baiduMap = {
+        display() {
+          // 方法是display
+          console.log('display 开始渲染百度地图')
+        },
+      }
+
+      // 通过baiduMapAdapter来适配baiduMap的display方法
+      const baiduMapAdapter = {
+        show() {
+          // 适配器也改为show,使用的是baiduMap的display
+          return baiduMap.display()
+        },
+      }
+
+      // 渲染地图的方法,传入地图对象
+      const renderMap = function (map) {
+        // 传入地图对象
+        // 判断
+        if (map.show instanceof Function) {
+          // 地图对象的show方法
+          // 在传入baiduMapAdapter对象的是时候,调用show方法,返回的实际是baiduMap的display方法.
+          map.show()
+        }
+      }
+
+      renderMap(googleMap)
+      renderMap(baiduMapAdapter)
+    </script>
+  </body>
+</html>

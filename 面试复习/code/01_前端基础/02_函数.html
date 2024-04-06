@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>02_函数</title>
   </head>
   <body>
     <script>
@@ -109,7 +109,6 @@
                 // 相当于
               }
               Foo.method()
-       */
 
       // 手写call call传递的是一个个的参数
       Function.prototype.myCall = function (context, ...args) {
@@ -137,6 +136,93 @@
           return fn.apply(context, [...args, ...newArgs])
         }
       }
+
+      // new 关键字的流程
+      // 1. 创建一个新对象
+      function myNew(Fn, ...args) {
+        // 第一步,创建一个对象
+        const obj = {}
+        // 指定原型对象
+        obj.__proto__ = Fn.prototype
+        // 调用构造函数,并将this只想新创建的对象
+        const res = Fn.apply(obj, args)
+        console.log('res', res)
+        // 如果该构造函数返回的是一个对象,则返回该对象
+        console.log(typeof res)
+        if (res instanceof Object) return res
+        return obj
+      }
+
+      function Person(name, age) {
+        this.name = name
+        this.age = age
+        return { name }
+      }
+
+      function Bar() {
+        return new Number(2)
+      }
+      const res1 = new Bar()
+      const res2 = myNew(Bar)
+      console.log(res1, res2)
+
+
+      function test() {
+        var i = -1
+        // 一个作用域
+        for (var i = 0; i < 10; i++) {
+          // 不是一个作用域
+          // count
+        }
+        console.log(i) // 10
+      }
+
+      test()
+
+      // --------------------------------
+      bar()
+      var bar = function () {}
+      var someValue = 42
+
+      test()
+      function test(data) {
+        if (false) {
+          goo = 1
+        } else {
+          var goo = 2
+        }
+        for (var i = 0; i < 100; i++) {
+          var e = data[i]
+        }
+      }
+      
+      // 声明提前
+      var bar, someValue
+      function test(data) {
+        // 声明提前
+        var goo, i, e
+        if (false) {
+          goo = 1
+        } else {
+          goo = 2
+        }
+        for (i = 0; i < 100; i++) {
+          e = data[i]
+        }
+      }
+      bar = function () {}
+      someValue = 42
+      
+      test()
+      */
+
+      // 译者注：来自 Nettuts+ 的一段代码，生动的阐述了 JavaScript 中变量声明提升规则
+      var myvar = 'my value'
+
+      ;(function () {
+        alert(myvar) // undefined
+        var myvar = 'local value'
+      })()
     </script>
   </body>
 </html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02_单例模式</title>
+  </head>
+  <body>
+    <button onclick="handleClick()">alert</button>
+    <script>
+      /*
+
+            // 单例模式 ES6之前写法,用到
+            function Singleton1(name, age) {
+              this.name = name
+              this.age = age
+            }
+
+            Singleton1.prototype.getUser = function () {
+              return {
+                name: this.name,
+                age: this.age,
+              }
+            }
+
+            // 获取实例
+            Singleton1.getInstance = function (name, age) {
+              // 判断是否创建
+              if (!this.instance) {
+                // 如果没有创建一个新的,并且赋值给 this.instance
+                this.instance = new Singleton1(name, age)
+              }
+              // 如果已经创建,则需要直接返回
+              return this.instance
+            }
+
+            const s1 = Singleton1.getInstance('jeff', 18)
+            const s2 = Singleton1.getInstance('jinjie', 19)
+
+            console.log('构造函数单例', s1 === s2) // true
+
+            // class写法
+            class Singleton2 {
+              constructor(name, age) {
+                this.name = name
+                this.age = age
+              }
+
+              // 定义生成单例的静态方法
+              static getInstance(name, age) {
+                // 判断是否创建
+                if (!this.instance) {
+                  // 如果没有创建一个新的,并且赋值给 this.instance
+                  this.instance = new Singleton2(name, age)
+                }
+                // 如果已经创建,则需要直接返回
+                return this.instance
+              }
+
+              getUser() {
+                return {
+                  name: this.name,
+                  age: this.age,
+                }
+              }
+            }
+
+            const s3 = Singleton2.getInstance('jefflang', 18)
+            const s4 = Singleton2.getInstance('langjinjie', 19)
+
+            console.log(s3)
+            console.log(s4)
+            console.log(s3 === s4)
+
+
+            // 透明单例, 使用匿名自调用函数,将标识作为私有变量
+            const Singleton = (function () {
+              // 定义一个表示
+              let instance
+
+              // 将创建拆分出来
+              // const User = function (name, age) {
+              //   this.name = name
+              //   this.age = age
+              // }
+
+              // 将获取拆分出来
+              // User.prototype.getName = function () {
+              //   return this.name
+              // }
+
+              class User {
+                constructor(name, age) {
+                  this.name = name
+                  this.age = age
+                }
+                getName() {
+                  return this.name
+                }
+              }
+
+              // return function (name, age) {
+              //   // 判断标识,如果第一次执行,则将this赋值给instance
+              //   if (!instance) {
+              //     instance = new User(name, age)
+              //   }
+              //   // 如果已经创建过,则直接返回旧的
+              //   return instance
+              // }
+              return class {
+                constructor(name, age) {
+                  if (!instance) {
+                    instance = new User(name, age)
+                  }
+                  // 如果已经创建过,则直接返回旧的
+                  return instance
+                }
+              }
+            })()
+
+            const s1 = new Singleton('jeff', 18)
+
+            console.log(s1.getName())
+
+            */
+
+      const GetSingleton = function (fn) {
+        let instance
+        return function () {
+          if (!instance) {
+            instance = fn.apply(this, arguments)
+          }
+          return instance
+        }
+      }
+
+      // 创建一个alert
+      var createMessageAlert = function (message) {
+        var alertBox = document.createElement('div')
+        alertBox.innerHTML = message
+        alertBox.style.display = 'none'
+        alertBox.className = 'login-alert'
+        document.body.appendChild(alertBox)
+        return alertBox
+      }
+
+      // 创建单例
+      var createMessageAlert = GetSingleton(createMessageAlert)
+
+      const handleClick = function () {
+        // 点击多次只会产生一个弹窗
+        var alertMessage = createMessageAlert('欢迎回来')
+        console.log('alertMessage', alertMessage)
+        alertMessage.style.display = 'block'
+      }
+    </script>
+  </body>
+</html>

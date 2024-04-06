@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>06_其他</title>
+  </head>
+  <body>
+    <!-- <button onclick="clearIntervalHandle()">Stop</button></button></button> -->
+    <script>
+      /* 
+      
+      function Foo() {
+        this.value = 42
+        this.method = function () {
+          // this 指向全局对象
+          console.log(this.value) // 输出：undefined
+        }
+        console.log(this) // 此处的this指向的是Foo的实例对象
+        setTimeout(this.method, 500)
+      }
+      new Foo()
+      
+      function foo() {
+        console.log('foo')
+        return () => {
+          console.log('return')
+        }
+      }
+      // foo() 是同步的
+      setTimeout(foo(), 2000)
+      var i = 0
+      const timerId = setInterval(() => {
+        console.log(i)
+        i++
+      }, 2000)
+      console.log('timerId', timerId);
+      const clearIntervalHandle = () => {
+        console.log('clearIntervalHandle')
+        clearInterval(timerId)
+      }
+      clearInterval
+      
+      function foo() {
+        // 将会被调用
+        console.log('window')
+      }
+      
+      function bar() {
+        function foo() {
+          console.log('bar')
+          // 不会被调用
+        }
+        // 此处的foo是全局作用域的foo
+        setTimeout('foo()', 1000)
+        // 此处的foo是bar作用域的foo
+        setTimeout(foo, 1000)
+      }
+      bar()
+      */
+
+      function foo(a, b, c) {
+        console.log(a, b, c)
+      }
+
+      // 不要这样做
+      // setTimeout('foo(1,2, 3)', 2000)
+
+      // 可以使用匿名函数完成相同功能
+      setTimeout(foo, 2000, 1, 2, 3)
+    </script>
+  </body>
+</html>

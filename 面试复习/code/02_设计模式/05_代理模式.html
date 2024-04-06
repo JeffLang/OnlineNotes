@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>05_代理模式</title>
+  </head>
+  <body>
+    <script>
+      /* // 定义一个鞋子类
+                       const Shoes = function (name) {
+                         this.name = name
+                       }
+
+                       // 获取鞋子的名称
+                       Shoes.prototype.getName = function () {
+                         return this.name
+                       }
+
+                       // 定义一个明星对象
+                       const star = {
+                         buyShoes: function (name) {
+                           console.log(`买到了一双鞋: ${name}`)
+                         },
+                       }
+
+                       // 定义一个助手对象
+                       const assistant = {
+                         buyShoes: function (shoes) {
+                           star.buyShoes(shoes.getName())
+                         },
+                       }
+
+                       // 明星自己买鞋
+                       star.buyShoes(new Shoes('鸿星尔克').getName())
+
+                       // 助理给明星卖钱
+                       assistant.buyShoes(new Shoes('耐克'))
+
+      // 保护代理
+      // 定义一个广告类
+      const Ad = function (price) {
+        this.price = price
+      }
+
+      Ad.prototype.getPrice = function () {
+        return this.price
+      }
+
+      // 定义一个助理对象
+      var assistant = {
+        // 定义一个init函数,对广告价格进行初始化, 传入一个广告实例
+        init: function (ad) {
+          // 获取广告价格
+          const money = ad.getPrice()
+          // 判断广告价格
+          if (money > 300) {
+            this.receivedAd(money)
+          } else {
+            this.rejectAd()
+          }
+        },
+        // 接受广告
+        receivedAd(price) {
+          star.receivedAd(price)
+        },
+        // 拒绝广告
+        rejectAd: function () {
+          star.rejectAd()
+        },
+      }
+
+      // 定义一个明星对象
+      var star = {
+        receivedAd: function (price) {
+          console.log('广告费' + price + '万元')
+        },
+        rejectAd: function () {
+          console.log('拒绝小制作！')
+        },
+      }
+
+      assistant.init(new Ad(5))
+      assistant.init(new Ad(400))
+
+
+
+      const preImage = (function () {
+        // 定义一个img节点
+        const imgNode = document.createElement('img')
+        // 将这个节点添加到body的最后一个子元素
+        document.body.appendChild(imgNode)
+        // 新建一个img
+        const img = new Image()
+        img.onload = function () {
+          console.log('替换url')
+          imgNode.src = img.src
+        }
+        return {
+          setSrc: function (src) {
+            console.log('设置url')
+            imgNode.src = 'https://img.zcool.cn/community/01427857bbf6c40000018c1bd3430f.gif'
+            img.src = src // 将图片url赋值给img
+          },
+        }
+      })()
+
+      preImage.setSrc('https://cn.bing.com/sa/simg/hpb/LaDigue_EN-CA1115245085_1920x1080.jpg')
+
+
+      // 控制imgNode,使用匿名自定义函数能够区分作用域
+      const myImage = (function () {
+        const imgNode = document.createElement('img')
+        document.body.appendChild(imgNode)
+        return {
+          setSrc(src) {
+            imgNode.src = src
+          },
+        }
+      })()
+
+      const preImg = (function () {
+        const img = new Image()
+        img.onload = function () {
+          // 当代理img显示出来再将目标图片设置为imgNode的src
+          myImage.setSrc(img.src)
+        }
+        return {
+          setSrc(src) {
+            // 次数设置的是loading图片
+            myImage.setSrc('https://img.zcool.cn/community/01427857bbf6c40000018c1bd3430f.gif')
+            img.src = src
+          },
+        }
+      })()
+
+      preImg.setSrc('https://cn.bing.com/sa/simg/hpb/LaDigue_EN-CA1115245085_1920x1080.jpg')
+
+      */
+
+      // 求和
+      const multAdd = function () {
+        let res = 0
+        for (let i = 0; i < arguments.length; i++) {
+          res += arguments[i]
+        }
+        return res
+      }
+
+      const proxyAdd = (function () {
+        const cache = {}
+        return function () {
+          // 此处将类数组元素转换为数组
+          const args = Array.from(arguments)
+          // 控制缓存
+          if (args in cache) {
+            console.log('cache', cache)
+            return cache[args]
+          }
+          console.log('cache', cache)
+          return (cache[args] = multAdd.apply(this, args))
+        }
+      })()
+
+      // 定义
+      proxyAdd(1, 2, 3)
+      proxyAdd(1, 2, 3)
+    </script>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>01_工厂模式</title>
+  </head>
+  <body>
+    <script>
+      /*
+
+            // 简单工厂模式
+            class User1 {
+              // 构造器
+              constructor(opt) {
+                this.name = opt.name
+                this.viewPage = opt.viewPage
+              }
+
+              // 静态方法,自己调用自己创建实例
+              static getInstance(role) {
+                switch (role) {
+                  case 'superAdmin':
+                    return new User1({ name: '超级管理员', viewPage: ['首页', '通讯录', '发现页', '应用数据', '权限管理'] })
+                    break
+                    case 'admin':
+                      return new User1({ name: '管理员', viewPage: ['首页', '通讯录', '发现页', '应用数据'] })
+                      break
+                      case 'user':
+                        return new User1({ name: '普通用户', viewPage: ['首页', '通讯录', '发现页'] })
+                        break
+                        default:
+                          throw new Error('参数错误, 可选参数:superAdmin、admin、user')
+                        }
+                      }
+                    }
+
+                    // 调用
+                    const super1Admin = User1.getInstance('superAdmin')
+                    const admin1 = User1.getInstance('admin')
+                    const user1 = User1.getInstance('user')
+
+                    // 工厂方法模式 只做实例化对象这一件事
+                    class User2 {
+                      constructor(name = '', viewPage = []) {
+                        console.log(new.target)
+                if (new.target === User2) {
+                  throw new Error('抽象类不能实例化!')
+                }
+                this.name = name
+                this.viewPage = viewPage
+              }
+            }
+            //
+            class UserFactory extends User2 {
+              constructor(name, viewPage) {
+                super(name, viewPage)
+              }
+
+              // 实例方法
+              create(role) {
+                switch (role) {
+                  case 'superAdmin':
+                    return new UserFactory('超级管理员', ['首页', '通讯录', '发现页', '应用数据', '权限管理'])
+                    break
+                    case 'admin':
+                      return new UserFactory('普通用户', ['首页', '通讯录', '发现页'])
+                      break
+                      case 'user':
+                        return new UserFactory('普通用户', ['首页', '通讯录', '发现页'])
+                        break
+                        default:
+                          throw new Error('参数错误, 可选参数:superAdmin、admin、user')
+                        }
+                      }
+                    }
+                    // 创建一个工厂方法实例对象
+                    const userFactory = new UserFactory()
+                    // 超级管理员,通过这个工厂实例的实例方法来进行
+                    const super2Admin = userFactory.create('superAdmin')
+                    const admin2 = userFactory.create('admin')
+                    const user2 = userFactory.create('user')
+
+                    // 抽象工厂模式
+                    function getAbstractUserFactory(type) {}
+                    */
+
+      class User {
+        constructor(type) {
+          if (new.target === User) {
+            throw new Error('抽象类不能实例化!') // 不能直接使用new来使用这个函数
+          }
+          this.type = type
+        }
+      }
+
+      class UserOfWeChat extends User {
+        constructor(name) {
+          super('weChat')
+          this.name = name
+          this.viewPage = ['首页', '通讯录', '发现页']
+        }
+      }
+
+      class UserOfQq extends User {
+        constructor(name) {
+          super('qq')
+          this.name = name
+          this.viewPage = ['首页', '通讯录', '发现页']
+        }
+      }
+
+      class UserOfWeibo extends User {
+        constructor(name) {
+          super('weibo')
+          this.name = name
+          this.viewPage = ['首页', '通讯录', '发现页']
+        }
+      }
+
+      function getAbstractUserFactory(type) {
+        switch (type) {
+          case 'weChat':
+            // 如果是wecaht,返回生成wechat的构造函数
+            return UserOfWeChat
+            break
+          case 'qq':
+            return UserOfQq
+            break
+          case 'weibo':
+            return UserOfWeibo
+            break
+          default:
+            throw new Error('参数错误, 可选参数:superAdmin、admin、user')
+        }
+      }
+
+      let WechatUserClass = getAbstractUserFactory('weChat')
+      let QqUserClass = getAbstractUserFactory('qq')
+      let WeiboUserClass = getAbstractUserFactory('weibo')
+
+      let wechatUser = new WechatUserClass('微信小李')
+      let qqUser = new QqUserClass('QQ小李')
+      let weiboUser = new WeiboUserClass('微博小李')
+    </script>
+  </body>
+</html>

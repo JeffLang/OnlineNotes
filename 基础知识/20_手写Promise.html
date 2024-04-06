@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>20_手写Promise</title>
+  </head>
+  <body>
+    <script>
+      /*
+            手写Promise
+
+            思路
+
+            */
+      // 定义三个状态的标记
+      const PENDING = 'pending'
+      const FULFILLED = 'fulfilled'
+      const REJECT = 'reject'
+
+      class MyPromise {
+        // 首先会生成一个promise对象
+        // 定义一个私有状态变量,默认值为 pending
+        #MyPromiseState = 'pending'
+        // 定义一个返回结果 默认值为 undefined
+        #MyPromiseResult = undefined
+
+        // 定义一个保存then函数的数组,初始值为一个空的对象
+        #ThenCallBackList = []
+        // 定义一个保存去
+
+        // 定义一个公共函数用来处理状态和结果,需要传入两个参数,state result
+        #stateChange(state, result) {
+          // 状态只能被修改一次,也就是说只能从pending
+          if (this.#MyPromiseState !== PENDING) return
+          this.#MyPromiseState = state
+          this.#MyPromiseResult = result
+          this.#run(state, result)
+        }
+        // 定义一个then函数
+        constructor(callBack) {
+          // 定义resolve函数,调用该函数的时候,会修改promise对象的状态
+          const resolve = data => {
+            this.#stateChange(FULFILLED, data)
+          }
+          // 定义reject会修改promise的状态,
+          const reject = result => {
+            this.#stateChange(REJECT, result)
+          }
+          try {
+            callBack(resolve, reject)
+          } catch (error) {
+            // 报错会直接调用reject
+            console.error(`Uncaught (in myPromise) ${error}`)
+            reject(error)
+          }
+        }
+
+        // 定义一个run函数,用来执行then的回调
+        #run(state, result) {
+          // 从then回调列表中
+          // 判断
+          while (this.#ThenCallBackList.length) {
+            const { onFulfilled, onReject, resolve, reject } = this.#ThenCallBackList.shift()
+            try {
+              // 执行这个函数,
+              // 如果是fulfilled,执行onFulfilled
+              if (state === FULFILLED) {
+                resolve(onFulfilled(result))
+              }
+              // 如果是reject,执行onReject
+              if (state === REJECT) {
+                resolve(onReject(result))
+              }
+            } catch (error) {
+              reject(error)
+            }
+          }
+        }
+
+        // then函数
+        // 1. then函数传入两个函数,第一个在resolve的时候调用,第二个在reject的时候调用
+        // 2. then函数会返回一个promise
+        then(onFulfilled, onReject) {
+          return new MyPromise((resolve, reject) => {
+            // 前一个promise resolve时调用onFulfilled
+            if (this.#MyPromiseState === FULFILLED) {
+              // then的回调是异步的
+              setTimeout(() => {
+                try {
+                  resolve(onFulfilled(this.#MyPromiseResult))
+                } catch (error) {
+                  reject(error)
+                }
+              })
+            }
+            // 当前一个promise reject时,调用onReject
+            if (this.#MyPromiseState === REJECT) {
+              setTimeout(() => {
+                try {
+                  resolve(onReject(this.#MyPromiseResult))
+                } catch (error) {
+                  reject(error)
+                }
+              })
+            }
+            // 如果此时依然是pending状态,需要将这个传入一个then的回调队列中,等待到promise的状态确定之后在进行调用
+            if (this.#MyPromiseState === PENDING) {
+              // 把两个函数保存起来
+              this.#ThenCallBackList.push({
+                onFulfilled,
+                onReject,
+                resolve,
+                reject,
+              })
+            }
+          })
+        }
+
+        // 静态方法 resolve
+        // 会返回一个promise对象,如果是Promise的实例,则
+        static resolve(value) {
+          return new MyPromise((resolve, reject) => {
+            // 如果是Promise对象,则调用这个promise对象的then方法
+            if (value instanceof MyPromise) {
+              // 调用这个thenable对象的then函数
+              value.then(resolve, reject)
+            } else {
+              resolve(value)
+            }
+          })
+        }
+
+        // 静态方法 reject 返回一个拒绝的promise,不管是不是promise对象
+        static reject(result) {
+          return newMyPromise((_, reject) => {
+            reject(result)
+          })
+        }
+
+        // race方法,返回第一个完成的promise
+        static race(promises) {
+          return newMyPromise((resolve, reject) => {
+            // 遍历传入的promise列表,因为只能执行一次,所以只会由第一个返回的promise状态
+            promises.forEach(promise => {
+              promise.then(result => resolve(result))
+            })
+          })
+        }
+
+        //Promise的静态方法，all
+        static all(promises) {
+          let values = []
+          let i = 0
+          return new MyPromise((resolve, reject) => {
+            promises.forEach((promise, index) => {
+              // 判断是否是promise
+              if (promise instanceof MyPromise) {
+                promise.then(
+                  value => {
+                    i++
+                    values[index] = value
+                    if (i >= promises.length) {
+                      resolve(values)
+                    }
+                  },
+                  result => {
+                    reject(result)
+                  },
+                )
+              } else {
+                i++
+                // 同步执行,肯定比上面快
+                values[index] = promise
+              }
+            })
+          })
+        }
+      }
+
+      const promise1 = Promise.resolve(3)
+      const promise2 = new Promise((resolve, reject) => {
+        setTimeout(resolve, 100, 'foo')
+      })
+      const promise3 = 42
+
+      const promise4 = MyPromise.resolve(3)
+      const promise5 = new MyPromise((resolve, reject) => {
+        setTimeout(resolve, 100, 'foo')
+      })
+      const promise6 = 42
+
+      Promise.all([promise1, promise2, promise3]).then(values => {
+        console.log(values)
+      })
+      MyPromise.all([promise4, promise5, promise6]).then(values => {
+        console.log('MyPromise', values)
+      })
+      // Expected output: Array [3, 42, "foo"]
+    </script>
+  </body>
+</html>

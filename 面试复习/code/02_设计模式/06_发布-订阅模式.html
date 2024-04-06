@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>06_发布-订阅模式</title>
+  </head>
+
+  <body>
+    <button onclick="eventEmitter.on('user', user1)">订阅</button>
+    <button onclick="eventEmitter.once('user', user1)">订阅一次</button>
+    <button onclick="eventEmitter.off('user', user1)">取关</button>
+    <button onclick="eventEmitter.off('user')">全部取关</button>
+    <button onclick="eventEmitter.emit('user', 'JavaScript发布-订阅模式', 2)">发布</button>
+    <script lang="ts">
+      /*
+
+      */
+      // 公众号对象
+      const eventEmitter = {
+        // 事件回调函数缓存列表
+        eventObj: {},
+
+        // 订阅
+        on(event, fn) {
+          // 保存this
+          let _this = this
+          const fns = _this.eventObj[event] ?? (_this.eventObj[event] = [])
+          // 如果对象中没有对应的 event 值,也就是说明没有被订阅过,就给 event创建一个缓存列表
+          if (fns.includes(fn)) {
+            alert('该事件已经订阅')
+          } else {
+            fns.push(fn)
+          }
+          return _this
+        },
+
+        // 一次性订阅
+        once(event, fn) {
+          const _this = this
+          // 获取该事件的回调函数
+          const fns = _this.eventObj[event] ?? []
+          const ifFlag = fns.some(item => item.fn === fn)
+          // 判断是否已经绑定
+          if (ifFlag) return alert('该事件已经订阅')
+          // 额外创建一个函数,用于绑定,当发布的时候删除这个订阅
+          function on() {
+            _this.off(event, on)
+            // 调用on
+            fn.apply(this, arguments)
+          }
+          // 如果是一次性的事件,则回调函数的函数会有fn属性
+          on.fn = fn
+          _this.on(event, on)
+        },
+
+        // 发布
+        emit(event, ...args) {
+          // 保存this
+          const _this = this
+          // 第一个参数是对应的event(订阅的事件名)值,直接 用数组的shift方法取出
+          const fns = [...(_this.eventObj[event] ?? [])]
+          // 如果缓存列表里面没有回调函数就返回false
+          if (!fns?.length) return alert(`${event}事件未订阅`)
+          // 遍历event值对应的缓存列表,依次执行fn
+          fns.forEach(fn => {
+            fn.apply(_this, args)
+          })
+          return _this
+        },
+
+        // 定义取消订阅模式
+        off(event, fn) {
+          // 保存this
+          const _this = this
+          // 如果fn为空,清除所有的事件的回调
+          if (!fn) {
+            return delete _this.eventObj[event]
+          }
+          // 取出该事件的所有回调函数
+          const fns = _this.eventObj[event]
+          // 如果fn中没有参数,则直接退出
+          if (!fns?.length) {
+            return false
+          }
+          // 如果
+          _this.eventObj[event] = fns.filter(item => item !== fn && item.fn !== fn)
+        },
+      }
+
+      function user1(content) {
+        console.log(`用户1订阅了: ${content}`)
+      }
+      function user2(content) {
+        console.log(`用户2订阅了: ${content}`)
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>04_装饰器模式</title>
+  </head>
+  <body>
+    <script>
+      /*
+
+      // Object.defineProperty
+      let obj = {}
+      Object.defineProperty(obj, 'a', {
+        enumerable: false, // 能否被for...in 枚举
+        configurable: false, // configurable 特性控制属性是否可以从对象中删除以及其特性（除了 value 和 writable）是否可以更改。
+        writable: false,
+        value: 'a',
+      })
+      
+      Object.defineProperty(obj, 'a', {
+        enumerable: false, // 能否被for...in 枚举
+        configurable: true, // configurable 特性控制属性是否可以从对象中删除以及其特性（除了 value 和 writable）是否可以更改。
+        writable: false,
+      })
+      obj.a = 'a2'
+      3
+      console.log(obj.a)
+      */
+
+      // 装饰模式
+      function readonly(target, key, descriptor) {
+        descriptor.writable = false
+        return descriptor
+      }
+
+      class Robot {
+        @readonly
+        destroyHumans() {
+          return `Destroying humans.`
+        }
+      }
+
+      const robot = new Robot()
+      console.log(robot.destroyHumans())
+    </script>
+  </body>
+</html>
