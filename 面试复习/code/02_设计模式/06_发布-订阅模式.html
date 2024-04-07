@@ -7,7 +7,8 @@
   </head>
 
   <body>
-    <button onclick="eventEmitter.on('user', user1)">订阅</button>
+    <button onclick="eventEmitter.on('user', user1)">订阅1</button>
+    <button onclick="eventEmitter.on('user', user2)">订阅2</button>
     <button onclick="eventEmitter.once('user', user1)">订阅一次</button>
     <button onclick="eventEmitter.off('user', user1)">取关</button>
     <button onclick="eventEmitter.off('user')">全部取关</button>
