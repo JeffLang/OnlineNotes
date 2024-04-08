@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>01_DocumentFragment</title>
+    <style>
+      .box {
+        transform: translateY(100px);
+        will-change: transform;
+        background-color: #bfa;
+      }
+    </style>
+  </head>
+  <body>
+    <button onclick="createDom()">新增DOM</button>
+    <div class="box">box</div>
+    <script>
+      // 生成一个fragment
+      const fragment = document.createDocumentFragment()
+      // 将多个标签加入fragment
+      for (let i = 0; i < 10; i++) {
+        // 生成一个p标签
+        const pNode = document.createElement('p')
+        // innerHTML包含html标签,innerText只包含内容,去掉html标签
+        pNode.innerHTML = i
+        // 将节点添加入fragment
+        fragment.appendChild(pNode)
+      }
+
+      const createDom = function () {
+        console.log('fragment', fragment)
+        document.body.appendChild(fragment)
+      }
+    </script>
+  </body>
+</html>

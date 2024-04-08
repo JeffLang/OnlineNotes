@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="sendRequest()">发送一次请求</button>
+    <button onclick="requestPolling()">发送轮询请求</button>
+
+    <button onclick="handleSSE()">连接SSE</button>
+    <button onclick="closeSSE()">关闭SSE</button>
+    <script>
+      // 封装自己的ajax
+      function ajax(type, url, data) {
+        return new Promise((resolve, reject) => {
+          // xhr
+          var xhr = new XMLHttpRequest()
+          xhr.open(type, 'http://127.0.0.1:3000' + url, false)
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              resolve(xhr.responseText)
+            }
+          }
+          xhr.send()
+        })
+      }
+
+      const sendRequest = async function () {
+        const res = await ajax('get', '/test', true)
+        console.log('res', res)
+      }
+
+      const requestPolling = function () {
+        const fn = async function () {
+          const res = await ajax('get', '/test', true)
+          console.log('res', res)
+          setTimeout(fn, 1000)
+        }
+
+        setTimeout(fn, 1000)
+      }
+      let sseSource = undefined
+      // SSE
+      const handleSSE = function () {
+        // 首先判断浏览器是否支持 EventSource
+        if (!'EventSource' in Window) return
+        const eventSource = new EventSource('http://127.0.0.1:3000/sse')
+        sseSource = eventSource
+        // readyState 0 1 2
+        if (eventSource.readyState === 0) {
+          console.log('建立连接')
+        }
+        eventSource.onopen = function (event) {
+          console.log('已成功建立连接')
+        }
+        eventSource.onerror = function (event) {
+          console.log('连接出错')
+        }
+        eventSource.onmessage = function (event) {
+          console.log('Received message:', event.data)
+        }
+      }
+      const closeSSE = function () {
+        if (!sseSource) return
+        sseSource.close()
+        if (sseSource.readyState === 2) {
+          console.log('连接已关闭')
+        }
+      }
+
+      // websocket
+    </script>
+  </body>
+</html>

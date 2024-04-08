@@ -2728,3 +2728,481 @@ pubSub.notify(TYPE_B)
 - Vue.js中数据响应式的实现
 
 其他比如你在代码中发现有`watch、watcher、observe、observer、listen、listener、dispatch、trigger、emit、on、event、eventbus、EventEmitter`这类单词出现的地方，很有可能是在使用`观察者模式`或`发布订阅`的思想。等下次你发现有这些词的时候，不妨点进它的源码实现看看其他coder在实现`观察者模式`或`发布订阅`时有哪些巧妙的细节。
+
+## 浏览器与新技术
+
+### 常见的浏览器内核有哪些？
+
+| 浏览器/RunTime |         内核（渲染引擎）         |    JavaScript 引擎     |
+| :------------: | :------------------------------: | :--------------------: |
+|     Chrome     | Blink（28~） Webkit（Chrome 27） |           V8           |
+|    FireFox     |              Gecko               |      SpiderMonkey      |
+|     Safari     |              Webkit              |     JavaScriptCore     |
+|      Edge      |             EdgeHTML             | Chakra(for JavaScript) |
+|       IE       |             Trident              |  Chakra(for JScript)   |
+|   PhantomJS    |              Webkit              |     JavaScriptCore     |
+|    Node.js     |                -                 |           V8           |
+
+### 浏览器的主要组成部分是什么？
+
+1. **用户界面** - 包括地址栏、前进/后退按钮、书签菜单等。除了浏览器主窗口显示的您请求的页面外，其他显示的各个部分都属于用户界面。
+2. **浏览器引擎** - 在用户界面和呈现引擎之间传送指令。
+3. **呈现引擎** - 负责显示请求的内容。如果请求的内容是 HTML，它就负责解析 HTML 和 CSS 内容，并将解析后的内容显示在屏幕上。
+4. **网络** - 用于网络调用，比如 HTTP 请求。其接口与平台无关，并为所有平台提供底层实现。
+5. **用户界面后端** - 用于绘制基本的窗口小部件，比如组合框和窗口。其公开了与平台无关的通用接口，而在底层使用操作系统的用户界面方法。
+6. **JavaScript 解释器**。用于解析和执行 JavaScript 代码。
+7. **数据存储**。这是持久层。浏览器需要在硬盘上保存各种数据，例如 Cookie。新的 HTML 规范 (HTML5) 定义了“网络数据库”，这是一个完整（但是轻便）的浏览器内数据库。
+
+值得注意的是，和大多数浏览器不同，Chrome 浏览器的每个标签页都分别对应一个呈现引擎实例。每个标签页都是一个独立的进程。
+
+### 浏览器是如何渲染UI的？
+
+1. 浏览器获取`html`文件，然后对文件进行解析，形成DOM tree
+2. 与此同时，进行css解析，生成Style Rules
+3. 接着将DOM Tree 与 Style Rules 合成 Render
+4. 接着进入布局（Layout）阶段，也就是为每个节点分配一个应出现再屏幕上的确切坐标
+5. 随后调用GPU进行绘制（Paint），遍历Render Tree的节点，并将元素呈现出来
+
+### 浏览器如何解析css选择器
+
+浏览器会『从右往左』解析 CSS 选择器。
+
+我们知道 DOM Tree 与 Style Rules 合成为 Render Tree，实际上是需要将*Style Rules*附着到 DOM Tree 上，因此需要根据选择器提供的信息对 DOM Tree 进行遍历，才能将样式附着到对应的 DOM 元素上。
+
+以下这段 css 为例
+
+```css
+.mod-nav h3 span {
+  font-size: 16px;
+}
+```
+
+我们对应的 DOM Tree 如下
+
+![image-20240408183857019](./readme.assets/image-20240408183857019.png)
+
+若从左到右的匹配，过程是：
+
+1. 从.mod-nav开始，遍历子节点 header 和子节点 div
+2. 然后各自向子节点遍历。在右侧div的分支中
+3. 最后遍历到叶子节点a，发现不符合规则，需要回溯到ul节点，再遍历下一个li-a，一颗DOM数的系欸但动不动上千，这种效率很低
+
+如果从右至左的匹配：
+
+1. 先找到所有的最右节点 span，对于每一个 span，向上寻找节点 h3
+2. 由 h3 再向上寻找 class=mod-nav 的节点
+3. 最后找到根元素 html 则结束这个分支的遍历。
+
+后者匹配性能更好，是因为从右向左的匹配在第一步就筛选掉了大量的不符合条件的最右节点（叶子节点）；而从左向右的匹配规则的性能都浪费在了失败的查找上面。
+
+### DOM tree是如果构建的
+
+1. 转码：浏览器将接收到的二进制数据指定编码格式转换为 HTML 字符串
+2. 生成Tokens：之后开始 parser，浏览器会将HTML字符串解析成 Tokens
+3. 构建 Nodes：对Node添加特定的属性，通过指针确定Node的父、子、兄弟关系和所属treeScope
+4. 生成 DOM Tree: 通过 node 包含的指针确定的关系构建出 DOM Tree
+
+![img](https://www.mianshibook.com/assets/3.TXTuthLA.png)
+
+### 浏览器重绘与重排的区别？
+
+- 重排：部分渲染树（或者整个渲染树）需要重新分析并且节点尺寸需要重新计算，表现为重新生成布局，重新排列元素。
+- 重绘: 由于节点的几何属性发生改变或者由于样式发生改变，例如改变元素背景色时，屏幕上的部分内容需要更新，表现为某些元素的外观被改变
+
+单单改变元素的外观，肯定不会引起网页重新生成布局，但当浏览器完成重排之后，将重新绘制收到此次重排影响的部分
+
+重排和重绘代价是高昂的，它们会破环用户体验，并且让UI展示非常迟缓，而相比之下重排的性能影响最大，在两者无法避免的情况下，一般我们宁可选择代价更小的重绘。
+
+『重绘』不一定会出现『重排』，『重排』必然会出现『重绘』。
+
+### 如何触发重排和重绘？
+
+任何改变用来构建渲染树的信息都会导致一次重排和重绘：
+
+- 添加、删除、更新 DOM 节点
+- 通过 display: none 隐藏一个 DOM 节点-触发重排和重绘
+- 通过 visibility: hidden 隐藏一个 DOM 节点-只触发重绘，因为没有几何变化
+- 移动或者给页面中的 DOM 节点添加动画
+- 添加一个样式表，调整样式属性
+- 用户行为，例如调整窗口大小，改变字号，或者滚动。
+
+### 如何避免重绘或者重排
+
+#### 集中改变样式
+
+我们往往通过改变 class 的方式来集中改变样式
+
+```javascript
+// 判断是否是黑色系样式
+const theme = isDark ? "dark" : "light";
+
+// 根据判断来设置不同的class
+ele.setAttribute("className", theme);
+```
+
+#### 使用 DocumentFragment
+
+我们可以通过`createDocumentFragment`创建一个游离于DOM树之外的节点，然后再此节点上批量操作，最后插入DOM树中，因此只触发一次重排
+
+```javascript
+// 生成一个fragment
+const fragment = document.createDocumentFragment()
+// 将多个标签加入fragment
+for (let i = 0; i < 10; i++) {
+  // 生成一个p标签
+  const pNode = document.createElement('p')
+  // innerHTML包含html标签,innerText只包含内容,去掉html标签
+  pNode.innerHTML = i
+  // 将节点添加入fragment
+  fragment.appendChild(pNode)
+}
+
+const createDom = function () {
+  console.log('fragment', fragment)
+  document.body.appendChild(fragment)
+}
+```
+
+
+
+#### 提升为合成层
+
+将元素提升为合成层有以下优点：
+
+- 合成层的位图，会交由GPU合成，比CPU处理要快
+- 当需要repaint 时，只需要 repaint 本省，不会影响到其他的层
+- 对于 tansform 和 opacity 效果，不会触发layout和paint
+
+提升合成层的最好方式是使用 CSS 的 will-change 属性：
+
+css
+
+```
+#target {
+  will-change: transform;
+}
+```
+
+> 关于合成层的详解请移步[无线性能优化：Composite](http://taobaofed.org/blog/2016/04/25/performance-composite/)
+
+### 前端如何实现即时通讯
+
+#### 短轮询
+
+短轮询的原理很简单，每隔一段时间客户端就发出一个请求，去获取服务器最新的数据，一定程度上模拟实现了即时通讯。
+
+- 优点：兼容性强，实现非常简单
+- 缺点：延迟性高，非常消耗请求资源，影响性能。
+
+#### comet
+
+ omet 有两种主要实现手段，一种是基于 AJAX 的长轮询（long-polling）方式，另一种是基于 Iframe 及 htmlfile 的流（streaming）方式，通常被叫做长连接。
+
+> 具体两种手段的操作方法请移步[Comet 技术详解：基于 HTTP 长连接的 Web 端实时通信技术](http://www.52im.net/thread-334-1-1.html)
+
+长轮询优缺点：
+
+- 优点：兼容性好，资源浪费较小
+- 缺点：服务器 hold 连接会消耗资源，返回数据顺序无保证，难于管理维护
+
+长连接优缺点：
+
+- 优点：兼容性好，消息即时到达，不发无用请求
+- 缺点：服务器维护长连接消耗资源
+
+#### SSE
+
+> 使用指南请看[Server-Sent Events 教程](https://www.ruanyifeng.com/blog/2017/05/server-sent_events.html)
+
+SSE（Server-Sent Event，服务端推送事件）是一种允许服务端向客户端推送新数据的 HTML5 技术。
+
+- 优点：基于 HTTP 而生，因此不需要太多改造就能使用，使用方便，而 websocket 非常复杂，必须借助成熟的库或框架
+- 缺点：基于文本传输效率没有 websocket 高，不是严格的双向通信，客户端向服务端发送请求无法复用之前的连接，需要重新发出独立的请求
+
+![img](https://www.mianshibook.com/assets/4.CLK4BwIm.png)
+
+##### 客户端API
+
+SSE的客户端API部署再`EventSource`对象上。下面的代码可以检测浏览器是否支持SSE
+
+```javascript
+if('EventSource' in window){
+  // ...
+}
+```
+
+使用SSE时，浏览器首先生成一个`EventSource`实例，向服务器发起连接
+
+```javascript
+var eventSource = new EventSurce(url)
+```
+
+上面的`url`可以与当前网址同源，也可以跨域。跨域时，可以指定第二个参数，打开`withCredentials`属性，表示是否一起发送`Cookie`。
+
+```javascript
+var eventSource = new EventSurce(url, { withCredentials: true })
+```
+
+`EventSource`实例的`readyState`属性，表明连接的当前状态。该属性只读，可以取以下值。
+
+- 0：相当于常量EventSource.CONNECTING，表示连接还未建立，或者断线正在重连。
+- 1：相当于常量EventSource.OPEN，表示连接已经建立，可以接受数据。
+- 2：相当于常量EventSource.CLOSED，表示连接已断，且不会重连。
+
+##### 基本用法
+
+连接一旦建立，就会触发`open`事件，可以在`onopen`属性定义回调函数。
+
+> ```javascript
+> source.onopen = function (event) {
+>   // ...
+> };
+> 
+> // 另一种写法
+> source.addEventListener('open', function (event) {
+>   // ...
+> }, false);
+> ```
+
+客户端收到服务器发来的数据，就会触发`message`事件，可以在`onmessage`属性的回调函数。
+
+> ```javascript
+> source.onmessage = function (event) {
+>   var data = event.data;
+>   // handle message
+> };
+> 
+> // 另一种写法
+> source.addEventListener('message', function (event) {
+>   var data = event.data;
+>   // handle message
+> }, false);
+> ```
+
+上面代码中，事件对象的`data`属性就是服务器端传回的数据（文本格式）。
+
+如果发生通信错误（比如连接中断），就会触发`error`事件，可以在`onerror`属性定义回调函数。
+
+> ```javascript
+> source.onerror = function (event) {
+>   // handle error event
+> };
+> 
+> // 另一种写法
+> source.addEventListener('error', function (event) {
+>   // handle error event
+> }, false);
+> ```
+
+`close`方法用于关闭 SSE 连接。
+
+> ```javascript
+> source.close();
+> ```
+
+##### Node服务器实例
+
+```javascript
+const http = require('http')
+
+// 创建服务器
+const server = http.createServer((req, res) => {
+  if (req.url.includes('/test')) {
+    // 设置响应头
+    res.writeHead(200, { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' })
+
+    // 判断服务
+    // 发送响应内容
+    setTimeout(() => {
+      res.end(req.url + ': Hello, World!\n')
+    }, 1000)
+  }
+
+  // SSE
+  // 设置响应头
+  if (req.url.includes('/sse')) {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream', // 设置响应类型为 text/event-stream
+      'Cache-Control': 'no-cache', // 禁用缓存
+      Connection: 'keep-alive', // 保持连接
+      'Access-Control-Allow-Origin': '*', // 跨域
+    })
+
+    // 向客户端发送数据
+    const interval = setInterval(() => {
+      const data = new Date().toLocaleString()
+      res.write(`data: ${data}\n\n`) // 每次发送的数据都以 "data: " 开头，最后以两个换行符结束
+    }, 1000) // 每秒钟发送一次数据
+    req.addListener(
+      'close',
+      function () {
+        console.log('服务器收到关闭请求')
+        clearInterval(interval)
+      },
+      false,
+    )
+  }
+})
+
+// 监听端口
+const host = '127.0.0.1'
+const port = 3000
+server.listen(port, host, () => {
+  console.log(`Server running at http://${host}:${port}/`)
+})
+
+```
+
+##### 前端使用  
+
+```html
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="sendRequest()">发送一次请求</button>
+    <button onclick="requestPolling()">发送轮询请求</button>
+
+    <button onclick="handleSSE()">连接SSE</button>
+    <button onclick="closeSSE()">关闭SSE</button>
+    <script>
+      // 封装自己的ajax
+      function ajax(type, url, data) {
+        return new Promise((resolve, reject) => {
+          // xhr
+          var xhr = new XMLHttpRequest()
+          xhr.open(type, 'http://127.0.0.1:3000' + url, false)
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              resolve(xhr.responseText)
+            }
+          }
+          xhr.send()
+        })
+      }
+
+      const sendRequest = async function () {
+        const res = await ajax('get', '/test', true)
+        console.log('res', res)
+      }
+
+      const requestPolling = function () {
+        const fn = async function () {
+          const res = await ajax('get', '/test', true)
+          console.log('res', res)
+          setTimeout(fn, 1000)
+        }
+
+        setTimeout(fn, 1000)
+      }
+      let sseSource = undefined
+      // SSE
+      const handleSSE = function () {
+        // 首先判断浏览器是否支持 EventSource
+        if (!'EventSource' in Window) return
+        const eventSource = new EventSource('http://127.0.0.1:3000/sse')
+        sseSource = eventSource
+        // readyState 0 1 2
+        if (eventSource.readyState === 0) {
+          console.log('建立连接')
+        }
+        eventSource.onopen = function (event) {
+          console.log('已成功建立连接')
+        }
+        eventSource.onerror = function (event) {
+          console.log('连接出错')
+        }
+        eventSource.onmessage = function (event) {
+          console.log('Received message:', event.data)
+        }
+      }
+      const closeSSE = function () {
+        if (!sseSource) return
+        sseSource.close()
+        if (sseSource.readyState === 2) {
+          console.log('连接已关闭')
+        }
+      }
+
+      // websocket
+    </script>
+  </body>
+</html>
+
+```
+
+
+
+#### Websocket
+
+> 使用指南请看[WebSocket 教程](http://www.ruanyifeng.com/blog/2017/05/websocket.html)
+
+Websocket 是一个全新的、独立的协议，基于 TCP 协议，与 http 协议兼容、却不会融入 http 协议，仅仅作为 html5 的一部分，其作用就是在服务器和客户端之间建立实时的双向通信。
+
+- 优点：真正意义上的实时双向通信，性能好，低延迟
+- 缺点：独立与 http 的协议，因此需要额外的项目改造，使用复杂度高，必须引入成熟的库，无法兼容低版本浏览器
+
+![img](https://www.mianshibook.com/assets/5.jYFgmsEH.png)
+
+其他特点包括：
+
+（1）建立在 TCP 协议之上，服务器端的实现比较容易。
+
+（2）与 HTTP 协议有着良好的兼容性。默认端口也是80和443，并且握手阶段采用 HTTP 协议，因此握手时不容易屏蔽，能通过各种 HTTP 代理服务器。
+
+（3）数据格式比较轻量，性能开销小，通信高效。
+
+（4）可以发送文本，也可以发送二进制数据。
+
+（5）没有同源限制，客户端可以与任意服务器通信。
+
+（6）协议标识符是`ws`（如果加密，则为`wss`），服务器网址就是 URL。
+
+> ```markup
+> ws://example.com:80/some/path
+> ```
+
+![img](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017051503.jpg)
+
+简单展示
+
+```javascript
+var ws = new WebSocket("wss://echo.websocket.org");
+
+ws.onopen = function(evt) { 
+  console.log("Connection open ..."); 
+  ws.send("Hello WebSockets!");
+};
+
+ws.onmessage = function(evt) {
+  console.log( "Received Message: " + evt.data);
+  ws.close();
+};
+
+ws.onclose = function(evt) {
+  console.log("Connection closed.");
+}
+```
+
+
+
+#### Web Worker
+
+> 后面性能优化部分会用到，先做了解
+
+Web Worker 的作用，就是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行
+
+> [Web Worker 教程](http://www.ruanyifeng.com/blog/2018/07/web-worker.html)
+
+#### Service workers
+
+> 后面性能优化部分会用到，先做了解
+
+Service workers 本质上充当 Web 应用程序与浏览器之间的代理服务器，也可以在网络可用时作为浏览器和网络间的代理，创建有效的离线体验。
+
+> [Service workers 教程](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API)
