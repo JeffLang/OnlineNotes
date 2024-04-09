@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>04_同源策略</title>
+  </head>
+  <body>
+    <button onclick="handleJSONP()">发送jsonp请求</button>
+    <script>
+      //
+
+      // 定义一个JSONP方法,
+      const host = '127.0.0.1'
+      const port = 3000
+      function JSONP({ url, params = {}, _cb = 'callback' }) {
+        // 处理param参数, 将callback添加入params给后端
+        params = { ...params, _cb }
+        const paramsQuery = Object.keys(params).reduce((prev, key, index) => {
+          prev = `${prev}${index ? '&' : '?'}${key}=${params[key]}`
+          return prev
+        }, '')
+
+        // 处理回调函数, 给window添加回调
+        window[_cb] = function (arg) {
+          console.log(arg)
+        }
+
+        // 创建新的script
+        const script = document.createElement('script')
+        script.id = '_cb'
+        // 添加src
+        script.src = `http://${host}:${port}${url}${paramsQuery}`
+        // 向body添加script标签
+        document.body.appendChild(script)
+      }
+
+      function handleJSONP() {
+        JSONP({
+          url: '/jsonp',
+          params: {
+            a: 1,
+            b: 2,
+          },
+        })
+      }
+    </script>
+  </body>
+</html>

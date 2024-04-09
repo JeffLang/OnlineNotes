@@ -3206,3 +3206,188 @@ Web Worker 的作用，就是为 JavaScript 创造多线程环境，允许主线
 Service workers 本质上充当 Web 应用程序与浏览器之间的代理服务器，也可以在网络可用时作为浏览器和网络间的代理，创建有效的离线体验。
 
 > [Service workers 教程](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API)
+
+### 什么是浏览器同源策略
+
+同源策略限制了从同一个源加载的文档或脚本如何与来自另一个源的资源进行交互。这是一个用于隔离潜在恶意文件的重要安全机制。
+
+同源是指"协议+域名+端口"三者相同，即便两个不同的域名指向同一个 ip 地址，也非同源。
+
+下表给出了相对`http://store.company.com/dir/page.html`同源检测的示例:
+
+![img](https://www.mianshibook.com/assets/6.C63m1i-Y.png)
+
+- `<img src=XXX>`
+- `<link href=XXX>`
+- `<script src=XXX>`
+
+#### 如何实现跨域
+
+跨域是个比较古老的命题了，历史上跨域的实现手段有很多，我们现在主要介绍三种比较主流的跨域方案，其余的方案我们就不深入讨论了，因为使用场景很少，也没必要记这么多奇技淫巧。
+
+##### jsonp
+
+jsonp本质上是一个Hack，他利用`<script />`标签不受同源策限制的特性进行跨域操作。
+
+jsonp优点：
+
+- 实现简单
+- 兼容性非常好
+
+jsonp的缺点
+
+- 只支持 get 请求（因为`<script>`标签只能 get）
+- 有安全问题，容易遭受xss攻击
+- 需要服务器配合json进行一定程度的改造
+
+json的实现
+
+思路：
+
+1. 定义处理好传入的`url`，请求参数，回调函数，将回调函数的名称传给后端
+2. 给全局添加一个回调函数
+3. 创建新的`<script/>`
+4. 设置`url`
+5. 向`body`添加`<script/>`标签
+
+```javascript
+// 定义一个JSONP方法,
+const host = '127.0.0.1'
+const port = 3000
+function JSONP({ url, params = {}, _cb = 'callback' }) {
+  // 处理param参数, 将callback添加入params给后端
+  params = { ...params, _cb }
+  const paramsQuery = Object.keys(params).reduce((prev, key, index) => {
+    prev = `${prev}${index ? '&' : '?'}${key}=${params[key]}`
+    return prev
+  }, '')
+
+  // 处理回调函数, 给window添加回调
+  window[_cb] = function (arg) {
+    console.log(arg)
+  }
+
+  // 创建新的script
+  const script = document.createElement('script')
+  // 添加src
+  script.src = `http://${host}:${port}${url}${paramsQuery}`
+  // 向body添加script标签
+  document.body.appendChild(script)
+}
+
+function handleJSONP() {
+  JSONP({
+    url: '/jsonp',
+    params: {
+      a: 1,
+      b: 2,
+    },
+  })
+}
+```
+
+##### cors
+
+cors是目前最主流的跨域解决方案，跨域资源哦共享（CORS）是一种机制，它使用额外的HTTP头来告诉浏览器让运行在一个origin（domain）上的Web应用被准许访问来自不同源服务器上的指定资源。当一个资源从与该资源本身所在的服务器不同的域、协议或端口请求一个资源时，资源会发起一个跨域HTTP请求。
+
+`node.js`跨域这样设置
+
+```javascript
+const http = require('http')
+const url = require('url')
+
+// 创建服务器
+const server = http.createServer((req, res) => {
+  // jsonp
+  // 设置
+  if (req.url.includes('/jsonp')) {
+    // 设置响应头
+    res.writeHead(200, { 'Content-Type': 'text/javascript', 'Access-Control-Allow-Origin': '*' })
+
+    // 解析 URL
+    const parsedUrl = url.parse(req.url, true)
+
+    // 获取查询参数
+    const query = parsedUrl.query
+    console.log(`${query._cb}('Hello, World!')`)
+    // throw '请求出错'
+    // 发送响应内容
+    res.end(`${query._cb}('Hello, World!')`)
+  }
+})
+
+// 监听端口
+const host = '127.0.0.1'
+const port = 3000
+server.listen(port, host, () => {
+  console.log(`Server running at http://${host}:${port}/`)
+})
+```
+
+在生产环境中建议用成熟的开源中间件解决问题。
+
+##### 最方便的跨域方案Nginx
+
+nginx 是一款极其强大的 web 服务器，其优点就是轻量级、启动快、高并发。
+
+现在的新项目中 nginx 几乎是首选，我们用 node 或者 java 开发的服务通常都需要经过 nginx 的反向代理。
+
+反向代理的原理很简单，即所有客户端的请求都必须先经过 nginx 的处理，nginx 作为代理服务器再讲请求转发给 node 或者 java 服务，这样就规避了同源策略。
+
+conf
+
+```
+#进程, 可更具cpu数量调整
+worker_processes  1;
+
+events {
+    #连接数
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+
+    #连接超时时间，服务器会在这个时间过后关闭连接。
+    keepalive_timeout  10;
+
+    # gizp压缩
+    gzip  on;
+
+    # 直接请求nginx也是会报跨域错误的这里设置允许跨域
+    # 如果代理地址已经允许跨域则不需要这些, 否则报错(虽然这样nginx跨域就没意义了)
+    add_header Access-Control-Allow-Origin *;
+    add_header Access-Control-Allow-Headers X-Requested-With;
+    add_header Access-Control-Allow-Methods GET,POST,OPTIONS;
+
+    # srever模块配置是http模块中的一个子模块，用来定义一个虚拟访问主机
+    server {
+        listen       80;
+        server_name  localhost;
+
+        # 根路径指到index.html
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+
+        # localhost/api 的请求会被转发到192.168.0.103:8080
+        location /api {
+            rewrite ^/b/(.*)$ /$1 break; # 去除本地接口/api前缀, 否则会出现404
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_pass http://192.168.0.103:8080; # 转发地址
+        }
+
+        # 重定向错误页面到/50x.html
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
+```
