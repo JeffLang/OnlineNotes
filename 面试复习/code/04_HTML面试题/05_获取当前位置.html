@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>05_获取当前位置</title>
+  </head>
+  <body>
+    <button onclick="getLocation()">获取当前位置1</button>
+    <div id="demo"></div>
+    <script>
+      var x = document.getElementById('demo')
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition, errorCallback)
+        } else {
+          x.innerHTML = '该浏览器不支持获取地理位置。'
+        }
+      }
+
+      function errorCallback(error) {
+        console.error('获取位置时出错：', error)
+        x.innerHTML = '获取位置时出错：'
+      }
+
+      function showPosition(position) {
+        console.log('纬度: ' + position.coords.latitude + '<br>经度: ' + position.coords.longitude)
+        x.innerHTML = '纬度: ' + position.coords.latitude + '<br>经度: ' + position.coords.longitude
+      }
+    </script>
+  </body>
+</html>

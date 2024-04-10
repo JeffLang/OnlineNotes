@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>05_事件机制</title>
+  </head>
+  <body>
+    <ul id="ul">
+      <li>1</li>
+      <li id="li2">2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+    </ul>
+    <script>
+      // 接收消息端
+
+      let ul = document.querySelector('#ul')
+      let li2 = document.querySelector('#li2')
+      ul.addEventListener(
+        'click',
+        event => {
+          console.log('ul', event.target)
+        },
+        false,
+      )
+      li2.addEventListener(
+        'click',
+        event => {
+          event.preventDefault()
+          console.log('li2', event.target)
+        },
+        // { passive: true },
+      )
+    </script>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>06_event loop</title>
+  </head>
+  <body>
+    <script>
+      /* 
+      
+      console.log('script start')
+      console.time('setTimeout')
+      setTimeout(() => {
+        console.log('setTimeout')
+        console.timeEnd('setTimeout')
+      }, 1000)
+      
+      console.log('script end')
+      */
+
+      console.log('script1 start')
+
+      setTimeout(function () {
+        console.log('setTimeout')
+      })
+
+      new Promise(resolve => {
+        console.log('Promise')
+        resolve()
+      })
+        .then(function () {
+          console.log('promise1')
+        })
+        .then(function () {
+          console.log('promise2')
+        })
+
+      console.log('script1 end')
+      // script start => Promise => script end => promise1 => promise2 => setTimeout
+    </script>
+    <script>
+      console.log('script2 start')
+      console.log('script2 end')
+    </script>
+  </body>
+</html>

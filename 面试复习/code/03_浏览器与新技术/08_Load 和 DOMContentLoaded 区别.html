@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>08_Load 和 DOMContentLoaded 区别</title>
+  </head>
+  <body>
+    <button>123</button>
+    <script src="./sw.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        console.log('DOMContentLoaded')
+      })
+      window.onload = function () {
+        console.log('onload')
+      }
+    </script>
+  </body>
+</html>

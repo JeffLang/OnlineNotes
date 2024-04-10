@@ -7,9 +7,8 @@
   </head>
   <body>
     <button onclick="handleJSONP()">发送jsonp请求</button>
+    <button onclick="handleSendMessage()">发送消息</button>
     <script>
-      //
-
       // 定义一个JSONP方法,
       const host = '127.0.0.1'
       const port = 3000
@@ -43,6 +42,12 @@
             b: 2,
           },
         })
+      }
+
+      // 发送消息
+      const handleSendMessage = function () {
+        // 发送消息端
+        window.postMessage('message', 'http://127.0.0.1:5500')
       }
     </script>
   </body>
