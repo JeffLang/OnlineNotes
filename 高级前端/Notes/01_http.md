@@ -261,3 +261,77 @@ Nginx 上常见，从上游应用层未返回响应，上游应用层挂了
 
 - `502 Bad Getaway`。一般表现为你自己写的应用层服务挂了，网关无法接收到相应
 - `504 Bad Getaway`。一般表现为网关层服务（upstream）超时，如查库操作耗时十分钟，超过了Nginx配置的超时时间
+
+## 04_简介http的缓存机制
+
+http缓存分为以下两种，两者都是http响应头控制缓存
+
+第一次请求：
+
+![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/5/6/16a8bbc2df77f4f6~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp#?w=411&h=369&s=26885&e=png&a=1&b=eeeded) 第二次请求相同网页：
+
+![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/5/6/16a8bbaefa56810f~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp#?w=554&h=528&s=103197&e=png&a=1&b=c8cfe3)
+
+1. 强制缓存
+
+   ##### 强缓存：浏览器不会像服务器发送任何请求，直接从本地缓存中读取文件并返回Status Code: 200 OK
+
+   ![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/5/6/16a8bc0c7e54f6ec~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp#?w=317&h=112&s=9790&e=png&b=fbfbfb)
+
+   ![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/5/6/16a8bdbc4b9c8720~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp#?w=280&h=96&s=7498&e=png&b=fdfdfd)
+
+   > 200 form memory cache : 不访问服务器，一般已经加载过该资源且缓存在了内存当中，直接从内存中读取缓存。浏览器关闭后，数据将不存在（资源被释放掉了），再次打开相同的页面时，不会出现from memory cache。
+
+   > 200 from disk cache： 不访问服务器，已经在之前的某个时间加载过该资源，直接从硬盘中读取缓存，关闭浏览器后，数据依然存在，此资源不会随着该页面的关闭而释放掉下次打开仍然会是from disk cache。
+
+   > 优先访问memory cache,其次是disk cache，最后是请求网络资源
+
+   与之相关的response header有两个
+
+   - `Expires`
+
+     如果过期时间在当前时间之后，则直接都本地缓存
+
+     这个头部也是丧心病狂：使用绝对时间，且有固定的格式 [https://tools.ietf.org/html/rfc822#section-5.1(opens in a new tab)](https://tools.ietf.org/html/rfc822#section-5.1)
+
+     ```
+     Expires: Mon, 25 Oct 2021 20:11:12 GMT
+     ```
+
+   - `Cache-Control`，具有强大的缓存控制能力，`Cache-Control`会覆盖掉`Expires`
+
+     常用的有以下两个
+
+     - `no-cache`，每次请求需要校验服务器资源的新鲜度（协商缓存）
+     - `no-store`，不适用任何缓存，每次都直接读取最新。
+     - `max-age=31536000`，浏览器在一年内都不需要向服务器请求资源（在失效时间之前都执行强制缓存）
+
+2. 协商缓存
+
+   Last-Modifed/If-Modified-Since和Etag/If-None-Match是分别成对出现的，呈一一对应关系
+
+   **Etag/If-None-Match：**
+
+   Etag：
+
+   > Etag舒服http1.1属性，它由服务器生成返回给前端，用来帮助服务器控制web端的缓存验证。Apach中，Etag的值，默认是对文件的索引节（INode），大小（Size）和最后修改时间（MTime）进行Hash后得到的。
+
+   If-None-Match：
+
+   > 当资源过期时（Express过期/浏览器判断Cache-Control标识的max-age过期），浏览器发现响应头中带有，则再次请求服务器是请求头带上If-Node-Match（值是Etag）。服务器收到请求进行对比时，决定返回200或304
+
+   **Last-Modified/If-Modified-Since**
+
+   Last-Modified：
+
+   > 服务器向浏览器发送最后的修改时间
+
+   If-Modified-Since
+
+   > 当资源过期时（Express过期/浏览器判断Cache-Control标识的max-age过期），浏览器发现响应头中带有Last-Modified，则再次请求时，请求头将带上If-Modified-Since（值是上一次响应头中），如果最后修改时间比If-Modified-Since大，说明资源被修改过，返回新的资源，HTTP200，否则304走缓存
+
+   > Last-Modifed/If-Modified-Since的时间精度是秒，而Etag可以更精确。
+   >
+   > Etag优先级是高于Last-Modifed的，所以服务器会优先验证Etag
+   >
+   > Last-Modifed/If-Modified-Since是http1.0的头字段
