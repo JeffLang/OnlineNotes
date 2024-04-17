@@ -4,21 +4,41 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="cache-Control" content="max-age=7200" />
+    <meta http-equiv="expires" content="Mon, 20 Jul 2009 23:00:00 GMT" />
     <title>Document</title>
+    <style>
+      #cvs {
+        width: 100px;
+        height: 100px;
+        background-color: #bfa;
+      }
+    </style>
   </head>
   <body>
+    <div id="cvs"></div>
+    <br />
     <button onclick="sendRequest()">发送一次请求</button>
+    <br />
     <button onclick="requestPolling()">发送轮询请求</button>
-
+    <br />
     <button onclick="handleSSE()">连接SSE</button>
+    <br />
     <button onclick="closeSSE()">关闭SSE</button>
+    <br />
+    <button onclick="closeSSE()">关闭SSE</button>
+    <br />
     <script>
       // 封装自己的ajax
       function ajax(type, url, data) {
         return new Promise((resolve, reject) => {
           // xhr
           var xhr = new XMLHttpRequest()
+          // 先open再设置响应头
           xhr.open(type, 'http://127.0.0.1:3000' + url, false)
+          // 设置响应头
+          xhr.setRequestHeader('Content-Type', 'application/json')
+
           xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
               resolve(xhr.responseText)
@@ -29,7 +49,7 @@
       }
 
       const sendRequest = async function () {
-        const res = await ajax('get', '/test', true)
+        const res = await ajax('POST', '/test', true)
         console.log('res', res)
       }
 
