@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03_实现一个laoding动画</title>
+    <style>
+      body {
+        display: flex;
+        height: 100vh;
+      }
+      .loading {
+        margin: auto;
+        width: 100px;
+        height: 100px;
+      }
+      .path {
+        stroke: #00b390;
+        stroke-width: 2px;
+        stroke-dasharray: 100, 200;
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="loading" viewbox="0,0,100,100">
+      <circle cx="50" cy="50" r="49" class="path" fill="none"></circle>
+    </svg>
+  </body>
+</html>

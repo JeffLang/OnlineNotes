@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=variable, initial-scale=1.0" />
+    <title>05_variable</title>
+    <style>
+      :root {
+        --bgcolor: blue;
+        --color: red;
+      }
+
+      .box {
+        --bgcolor: green;
+        --color: red;
+        background-color: var(--bgcolor);
+        color: var(--color);
+      }
+    </style>
+  </head>
+
+  <body>
+    <button onclick="handleChangeColor()">更换颜色</button>
+    <div class="box">css variable</div>
+    <script>
+      const handleChangeColor = function () {
+        const boxNode = document.getElementsByClassName('box').style
+        console.log('boxNode', boxNode)
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>12_暗黑模式</title>
+    <style>
+      html {
+        /* background-color: yellow; */
+        background-color: #fff;
+      }
+      html[theme='dark-model'] {
+        filter: invert(0.6) hue-rotate(180deg);
+        transition: all 1000; /*过渡动画*/
+      }
+      html[theme='light-model'] {
+        filter: none;
+        transition: color 1000, background-color 1000; /*过渡动画*/
+      }
+      .box1 {
+        width: 100px;
+        height: 100px;
+        background-color: yellow;
+      }
+    </style>
+  </head>
+  <body>
+    <button onclick="handleDarkTheme()">深色模式</button>
+    <button onclick="handleLightTheme()">浅色模式</button>
+    <div class="box1" />
+    <script>
+      // 暗黑模式
+      function handleDarkTheme() {
+        const htmlNode = document.getElementsByTagName('html')[0]
+        htmlNode.setAttribute('theme', 'dark-model')
+      }
+      // 暗黑模式
+      function handleLightTheme() {
+        const htmlNode = document.getElementsByTagName('html')[0]
+        htmlNode.setAttribute('theme', 'light-model')
+      }
+    </script>
+  </body>
+</html>

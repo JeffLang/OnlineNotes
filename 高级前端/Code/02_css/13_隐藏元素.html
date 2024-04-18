@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>13_隐藏元素</title>
+    <style>
+      .box1 {
+        width: 400px;
+        height: 400px;
+        background-color: #bfa;
+        /* display: none; */
+        /* opacity: 0; */
+        /* visibility: hidden; */
+        /* content-visibility: hidden; */
+        font-size: 0;
+      }
+      .inner {
+        width: 50px;
+        height: 50px;
+        background-color: antiquewhite;
+      }
+      .box2 {
+        width: 400px;
+        height: 400px;
+        background-color: blueviolet;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box1">
+      <div class="inner" onclick="handleClick()">123</div>
+    </div>
+    <div class="box2">box2</div>
+    <script>
+      handleClick = function () {
+        console.log('被我点击了')
+      }
+    </script>
+  </body>
+</html>

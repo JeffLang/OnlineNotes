@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10_requestAnimationFrame</title>
+  </head>
+  <body>
+    <div id="box">{i}</div>
+    <script>
+      const element = document.getElementById('box')
+      let i = 0
+      function step(timestamp) {
+        console.log('requestAnimationFrame', new Date().toLocaleString())
+        requestAnimationFrame(step)
+      }
+
+      // requestAnimationFrame(step)
+
+      function handleTimeout() {
+        console.log('timeout', new Date().toLocaleString())
+        setTimeout(handleTimeout, 6.94)
+      }
+
+      // setTimeout(handleTimeout, 6.94)
+    </script>
+  </body>
+</html>

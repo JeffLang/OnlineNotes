@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>11_sticky</title>
+    <style>
+      .container{
+        /* padding-top: 40px; */
+        max-height: 90vh;
+        overflow: auto;
+      }
+      .header1, .header2{
+        position: sticky;
+        top: 0px;
+        left: 20px;
+        height: 40px;
+        text-align: center;
+        background-color: #bfa;
+      }
+      .header2{
+        top: 40px;
+        background-color: blue;
+        color: white;
+      }
+      .body{
+        height: 100vh;
+        text-align: center;
+        background-color: aliceblue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header1">header1</div>
+      <!-- <div class="header2">header2</div> -->
+      <div class="body">body</div>
+    </div>
+    </div>
+  </body>
+</html>

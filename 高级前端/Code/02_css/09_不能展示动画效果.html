@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>09_不能展示动画效果</title>
+    <style>
+      .box {
+        transition: color 1s;
+        color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">09_不能展示动画效果</div>
+    <button onclick="handleTranslate()">动画效果</button>
+    <script>
+      const handleTranslate = function () {
+        document.getElementsByClassName('box')[0].style.color = 'yellow'
+      }
+    </script>
+  </body>
+</html>

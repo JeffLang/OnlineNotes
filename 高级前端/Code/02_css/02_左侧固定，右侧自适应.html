@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02_左侧固定，右侧自适应</title>
+    <style>
+      .container {
+        display: flex;
+        height: 400px;
+        border: 1px solid black;
+      }
+      .left {
+        width: 300px;
+        height: 100%;
+        background-color: #bfa;
+      }
+      .main {
+        flex: 1;
+        height: 100%;
+        background-color: aqua;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: 300px 0.5fr;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left"></div>
+      <div class="main"></div>
+    </div>
+  </body>
+</html>
