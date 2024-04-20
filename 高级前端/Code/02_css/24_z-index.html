@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>24_z-index</title>
+    <style>
+      .box {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background-color: #bfa;
+        border: 1px solid #ccc;
+      }
+      .box1 {
+        z-index: 4;
+      }
+      .box2 {
+        position: absolute;
+        background-color: blue;
+      }
+      .item {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-color: aquamarine;
+      }
+      .item1 {
+        z-index: 1;
+      }
+      .item2 {
+        background-color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box box1">
+      box1
+      <div class="item item1">item1</div>
+    </div>
+    <div class="box box2">
+      box2
+      <div class="item item2">item2</div>
+    </div>
+  </body>
+</html>

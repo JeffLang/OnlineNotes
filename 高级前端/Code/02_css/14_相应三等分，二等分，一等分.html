@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>14_相应三等分，二等分，一等分</title>
+    <style>
+      @media (min-width: 768px) and (max-width: 1024px) {
+        .container {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .container {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      .container {
+        display: grid;
+      }
+      .item {
+        flex: 100%;
+        height: 50px;
+        background-color: #bfa;
+        border: 1px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+    </div>
+    <script>
+      // js监听媒体查询
+      const mediaQuery = window.matchMedia('(min-width: 768px)')
+      mediaQuery.onchange = function () {
+        console.log('mediaQuery', mediaQuery)
+      }
+    </script>
+  </body>
+</html>

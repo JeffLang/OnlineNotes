@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>16_元素自适应排列</title>
+    <style>
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100px;
+        /* justify-content: center; */
+        justify-items: right;
+        border: 1px solid #ccc;
+      }
+      .item {
+        /* width: calc(100% / 3); */
+        /* width: 30px; */
+        height: 100px;
+        background-color: #bfa;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+      /*前3个flex：1*/
+      .item:nth-child(-n + 3) {
+        flex: 33%;
+      }
+
+      /*超过3个则none*/
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item">1</div>
+      <div class="item">2</div>
+      <div class="item">3</div>
+      <div class="item">4</div>
+    </div>
+  </body>
+</html>

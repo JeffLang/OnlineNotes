@@ -695,3 +695,571 @@ content-visibility: hidden;
 ```css
 position: absolute;top: -9000px;left: -9000px;
 ```
+
+## 27、css 如何实现响应式布局大屏幕三等分、中屏幕二等分、小屏幕一等分
+
+方法一：使用flex
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>14_相应三等分，二等分，一等分</title>
+    <style>
+      @media (min-width: 768px) {
+        /* .container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      } */
+        .container {
+          .item {
+            flex: 33.3%;
+          }
+        }
+      }
+
+      @media (min-width: 1024px) {
+        /* .container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      } */
+        .container {
+          .item {
+            flex: 33%;
+          }
+        }
+      }
+
+      .container {
+        /* display: grid; */
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .item {
+        flex: 100%;
+        height: 50px;
+        background-color: #bfa;
+        border: 1px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+    </div>
+  </body>
+</html>
+
+```
+
+方法二：使用grid布局
+
+- `repeat(2, minmax(0, 1fr))`：这里使用了 `repeat()` 函数，它的第一个参数是重复的次数，这里是 `2`，表示重复两次。第二个参数是列的定义，这里使用了 `minmax()` 函数，它的第一个参数是列的最小宽度，这里是 `0`，表示列的最小宽度为 `0`。第二个参数是列的最大宽度，这里是 `1fr`，表示列的最大宽度为剩余空间的一个分数单位。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>14_相应三等分，二等分，一等分</title>
+    <style>
+      @media (min-width: 768px) {
+        .container {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .container {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      .container {
+        display: grid;
+      }
+      .item {
+        flex: 100%;
+        height: 50px;
+        background-color: #bfa;
+        border: 1px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+    </div>
+  </body>
+</html>
+
+```
+
+## 28、⭐多主体适配方案
+
+`antv4`自带有一套``
+
+## 29、如何自定义滚动条的样式
+
+滚动条相关样式都是伪元素，以 `scrollbar` 打头，有以下伪元素，从 `-webkit` 中可见兼容性一般，不过无所谓，现在 Chrome 浏览器占大头
+
+- `::-webkit-scrollbar` — 整个滚动条.
+- `::-webkit-scrollbar-button` — 滚动条上的按钮 (上下箭头).
+- `::-webkit-scrollbar-thumb` — 滚动条上的滚动滑块.
+- `::-webkit-scrollbar-track` — 滚动条轨道.
+- `::-webkit-scrollbar-track-piece` — 滚动条没有滑块的轨道部分.
+- `::-webkit-scrollbar-corner` — 当同时有垂直滚动条和水平滚动条时交汇的部分.
+- `::-webkit-resizer` — 某些元素的corner部分的部分样式(例:textarea的可拖动按钮).
+
+但其实最常用的是以下几个伪元素：**滚动条、滑块、轨道**，如下滚动条设置成功
+
+```css
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 3px;
+  background: rgba(0, 0, 0);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: rgba(0, 0, 1);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+```
+
+## 30、如何实现容器中子元素三个三列布局，子元素两个则两列布局
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>16_元素自适应排列</title>
+    <style>
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .item {
+        width: calc(100% / 3);
+        height: 100px;
+        background-color: #bfa;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+      /*前3个flex：1*/
+      .item:nth-child(-n + 3) {
+        flex: 33%;
+      }
+
+      /*超过3个则none*/
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item">1</div>
+      <div class="item">2</div>
+      <div class="item">3</div>
+      <div class="item">4</div>
+    </div>
+  </body>
+</html>
+
+```
+
+## 31、网站设置字体时，如何设置优先使用系统默认字体
+
+```css
+font-family: system-ui;
+```
+
+## 32、写 CSS 时如何避免命名样式冲突
+
+### 3. CSS Module
+
+## 33、CSS 如何设置方格背景
+
+```css
+background: linear-gradient(90deg, rgba(200, 200, 200, 0.1) 3%, transparent 0),
+linear-gradient(rgba(200, 200, 200, 0.1) 3%, transparent 0);
+background-size: 20px 20px;
+```
+
+## 34、如何更好地给元素设置 z-index
+
+1. 确保元素的z-index值是唯一的，否则可能会出现元素重叠的问题。
+2. 尽量将具有高z-index值的元素放在较低z-index值的元素的上面，以确保元素的堆叠顺序正确。
+3. 如果需要设置多个元素的z-index值，可以使用CSS的层叠上下文（z-index stacking context）来解决。层叠上下文可以将元素分组，使得每个组内的元素按照z-index值的大小进行堆叠。
+
+## 35、画一个 100x100 的方框，其中文字可以正常换行，文字过多超过方框显示滚动条
+
+超出省略
+
+```css
+.box {
+  width: 100px;
+  height: 100px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+```
+
+超出换行并有滚动条
+
+```css
+.box {
+  width: 100px;
+  height: 100px;
+  overflow: auto;
+}
+```
+
+多行省略
+
+```css
+.box {
+  display: -webkit-box;
+  width: 100px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+```
+
+## 36、Grid 布局如何实现类似 flex: row-reverse
+
+通过 grid-auto-flow属性 和 direction属性 来实现grid布局类似 flex: row-reverse的样式
+
+flex
+
+```css
+.container {
+  /* display: grid; */
+  display: flex;
+  flex-direction: row-reverse;
+  /* grid-auto-flow: column; */
+  /* direction: rtl; */
+}
+.item {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #ccc;
+}
+```
+
+grid
+
+```css
+.container {
+  display: grid;
+  /* display: flex; */
+  /* flex-direction: row-reverse; */
+  grid-auto-flow: column;
+  direction: rtl;
+}
+.item {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #ccc;
+}
+```
+
+## 37、CSS如何设置一行超出显示省略号
+
+单行省略
+
+```css
+white-space: nowrap;
+text-overflow: ellipsis;
+overflow: hidden;
+```
+
+多行省略
+
+```css
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 1;
+overflow: hidden;
+```
+
+## 28、flex 布局中 order 有何作用
+
+`order` 属性定义Flex布局中子元素的排列顺序，数值越小，排列越靠前，默认为0。
+
+- `align-content` 作用于纵轴多行元素，一行元素不起作用
+- `align-items` 作用于纵轴单行元素
+
+下图，上部分为 `align-content`，下部分为 `align-items`
+
+![image](https://user-images.githubusercontent.com/13389461/119467452-1ae6f180-bd78-11eb-9645-19ea9ee0a1e5.png)
+
+## 29、子元素垂直居中，并且该子元素的长度/宽度为父容器宽度(width)一半的正方形
+
+方法一：
+
+使用padding百分比，padding的百分比是相对父元素的width
+
+```css
+.container {
+  display: flex;
+  width: 400px;
+  height: 300px;
+  border: 1px solid #ccc;
+}
+.item {
+  margin: auto;
+  width: 0;
+  height: 0;
+  background-color: #bfa;
+  padding: 25%;
+}
+```
+
+方法二：
+
+使用grid
+
+```css
+.container {
+  display: grid;
+  place-items: center;
+  width: 400px;
+  height: 300px;
+  border: 1px solid #ccc;
+}
+.item {
+  width: 50%;
+  background-color: #bfa;
+  aspect-ratio: 1/1;
+}
+```
+
+## 30、简述 css 中 position 的值
+
+- `static`: 默认值，无定位，`top`、`right`、`bottom`、`left` 不起任何作用
+- `relative`: 相对定位
+- `absolute`: 绝对定位，脱离文档流，上下左右以最近的定位父元素为参照系
+- `fixed`: 脱离文档流，上下左右以浏览器视口为参照系
+- `sticky`: `relative` 与 `fixed` 的结合体
+
+## 31、BFC
+
+块级格式化上下文（Block Formatting Context，BFC）是Web页面的可视化CSS渲染的一部分，是布局过程中生成块级盒子的区域，也是浮动元素与其他元素的交互限定区域。
+
+1. BFC 是一个独立的容器，容器内子元素不会影响容器外的元素。反之亦如此。
+2. 盒子从顶端开始垂直地一个接一个地排列，盒子之间垂直的间距是由 margin 决定的。
+3. 在同一个 BFC 中，两个相邻的块级盒子的**垂直外边距**会发生重叠。
+4. **BFC 区域不会和 float box 发生重叠。**
+5. **BFC 能够识别并包含浮动元素，当计算其区域的高度时，浮动元素也可以参与计算了。**
+
+BFC作用
+
+1.包含浮动元素（清除浮动）
+
+2.避免外边距折叠
+
+## 32、CSS 如何实现固定长宽比的元素
+
+过去的解决方案是使用 `padding`。一个元素的 `padding` 如若设置为百分比，则代表的是以父元素宽度为基准，根据这个原理，可设置长宽比。但实际上意义有限，毕竟你把 padding 给占了，content 无任何区域。
+
+现代化的解决方案是使用长宽比的 CSS 属性: `aspect-ratio`
+
+## 33、rem、em、vw、vh 的值各是什么意思
+
+- `rem`: 根据根元素(即 `html`)的 `font-size`
+- `em`: 根据**自身元素**的 `font-size`
+- `vw`: viewport width
+- `vh`: viewport height
+
+## 34、normalize.css 与 reset.css 又何区别
+
+- [normalize.css(opens in a new tab)](https://github.com/necolas/normalize.css/blob/master/normalize.css): 会保留有用的样式，比如 h1 的字体大小
+- [reset.css(opens in a new tab)](https://github.com/jgthms/minireset.css/blob/master/minireset.css): 把所有样式都重置，比如 h1、h2、h3 的字体大小都进行了重置，保持了无样式
+
+可以看看这篇文章 https://jerryzou.com/posts/aboutNormalizeCss/
+
+## 35、line-height 的值分别取 [2, 2em, 200%] 有什么区别?
+
+建议取值2，因为2em和200%都会被子元素继承，2的话会根据自身的font-size计算
+
+## 36、某元素的 fontSize: 2rem; lineHeight: 1.5em; 此时 lineHeight 为多少像素
+
+rem是相对长度单位，相对于根元素。 em也是相对长度单位，相对于父元素。 浏览器默认 1rem = 16px 所以font-size : 2rem = 2 _ 16px = 32px line-height: 1.5em ，em相对于父元素的font-size (32px) ==> line-height: 1.5em = 1.5 _ 32 = 48px
+
+## 37、Grid 布局的优势在哪里
+
+Flex 布局是轴线布局，只能指定"项目"针对轴线的位置，可以看作是一维布局。 Grid 布局则是将容器划分成"行"和"列"，产生单元格，然后指定"项目所在"的单元格，可以看作是二维布局。 Grid 布局远比 Flex 布局强大
+
+## 38、什么是媒体查询，JS 可以监听媒体查询吗
+
+js也支持媒体查询，window. matchMedia()方法，参考文章：[https://cloud.tencent.com/developer/article/2061082(opens in a new tab)](https://cloud.tencent.com/developer/article/2061082)
+
+## 39、z-index: 999 元素一定会置于 z-index: 0 元素之上吗
+
+z-index高数值不一定在低数值前面，因为有层叠上下文的概念。当处于两个兄弟层叠上下文时，子元素的层级显示不决定于自身的z-index，而取决于父级的z-index
+
+## 40、请简介 CSS 的盒模型
+
+box-sizing 属性可以被用来调整这些表现：
+
+- `content-box` 是默认值。如果你设置一个元素的宽为 100px，那么这个元素的内容区会有 100px 宽，并且任何边框和内边距的宽度都会被增加到最后绘制出来的元素宽度中。
+- `border-box` 告诉浏览器：你想要设置的边框和内边距的值是包含在 width 内的。也就是说，如果你将一个元素的 width 设为 100px，那么这 100px 会包含它的 border 和 padding，内容区的实际宽度是 width 减去 (border + padding) 的值。大多数情况下，这使得我们更容易地设定一个元素的宽高。
+
+## 41、CSS 有哪些选择器
+
+1. id选择器
+2. 类选择器
+3. 伪类选择器
+4. 元素选择器
+5. 伪元素选择器
+6. 分组选择器（并集选择器）
+
+```css
+#box.box{
+  color: yellow;
+}
+```
+
+7. 复合选择器（交集选择器）
+
+```css
+#box,.box{
+  color: yellow;
+}
+```
+
+8. 属性选择器
+
+9. 后代选择器
+
+10. 子元素选择器
+
+11. 兄弟元素选择器
+
+12. 通配符选择器
+
+## 42、css有哪些伪类与为元素选择器
+
+### 伪元素
+
+- `::before`
+- `::after`
+- `::selection`
+- `::placeholder`
+- `::marker`
+
+### 伪类
+
+- `:hover`
+- `:first-child`
+- `:last-child`
+- `:nth-child`
+
+| 选择器               | 例子                  | 例子描述                                                   |
+| -------------------- | --------------------- | ---------------------------------------------------------- |
+| :active              | a:active              | 选择活动的链接。                                           |
+| :checked             | input:checked         | 选择每个被选中的 元素。                                    |
+| :disabled            | input:disabled        | 选择每个被禁用的 元素。                                    |
+| :empty               | p:empty               | 选择没有子元素的每个元素。                                 |
+| :enabled             | input:enabled         | 选择每个已启用的 元素。                                    |
+| :first-child         | p:first-child         | 选择作为其父的首个子元素的每个元素。                       |
+| :first-of-type       | p:first-of-type       | 选择作为其父的首个元素的每个元素。                         |
+| :focus               | input:focus           | 选择获得焦点的 元素。                                      |
+| :hover               | a:hover               | 选择鼠标悬停其上的链接。                                   |
+| :in-range            | input:in-range        | 选择具有指定范围内的值的 元素。                            |
+| :invalid             | input:invalid         | 选择所有具有无效值的 元素。                                |
+| :lang(language)      | p:lang(it)            | 选择每个 lang 属性值以 "it" 开头的元素。                   |
+| :last-child          | p:last-child          | 选择作为其父的最后一个子元素的每个元素。                   |
+| :last-of-type        | p:last-of-type        | 选择作为其父的最后一个元素的每个元素。                     |
+| :link                | a:link                | 选择所有未被访问的链接。                                   |
+| :not(selector)       | :not(p)               | 选择每个非元素的元素。                                     |
+| :nth-child(n)        | p:nth-child(2)        | 选择作为其父的第二个子元素的每个元素。                     |
+| :nth-last-child(n)   | p:nth-last-child(2)   | 选择作为父的第二个子元素的每个元素，从最后一个子元素计数。 |
+| :nth-last-of-type(n) | p:nth-last-of-type(2) | 选择作为父的第二个元素的每个元素，从最后一个子元素计数     |
+| :nth-of-type(n)      | p:nth-of-type(2)      | 选择作为其父的第二个元素的每个元素。                       |
+| :only-of-type        | p:only-of-type        | 选择作为其父的唯一元素的每个元素。                         |
+| :only-child          | p:only-child          | 选择作为其父的唯一子元素的元素。                           |
+| :optional            | input:optional        | 选择不带 "required" 属性的 元素。                          |
+| :out-of-range        | input:out-of-range    | 选择值在指定范围之外的 元素。                              |
+| :read-only           | input:read-only       | 选择指定了 "readonly" 属性的 元素。                        |
+| :read-write          | input:read-write      | 选择不带 "readonly" 属性的 元素。                          |
+| :required            | input:required        | 选择指定了 "required" 属性的 元素。                        |
+| :root                | root                  | 选择元素的根元素。                                         |
+| :target              | #news:target          | 选择当前活动的 #news 元素（单击包含该锚名称的 URL）。      |
+| :valid               | input:valid           | 选择所有具有有效值的 元素。                                |
+| :visited             | a:visited             | 选择所有已访问的链接。                                     |
+
+## 43、css加载会阻塞DOM树的解析和渲染吗
+
+css加载会直接影响网页的渲染，因为只有css加载完毕，构建完 CSSOM 后，渲染树(Render Tree)才会构建，然后渲染成位图
+
+如果html中有加载script的话，还会间接影响DOM树的解析，因为javascript的下载、解析和执行和阻塞DOM树的解析，而javascript中有可能访问CSSOM，比如 Element.getBoundingClientRect，因此CSSOM构建完毕以后才会开始javascript的执行，间接阻塞dom树的解析
+
+## 44、在 CSS 中，使用 rem 作为单位有何缺点
+
+不支持iframe 而且有一个理念问题 大屏是为了更大更清晰还是为了承载更多内容
+
+其实这也是现在很多舍弃rem的原因 1:1还原之后 你希望pad也和手机一样？ 大屏手机也和普通手机一样？ 这个我觉得你体验过其实会发现这里其实不是一个好的展示逻辑
+
+还有一个找到的 但是没有实际踩过得坑 就是在很高的高倍屏上rem会有展示问题 但是我没遇到过...
+
+## 45、Flex 布局中的 flex-basis 与 width 有何区别
+
+[CSS](https://developer.mozilla.org/zh-CN/docs/Web/CSS) 属性 **`flex-basis`** 指定了 flex 元素在主轴方向上的初始大小。如果不使用 [`box-sizing`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-sizing) 改变盒模型的话，那么这个属性就决定了 flex 元素的内容盒（content-box）的尺寸。
+
+**备注：** 当一个元素同时被设置了 `flex-basis` (除值为 `auto` 外) 和 `width` (或者在 `flex-direction: column` 情况下设置了`height`) , `flex-basis` 具有更高的优先级。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>26_flex-basis</title>
+    <style>
+      .container {
+        display: flex;
+        width: 200px;
+        border: 1px solid #ccc;
+      }
+      .item {
+        width: 100px;
+        flex-grow: 1;
+        background-color: #bfa;
+      }
+      .item1 {
+        flex-basis: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item item1"></div>
+      <div class="item item2">2</div>
+      <div class="item item3">3</div>
+    </div>
+  </body>
+</html>
+
+```
+
+此时item1宽度为0，item2和item3的宽度为100px

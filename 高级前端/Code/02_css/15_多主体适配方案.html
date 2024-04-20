@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>15_多主体适配方案</title>
+    <style>
+      /* 跟主题无关的变量放到root里 */
+      :root {
+        --border-radius-base: 6px;
+      }
+
+      /* 跟主题相关变量，通过属性选择器提升优先级 */
+      /* html[data-theme='default']:root {
+        --body-background: #efefef;
+      }
+
+      html[data-theme='dark']:root {
+        --body-background: #000;
+      } */
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+      }
+      /* Dark mode */
+      @media (prefers-color-scheme: dark) {
+        body {
+          color: white;
+          background-color: black;
+        }
+      }
+      /* Light mode */
+      @media (prefers-color-scheme: light) {
+        body {
+          color: black;
+          background-color: #bfa;
+        }
+      }
+    </style>
+  </head>
+  <body></body>
+  <script>
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: light)')
+    console.log('darkModeMediaQuery', darkModeMediaQuery)
+    // var mqList = window.matchMedia('(prefers-color-scheme: dark)')
+
+    darkModeMediaQuery.addEventListener('change', event => {
+      // is dark mode
+      console.log('event', event)
+    })
+  </script>
+</html>

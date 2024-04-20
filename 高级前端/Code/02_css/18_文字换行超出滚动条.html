@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>18_文字换行超出滚动条</title>
+    <style>
+      .box {
+        display: -webkit-box;
+        width: 100px;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">35、画一个 100x100 的方框，其中文字可以正常换行，文字过多超过方框显示滚动条</div>
+  </body>
+</html>
