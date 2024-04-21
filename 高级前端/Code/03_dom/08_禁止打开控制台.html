@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>08_禁止打开控制台</title>
+  </head>
+  <body>
+    <button onclick="handleClick()">console</button>
+    <script>
+      // 禁用控制台
+      function disableConsole() {
+        // 替换控制台的方法为空函数
+        console.log = function () {}
+        console.warn = function () {}
+        console.error = function () {}
+        console.info = function () {}
+      }
+
+      // 在页面加载时调用禁用控制台的函数
+      window.onload = disableConsole
+
+      function handleClick() {
+        console.log(window.location)
+      }
+    </script>
+  </body>
+</html>

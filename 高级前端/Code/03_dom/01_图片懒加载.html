@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>01_图片懒加载</title>
+    <style>
+      .container {
+        position: relative;
+        height: 200vh;
+        border: 1px solid #ccc;
+      }
+      .item1,
+      .item2 {
+        width: 100px;
+        height: 100px;
+        background-color: #bfa;
+      }
+      .item2 {
+        position: absolute;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item item1"></div>
+      <div class="item item2"></div>
+    </div>
+    <script>
+      // 获取所有的子元素
+      const containerNode = document.getElementsByClassName('container')[0]
+      const itemNode = Array.from(document.getElementsByClassName('item'))
+      const observer = new IntersectionObserver(itemNode => {
+        itemNode?.forEach(item => {
+          // 判断元素是否出现在屏幕中
+          if (item.isIntersecting) {
+            console.log('可见了')
+          }
+        })
+      })
+      // observer.observe(document.documentElement)
+      observer.observe(itemNode[1])
+      // console.log('itemNode', itemNode)
+      // window.onscroll = function () {
+      //   console.log('滚动了')
+      //   // 在滚动事件中,对元素进行判断
+      //   itemNode?.forEach(item => {
+      //     // 判断元素是否出现在屏幕中
+      //   })
+      //   // console.log('offsetTop', itemNode[1].offsetTop - document.documentElement.clientHeight)
+      //   // console.log('clientTop', document.documentElement.scrollTop)
+      //   console.log(itemNode[1].getBoundingClientRect())
+      // }
+    </script>
+  </body>
+</html>

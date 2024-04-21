@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>06_如何取消请求的发送</title>
+  </head>
+  <body>
+    <div>
+      xhr
+      <button onclick="sendXHRRequest()">发送请求</button>
+      <button onclick="cancelXHRRequest()">取消发送</button>
+    </div>
+
+    <script>
+      // XHR
+      const xhr = new XMLHttpRequest()
+      function sendXHRRequest() {
+        const method = 'GET',
+          url = 'http://127.0.0.1:3000/test'
+        xhr.open(method, url, true)
+        xhr.onreadystatechange = function () {
+          console.log(xhr.readyState)
+          console.log(xhr.responseText)
+        }
+        xhr.send()
+      }
+
+      // 取消发送请求
+      function cancelXHRRequest() {
+        xhr.abort()
+      }
+    </script>
+  </body>
+</html>

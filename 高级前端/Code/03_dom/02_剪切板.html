@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02_剪切板</title>
+  </head>
+
+  <body>
+    <button onclick="handlerClipboard()">剪切板</button>
+    <button onclick="handlerCopy()">复制</button>
+    <div id="box">这是一段文字</div>
+    <div>这是一段文字</div>
+
+    <button onclick="copyText()">复制文字</button>
+    <textarea id="textarea">我是textarea</textarea>
+
+    <button onclick="copyImg()">复制图片</button>
+    <!-- <div id="img"> -->
+    <img id="img" src="https://img0.baidu.com/it/u=2687431006,3654583729&fm=253&fmt=auto&app=138&f=JPEG?w=768&h=500" alt="" />
+    <!-- </div> -->
+    <script>
+      async function handlerClipboard() {
+        // 是否能够有读取剪贴板的权限
+        // result.state == "granted" || result.state == "prompt"
+        const result = await navigator.permissions.query({ name: 'clipboard-read' })
+        if (result) {
+          // 获取剪贴板内容
+          const text = await navigator.clipboard.readText()
+          console.log('text', text)
+        }
+      }
+      function handlerCopy() {
+        document.getSelection().selectAllChildren(document.getElementById('box'))
+        document.execCommand('copy')
+      }
+
+      document.addEventListener('selectionchange', function () {
+        var selectedText = window.getSelection().toString()
+        console.log('选中的文本是：' + selectedText)
+      })
+      document.addEventListener('copy', function () {
+        console.log('复制了')
+      })
+
+      function copyText() {
+        const input = document.getElementById('textarea')
+        console.log('input', input)
+
+        window.getSelection().selectAllChildren(input)
+        // input.select()
+        document.execCommand('copy')
+      }
+      async function copyImg() {
+        // 获取图片元素或者图片的 URL
+        var imageUrl = 'https://img0.baidu.com/it/u=2687431006,3654583729&fm=253&fmt=auto&app=138&f=PNG?w=768&h=500'
+        const data = await fetch(imageUrl)
+        const blob = await data.blob()
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            [blob.type]: blob,
+          }),
+        ])
+        console.log('Image copied.')
+      }
+    </script>
+  </body>
+</html>

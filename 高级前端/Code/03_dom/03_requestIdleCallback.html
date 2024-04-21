@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 创建一个数组，存储一些待处理的任务
+      const tasks = Array.from({ length: 100 }, (_, index) => `Task ${index}`)
+
+      // 执行任务的函数
+      function processTask(task) {
+        console.log(`Processing task: ${task}`)
+        // 模拟任务处理时间
+        const endTime = Date.now() + 100
+        while (Date.now() < endTime) {}
+      }
+
+      // 使用 requestIdleCallback 处理任务
+      function handleIdleCallback(deadline) {
+        // timeRemaining 返回当前空闲的毫秒数
+        while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && tasks.length > 0) {
+          console.log('deadline.timeRemaining()', deadline.timeRemaining())
+          // 处理任务数组中的第一个任务
+          processTask(tasks.shift())
+        }
+
+        // 如果还有任务待处理，则继续请求下一个 requestIdleCallback
+        if (tasks.length > 0) {
+          requestIdleCallback(handleIdleCallback)
+        }
+      }
+
+      // 初始化第一个 requestIdleCallback
+      requestIdleCallback(handleIdleCallback)
+    </script>
+  </body>
+</html>

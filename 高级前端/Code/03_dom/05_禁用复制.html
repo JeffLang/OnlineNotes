@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>05_禁用复制</title>
+  </head>
+  <body>
+    <div>一行文字</div>
+    <div>两行文字</div>
+    <script>
+      document.addEventListener('copy', function (event) {
+        event.preventDefault()
+        alert('不允许复制')
+      })
+    </script>
+  </body>
+</html>

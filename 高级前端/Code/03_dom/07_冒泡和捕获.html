@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>07_冒泡和捕获</title>
+    <style>
+      .container {
+        width: 400px;
+        height: 400px;
+        background-color: #bfa;
+      }
+      .item {
+        width: 100px;
+        height: 100px;
+        background-color: blueviolet;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item"></div>
+    </div>
+    <script>
+      const containerNode = document.getElementsByClassName('container')[0]
+      const itemNode = document.getElementsByClassName('item')[0]
+      containerNode.addEventListener('click', function (e) {
+        console.log('currentTarget', e.currentTarget)
+        console.log('target', e.target)
+      })
+      itemNode.addEventListener('click', function (e) {
+        console.log('currentTarget', e.currentTarget)
+        console.log('target', e.target)
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>04_找出出现最多的html标签</title>
+  </head>
+  <body>
+    <div id="box"></div>
+    <script>
+      // 实现找出出现最多次数的标签
+      // 利用
+
+      function getMostTag() {
+        // 获取全部的标签
+        // 将出现的tag的次数做成键值对的形式key为标签名称,value为出现的次数
+        const tags = [...document.querySelectorAll('*')]
+          .map(x => x.tagName)
+          .reduce((prev, now) => {
+            prev[now] = prev[now] ? prev[now] + 1 : 1
+            return prev
+          }, {})
+        // 然后遍历所有的标签,找出最大的数量
+        return Object.entries(tags).reduce((prev, now) => {
+          return now[1] > prev[1] ? now : prev
+        })
+      }
+
+      // 利用递归找出所有的标签
+      // function getAllTags(el = document) {
+      //   console.log(el.children)
+      //   return Array.from(el.children).reduce((prev, now) => {
+      //     return [...prev, now, ...getAllTags(now)]
+      //   }, [])
+      // }
+
+      // 或者通过 flatMap 实现
+      function getAllTags(el = document) {
+        // x => getAllTags(x) 得到的是一个数组, flatMap会从最后一个开始一步步flat
+        const children = Array.prototype.flatMap.call(el.children, x => getAllTags(x))
+        return [el, ...children]
+      }
+      console.log('getAllTags', getAllTags())
+    </script>
+  </body>
+</html>

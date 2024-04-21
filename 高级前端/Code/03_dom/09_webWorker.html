@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="handlePostMessage()">sendMessage</button>
+    <script>
+      // 创建一个 Worker
+      const worker = new Worker('./webWorker.js')
+
+      function handlePostMessage() {
+        // 向 Worker 发送消息
+        worker.postMessage('Hello from main thread!')
+      }
+
+      // 监听来自 Worker 的消息
+      worker.onmessage = function (event) {
+        console.log('Received message from worker:', event.data)
+      }
+
+      // 监听 Worker 报错
+      worker.onerror = function (error) {
+        console.error('Worker error:', error)
+      }
+    </script>
+  </body>
+</html>
