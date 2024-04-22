@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>01_JSON下载</title>
+  </head>
+  <body>
+    <button onclick="handleDownload()">download</button>
+    <script>
+      function download(url, name) {
+        // 创建一个a标签
+        const a = document.createElement('a')
+        // 给a标签设置download属性
+        a.setAttribute('download', name)
+        a.rel = 'noopener'
+        a.href = url
+        a.click()
+      }
+
+      // 定义一个json
+      const json = {
+        a: 3,
+        b: 4,
+        c: 5,
+      }
+      const str = JSON.stringify(json, null, 2)
+
+      // 方法一
+      // const url = `data:,${str}`
+      // const url = `data:application/json,${str}` // 此种写法会造成没有缩进
+
+      // 方法二
+      const url = URL.createObjectURL(new Blob([str], { type: 'application/json' }))
+      console.log('url', url)
+      function handleDownload() {
+        download(url, 'json.json')
+      }
+    </script>
+  </body>
+</html>

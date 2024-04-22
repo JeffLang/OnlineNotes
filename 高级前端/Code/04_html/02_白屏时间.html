@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <script>
+    alert(123)
+  </script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02_白屏时间</title>
+  </head>
+  <body>
+    123
+    <script>
+      // 白屏时间
+      // 创建一个 PerformanceObserver 实例
+      const observer = new PerformanceObserver(list => {
+        // 遍历 PerformanceEntry 对象列表
+        list.getEntries().forEach(entry => {
+          console.log('entry', entry)
+        })
+      })
+
+      // 启动 PerformanceObserver，监听指定类型的事件
+      observer.observe({ entryTypes: ['resource', 'navigation'] })
+    </script>
+  </body>
+</html>
