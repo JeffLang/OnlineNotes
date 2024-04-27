@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>16_累加器</title>
+  </head>
+  <body>
+    <script>
+      /*
+      sum(1, 2, 3).valueOf(); //6
+      sum(2, 3)(2).valueOf(); //7
+      sum(1)(2)(3)(4).valueOf(); //10
+      sum(2)(4, 1)(2).valueOf(); //9
+      sum(1)(2)(3)(4)(5)(6).valueOf(); // 21
+      */
+
+      function sum(...args) {
+        // 返回一个函数继续收集参数
+        const fn = (...reset) => sum(...args, ...reset)
+        // 这个函数拥有一个valueOf属性
+        fn.valueOf = () => {
+          return args.reduce((prev, now) => {
+            return (prev += now)
+          })
+        }
+        return fn
+      }
+      console.log(sum(1, 2, 3).valueOf())
+
+      /* 
+      sum(1,2,3) // 
+      */
+
+      function sum2(...args) {
+        const foo = (...rest) => sum(...args, ...rest)
+        foo.toString = () => args.reduce((x, y) => x + y, 0)
+        return foo
+      }
+      console.log(sum2(1)(2, 3) + sum2(1)) // 7
+    </script>
+  </body>
+</html>

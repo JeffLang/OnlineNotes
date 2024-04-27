@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>32_交换</title>
+  </head>
+  <body>
+    <script>
+      // 交换两个数
+      /* let a = 1,
+        b = 2
+      ;[a, b] = [b, a]
+
+      console.log('a', a)
+      console.log('b', b) 
+      
+      const list = [1, 2, 3, 4, 5]
+      const [a, ...c] = list
+      
+      console.log(a, c)
+      
+      const { a: aa, b } = { a: 3, b: 4 }
+      console.log(a, aa, b)
+      */
+
+      function move({ x = 0, y = 0 } = {}) {
+        console.log([x, y])
+        return [x, y]
+      }
+
+      function move({ x, y } = { x: 0, y: 0 }) {
+        console.log([x, y])
+        return [x, y]
+      }
+
+      move({ x: 3, y: 8 }) // [3,8]
+      move({ x: 3 }) // [3, undefined]
+      move({}) // [undefined, undefined]
+      move() // [0, 0]
+    </script>
+  </body>
+</html>

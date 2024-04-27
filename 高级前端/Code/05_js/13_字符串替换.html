@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>13_字符串替换</title>
+  </head>
+  <body>
+    <script>
+      'hello.helloX hello3 '.match(new RegExp('hello. ', 'g'))
+      const s = 'foo.foo.foo.'
+      const result = s.replace(/foo./g, 'bar')
+      console.log('result', result)
+    </script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>11_实现async await</title>
+  </head>
+  <body>
+    <script>
+      async function fn() {
+        const req = i =>
+          fetch(`https://github.com/shfshanyue/Daily-Question/issues?page=${i}&q=is%3Aissue+is%3Aopen`, {
+            mode: 'no-cors',
+          })
+
+        // promise.all
+        const res = await Promise.all([req(1), req(2), req(3)])
+
+        // await
+        const res1 = req(4)
+        const res2 = req(5)
+        const res3 = req(6)
+        const u1 = await res1
+        const u2 = await res2
+        const u3 = await res3
+      }
+      fn()
+    </script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03_如何实现bind</title>
+  </head>
+  <body>
+    <script>
+      // 手写apply,apply只是修改this
+      Function.prototype.myApply = function (context, ...args) {
+        // 兼容性处理
+        context = context || window
+        // 保存this(函数本身)
+        context.this = this
+        // 调用
+        const result = context.this(...args)
+        delete context.this
+        // 返回
+        return result
+      }
+
+      // bind就是返回永久修改this的函数
+      Function.prototype.myBind = function (context, ...args) {
+        const _this = this
+        return function (...res) {
+          return _this.myApply(context, [...args, ...res])
+        }
+      }
+      // bind就是返回永久修改this的函数
+      Function.prototype.mySoftBind = function (context, ...args) {
+        const _this = this
+        const bound = function (...res) {
+          const newThis = !this || this === window ? context : this
+          return _this.myApply(newThis, [...args, ...res])
+        }
+        bound.prototype = Object.create(_this.prototype)
+        return bound
+      }
+
+      const obj1 = { a: 1 }
+      const obj2 = { a: 2 }
+
+      function callBack() {
+        console.log('this', this)
+      }
+
+      const fn1 = callBack.myBind(obj1)
+      /* 
+       fn1 =  function () {
+          console.log('this', this) // 此时如果直接调用这个函数,则this指向的是window
+          return callBack.myApply(obj1, args)
+        }
+      */
+      const fn2 = fn1.myBind(obj2)
+      /* 
+      fn2 =  function () {
+          console.log('this', this) // 此时如果直接调用这个函数,this会被修改为
+          return fn1.myApply(obj1, args)
+        }
+      */
+      fn2()
+    </script>
+  </body>
+</html>

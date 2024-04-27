@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>21_手写扁平化</title>
+  </head>
+  <body>
+    <script>
+      const arr1 = [1, 2, [3], [4], [5, [6]]]
+      // 可以是用 reduce和 concat来实现
+      // 单层
+      function flat1(list, depth = 1) {
+        return [].concat(...list)
+      }
+
+      // 双层(多层)
+      function flat2(list, depth = 2) {
+        if (depth === 0) return list
+        return list.reduce((prev, now) => {
+          return prev.concat(Array.isArray(now) ? flat2(now, depth - 1) : now)
+        }, [])
+      }
+      console.log(flat1(arr1))
+      console.log(flat2(arr1))
+    </script>
+  </body>
+</html>

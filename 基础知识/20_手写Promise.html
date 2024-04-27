@@ -37,15 +37,28 @@
           this.#MyPromiseResult = result
           this.#run(state, result)
         }
-        // 定义一个then函数
+
         constructor(callBack) {
-          // 定义resolve函数,调用该函数的时候,会修改promise对象的状态
           const resolve = data => {
-            this.#stateChange(FULFILLED, data)
+            let status = FULFILLED,
+              result = data
+            if (data instanceof MyPromise) {
+              status = data.#MyPromiseState
+              result = data.#MyPromiseResult
+            }
+            // 判断,如果data是一个promise对象,直接穿透,将这个promise传递出去
+            this.#stateChange(status, result)
           }
           // 定义reject会修改promise的状态,
           const reject = result => {
-            this.#stateChange(REJECT, result)
+            let status = REJECT,
+              data = result
+            if (data instanceof MyPromise) {
+              status = data.#MyPromiseState
+              result = data.#MyPromiseResult
+            }
+            // 判断,如果data是一个promise对象,直接穿透,将这个promise传递出去
+            this.#stateChange(status, data)
           }
           try {
             callBack(resolve, reject)
@@ -77,7 +90,7 @@
             }
           }
         }
-
+        // 定义一个then函数
         // then函数
         // 1. then函数传入两个函数,第一个在resolve的时候调用,第二个在reject的时候调用
         // 2. then函数会返回一个promise
@@ -118,12 +131,15 @@
         }
 
         // 静态方法 resolve
-        // 会返回一个promise对象,如果是Promise的实例,则
+        // 会返回一个promise对象,如果是Promise的实例,则调用该实例的then方法
         static resolve(value) {
+          if (value instanceof MyPromise) {
+            // 调用这个thenable对象的then函数
+            return value.then()
+          }
           return new MyPromise((resolve, reject) => {
-            // 如果是Promise对象,则调用这个promise对象的then方法
-            if (value instanceof MyPromise) {
-              // 调用这个thenable对象的then函数
+            // 如果是thenable对象,则调用then方法再返回
+            if (value.then) {
               value.then(resolve, reject)
             } else {
               resolve(value)
@@ -133,7 +149,7 @@
 
         // 静态方法 reject 返回一个拒绝的promise,不管是不是promise对象
         static reject(result) {
-          return newMyPromise((_, reject) => {
+          return new MyPromise((_, reject) => {
             reject(result)
           })
         }
@@ -148,7 +164,7 @@
           })
         }
 
-        //Promise的静态方法，all
+        //Promise的静态方法，all,any正好相反
         static all(promises) {
           let values = []
           let i = 0
@@ -178,25 +194,18 @@
         }
       }
 
-      const promise1 = Promise.resolve(3)
-      const promise2 = new Promise((resolve, reject) => {
-        setTimeout(resolve, 100, 'foo')
-      })
-      const promise3 = 42
+      function promiseTest() {
+        return new MyPromise(function (resolve, reject) {
+          resolve(MyPromise.reject(1))
+        })
+      }
 
-      const promise4 = MyPromise.resolve(3)
-      const promise5 = new MyPromise((resolve, reject) => {
-        setTimeout(resolve, 100, 'foo')
-      })
-      const promise6 = 42
+      function fn1() {
+        const p1 = promiseTest()
+        console.log('p1', p1)
+      }
 
-      Promise.all([promise1, promise2, promise3]).then(values => {
-        console.log(values)
-      })
-      MyPromise.all([promise4, promise5, promise6]).then(values => {
-        console.log('MyPromise', values)
-      })
-      // Expected output: Array [3, 42, "foo"]
+      fn1()
     </script>
   </body>
 </html>

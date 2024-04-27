@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>01_防抖节流</title>
+    <style>
+      .box {
+        width: 200px;
+        height: 200px;
+        background-color: #bfa;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id="input" oninput="onInput()" />
+    <div class="box" onmousemove="onMouseMoveHandle()"></div>
+    <hr />
+    <div class="box" onmousemove="onMouseMoveTimerHandle()"></div>
+    <script>
+      // 防抖: 高频事件n秒内只执行一次，结果是返回一个新的函数进行处理
+      function debounce(func, wait) {
+        let timerId = 0
+        return function () {
+          // 进来就重新计时
+          clearTimeout(timerId)
+          // 保存this和参数
+          const _this = this
+          const args = arguments
+          timerId = setTimeout(() => {
+            func.apply(this, args)
+          }, wait)
+        }
+      }
+
+      const onInput = debounce(function () {
+        console.log('input')
+      }, 500)
+
+      // 节流,时间戳
+      function throttle(func, wait) {
+        // 定义一个startTime
+        let startTime = 0
+        // 返回一个函数
+        return function () {
+          // 保存this和参数
+          const _this = this
+          const args = arguments
+          // 记录本次的执行时间
+          let nowTime = Date.now()
+          // 判断,时间间隔达到之后在执行
+          if (nowTime - startTime >= wait) {
+            // 调用
+            func.apply(_this, args)
+            // 重置开始时间
+            startTime = nowTime
+          }
+        }
+      }
+
+      // 节流 定时器版本
+      function throttleTimer(func, wait) {
+        let timerId = null
+        return function () {
+          const _this = this
+          const args = arguments
+          // 只有当没有定时器的时候才添加定时器
+          if (!timerId) {
+            timerId = setTimeout(() => {
+              func.apply(_this, args)
+              timerId = null
+            }, wait)
+          }
+        }
+      }
+
+      const onMouseMoveHandle = throttle(function () {
+        console.log('onMouseMove')
+      }, 200)
+      const onMouseMoveTimerHandle = throttleTimer(function () {
+        console.log('onMouseMove')
+      }, 200)
+    </script>
+  </body>
+</html>

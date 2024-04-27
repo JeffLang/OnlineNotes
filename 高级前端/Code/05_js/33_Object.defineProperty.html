@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>33_Object.defineProperty</title>
+  </head>
+  <body>
+    <script>
+      const obj = {}
+
+      Object.defineProperty(obj, 'a', {
+        // value: 'a',
+        configurable: true, //控制除了writable和value之外的属性是否可以配置
+        enumerable: true,
+        // writable: true,
+        get() {
+          console.log('a的值被获取了')
+          return aValue
+        },
+        set(newValue) {
+          console.log('a的值被设置了')
+          aValue = newValue
+        },
+      })
+
+      obj.a = 123
+      setTimeout(() => {
+        console.log(obj)
+      }, 1000)
+
+      /* Object.defineProperty(obj, 'b', {
+        value: 'a',
+      })
+      Object.defineProperty(obj, 'b', {
+        value: 'v',
+      }) */
+    </script>
+  </body>
+</html>

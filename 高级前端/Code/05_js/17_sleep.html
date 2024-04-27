@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>17_sleep</title>
+  </head>
+  <body>
+    <script>
+      const sleepSync = wait => {
+        const endTime = Date.now() + wait
+        while (Date.now() < endTime) {}
+      }
+      console.time('sleep')
+      sleepSync(2000)
+      console.timeEnd('sleep')
+    </script>
+  </body>
+</html>

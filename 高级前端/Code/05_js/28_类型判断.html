@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+  </head>
+  <body>
+    <script>
+      class Person {
+        constructor(name, age) {
+          this.name = name
+          this.age = age
+        }
+        [['Class']] = '123'
+      }
+
+      const p1Type = Object.prototype.toString.call(p1)
+      console.log(p1Type)
+    </script>
+  </body>
+</html>

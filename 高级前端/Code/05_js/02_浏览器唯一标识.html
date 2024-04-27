@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02_浏览器唯一标识</title>
+  </head>
+  <body>
+    <button onclick="handleGetCanvasFp()">getCanvas</button>
+    <button onclick="getUuid()">获取唯一id</button>
+    <script>
+      // 浏览器唯一标识
+      function getCanvasFp() {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.font = '14px Arial'
+        ctx.fillStyle = '#ccc'
+        ctx.fillText('hello, shanyue', 2, 2)
+        return canvas.toDataURL('image/jpeg')
+      }
+      const handleGetCanvasFp = () => {
+        console.log(getCanvasFp())
+      }
+      function getUuid() {}
+    </script>
+  </body>
+</html>

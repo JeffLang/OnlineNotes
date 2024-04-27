@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>08_deepClone</title>
+  </head>
+  <body>
+    <script>
+      // 深拷贝
+      function deepClone(obj, hash = new WeakMap()) {
+        // 特殊值判断 null == undefined
+        if (obj == null) return obj
+        // Date,日期函数,正则等不拷贝
+        if (obj instanceof Date) return obj
+        if (obj instanceof RegExp) return obj
+        if (typeof obj !== 'object') return obj
+        if (has.get(obj)) return obj
+        // 创建一个对象进行深拷贝
+        const cloneObj = {}
+        // 将当前对象保存到hash中
+        hash.get(obj, cloneObj)
+        for (const key in obj) {
+          if (Object.hasOwnProperty.call(object, key)) {
+            cloneObj[key] = deepClone(obj[key], hash)
+          }
+        }
+        return cloneObj
+      }
+    </script>
+  </body>
+</html>

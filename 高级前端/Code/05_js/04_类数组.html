@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>04_类数字</title>
+  </head>
+  <body>
+    <script>
+      const fn = function (a, b, c) {
+        console.log('fn')
+      }
+      const arr1 = Array.from(fn) // 稠密数组
+      const arr2 = Array(100).map(x => 1) // 稀疏数组
+
+      // 类数组转换为数组
+      const arr3 = Array.apply(null, { length: 3 })
+      const arr4 = Array.prototype.concat.apply  ([], { length: 3 })
+
+      console.log('arr1', arr1)
+      console.log('arr2', arr2)
+      console.log('arr3', arr3)
+      console.log('arr4', arr4)
+    </script>
+  </body>
+</html>

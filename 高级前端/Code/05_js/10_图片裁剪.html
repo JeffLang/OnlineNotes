@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10_图片裁剪</title>
+  </head>
+  <body>
+    <button onclick="clipImage()">绘制图片</button>
+    <script>
+      // 图片裁剪
+      function clipImage() {
+        var path = 'https://static-zh.wxb.com.cn/customer/form/2020/11/1758696796d.jpg'
+        // 创建一个canvas
+        const canvas = document.createElement('canvas')
+        canvas.width = 400
+        canvas.height = 400
+        // 获取ctx对象
+        const ctx = canvas.getContext('2d')
+        const img = document.createElement('img')
+        const img2 = document.createElement('img')
+        img.crossOrigin = 'anonymous'
+        img.src = path
+        document.body.appendChild(img)
+        img.onload = function () {
+          // ctx.drawImage(this, 100, 1000, 200, 200, 0, 0, 200, 200)
+          ctx.drawImage(this, 100, 100, 200, 200)
+          console.log(canvas.toDataURL())
+          const path = canvas.toDataURL()
+          img2.src = path
+          document.body.appendChild(img2)
+        }
+      }
+    </script>
+  </body>
+</html>

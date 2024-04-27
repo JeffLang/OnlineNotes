@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>23_unique</title>
+  </head>
+  <body>
+    <script>
+      // 数组去重
+      // Set方法
+      function unique1(arr) {
+        if (!Array.isArray(arr)) throw new TypeError()
+        return [...new Set(arr)]
+      }
+
+      // 使用Map方法
+      function unique2(arr) {
+        // 判断,如果传的不是数组则需要直接返回
+        if (!Array.isArray(arr)) return
+        const map = new Map()
+        // 使用map进行去重
+        for (const val of arr) {
+          map.set(val, val)
+        }
+        const list = []
+        for (const val of map.keys()) {
+          list.push(val)
+        }
+        return list
+      }
+
+      const obj1 = { a: 1 }
+      const arr1 = [1, 1, 2, 2, 3, 3, 4, 5, obj1, obj1]
+      console.log(unique2(arr1))
+    </script>
+  </body>
+</html>

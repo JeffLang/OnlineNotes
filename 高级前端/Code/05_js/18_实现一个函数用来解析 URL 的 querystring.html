@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>18_实现一个函数用来解析 URL 的 querystring</title>
+  </head>
+  <body>
+    <button onclick="parseUrl()">解析</button>
+    <script>
+      // 使用正则来进行
+      function parseUrl(url = window.location.href) {
+        // 获取search 是一个字符串,
+        const search = url.match(/\?([^?/#:]+)#?/)?.[1]
+        // const { search } = new URL(url)
+        for (const [key, value] of new URLSearchParams(search)) {
+          console.log(key, value)
+        }
+
+        const params = search.split('&').reduce((prev, now) => {
+          let [key, val] = now.split('=')
+          // 转义
+          key = decodeURIComponent(key)
+          val = decodeURIComponent(val)
+          // 判断是否有相同的参数
+          if (prev[key] !== undefined) {
+            prev[key] = [].concat(prev[key], val)
+          } else {
+            prev[key] = val
+          }
+          return prev
+        }, {})
+      }
+    </script>
+  </body>
+</html>

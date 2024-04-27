@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>20_Promise.resolve</title>
+  </head>
+  <body>
+    <script>
+      const promise1 = Promise.resolve({
+        then(_, resolve) {
+          console.log('diaoyong promise')
+          resolve(1)
+        },
+      })
+
+      console.log(promise1)
+    </script>
+  </body>
+</html>

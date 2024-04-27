@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>06_compose函数</title>
+  </head>
+  <body>
+    <script>
+      const add10 = x => x + 10
+      const mul10 = x => x * 10
+      const add100 = x => x + 100
+
+      function compose1(...fns) {
+        // 依次调用再返回
+        return fns.reduce((a, b) => {
+          return (...args) => {
+            return a(b(...args))
+          }
+        })
+      }
+
+      function compose2(...fns) {
+        return fns.reduce(
+          (a, b) =>
+            (...args) =>
+              a(b(...args)),
+        )
+      }
+
+      const fns = [add10, mul10, add100]
+
+      console.log(compose1(add10, mul10, add100)(10))
+      console.log(compose2(add10, mul10, add100)(10))
+    </script>
+  </body>
+</html>

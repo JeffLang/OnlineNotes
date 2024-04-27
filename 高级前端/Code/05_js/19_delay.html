@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>19_delay</title>
+  </head>
+  <body>
+    <script>
+      function delay1(func, seconds, ...args) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            const p1 = Promise.resolve(func(...args))
+              .then(resolve)
+              .catch(reject)
+          }, seconds)
+        })
+      }
+      function delay2(func, seconds, ...args) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            try {
+              resolve(func(...args))
+            } catch (error) {
+              reject(error)
+            }
+          }, seconds)
+        })
+      }
+
+      console.log(delay1(a => a, 2000, 'nihao'))
+      console.log(delay2(a => a, 2000, 'nihao'))
+    </script>
+  </body>
+</html>

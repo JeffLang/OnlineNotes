@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>14_once</title>
+  </head>
+  <body>
+    <script>
+      function once(fn) {
+        // 定义一个flag,判断是否调用过
+        let flag = false
+        const argsObj = {}
+        // 会返回一个函数
+        return function (...arg) {
+          // 判断函数是否被执行了
+          const key = JSON.stringify(arg)
+          if (flag && argsObj[key]) return argsObj[key]
+          flag = true
+          return (argsObj[key] = fn.apply(this, arg))
+        }
+      }
+      // 测试
+      function test() {
+        console.log('test')
+        return 1
+      }
+      let o = once(test)
+      console.log(o()) // test 1
+      console.log(o()) // 1
+      console.log(o()) // 1
+    </script>
+  </body>
+</html>

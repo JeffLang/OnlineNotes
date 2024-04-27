@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>07_lodashGet</title>
+  </head>
+  <body>
+    <script>
+      function lodashGet(obj, path, defaultValue) {
+        // 将a[3].b => a.3.b ,然后保存到数组中
+        const paths = path.replace(/\[(\d+)\]/g, '.$1').split('.')
+        // 层层迭代将
+        const result = obj
+        // 遍历paths依次拿值
+        for (const key of paths) {
+          result = Object(result)[key]
+          if (result === undefined) {
+            result = defaultValue
+            break
+          }
+        }
+        return result
+      }
+      lodashGet({}, 'a[3].b')
+    </script>
+  </body>
+</html>

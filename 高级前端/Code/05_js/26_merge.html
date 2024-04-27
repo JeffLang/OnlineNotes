@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>26_merge</title>
+  </head>
+  <body>
+    <script>
+      // assign
+      const obj1 = {
+        name: 'John',
+        age: 25,
+        address: {
+          city: 'New York',
+          country: 'USA',
+        },
+      }
+
+      const obj2 = {
+        age: 30,
+        address: {
+          city: 'San Francisco',
+        },
+      }
+
+      const newObj = Object.assign(obj1, obj2)
+      console.log('newObj', newObj)
+
+      // merge
+      // 第一个参数是一个对象, ...sources
+      const merge = (object, ...sources) => {
+        // 遍历所有的对象
+        for (const source of sources) {
+          // 对每一个对象进行遍历
+          for (const key in source) {
+            if (source[key] === undefined && key in object) {
+              continue
+            }
+            if (isPlainObjectOrArray(source[key])) {
+              if (isPlainObjectOrArray(object[key]) && getRawType(object[key]) === getRawType(source[key])) {
+                if (isPlainObject(object[key])) {
+                  merge(object[key], source[key])
+                } else {
+                  object[key] = object[key].concat(source[key])
+                }
+              } else {
+                object[key] = source[key]
+              }
+            } else {
+              object[key] = source[key]
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

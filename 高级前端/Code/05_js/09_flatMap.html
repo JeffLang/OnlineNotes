@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>09_flatMap</title>
+  </head>
+  <body>
+    <script>
+      /*
+
+      */
+
+      const myFlatMap = function (fn) {
+        const arr = this
+        return arr.map(fn).flat(1)
+      }
+      Array.prototype.myFlatMap = myFlatMap
+
+      const arr1 = [1, 2, 3, [4], 5]
+
+      console.log(arr1.myFlatMap(item => item + 1))
+    </script>
+  </body>
+</html>
