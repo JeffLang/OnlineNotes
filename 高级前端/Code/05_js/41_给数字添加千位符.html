@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>41_给数字添加千位符</title>
+  </head>
+  <body>
+    <script>
+      // 给数字添加千位符
+      const num1 = 9184231895
+      // 反转添加逗号再反转
+      // 使用正则
+
+      function numberThousands(num, sign = ',') {
+        return num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, `$1${sign}`)
+      }
+
+      console.log(numberThousands(num1))
+
+      // 也可以直接使用toLocalString
+      console.log(num1.toLocaleString())
+    </script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>60_如何遍历一个对象</title>
+  </head>
+  <body>
+    <script>
+      const obj = { a: 1, b: 2, c: 3, d: 4, e: 5 }
+      // 如果直接使用for...of会报错
+      // 给对象添加 Symbol.iterator 属性
+      obj[Symbol.iterator] = function () {
+        // 通过this来获取对象
+        const obj = this
+        const keys = Object.keys(obj),
+          len = keys.length
+        let i = 0
+        // 需要返回一个对象,这个对象需要有一个next方法
+        return {
+          next() {
+            let result = null
+            if (i < len) {
+              result = { value: keys[i++], done: false }
+            } else {
+              result = { value: undefined, done: true }
+            }
+            return result
+          },
+        }
+      }
+      for (const key of obj) {
+        console.log(key)
+      }
+    </script>
+  </body>
+</html>

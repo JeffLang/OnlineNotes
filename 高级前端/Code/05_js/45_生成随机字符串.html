@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>45_生成随机字符串</title>
+  </head>
+  <body>
+    <script>
+      // 生成随机字符串
+      function radomString(length = 32) {
+        const str = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678',
+          strLength = str.length
+        let result = ''
+        for (let index = 0; index < length; index++) {
+          result += str.charAt(Math.random() * strLength)
+        }
+        return result
+      }
+      console.log(radomString())
+    </script>
+  </body>
+</html>

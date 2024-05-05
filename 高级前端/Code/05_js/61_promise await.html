@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>61_promise await</title>
+  </head>
+  <body>
+    <script>
+      // 此函数需要接受一个gen函数作为参数
+      function autoGenerator(gen) {
+        // 此函数返回一个函数
+        return function () {
+          // async函数调用会返回一个promise对象
+          return new Promise((resolve, reject) => {
+            // 通过这个generator实例类进行next的调用
+            const g = gen()
+            // 定义一个自动调用next方法的函数,需要传递一个值,用于这个generator指针对象的返回值
+            const autoNext = context => {
+              // 获取next的值,yield后面调用的函数通过next来传递参数
+              const { value, done } = g.next(context) // 最后一次next的值是由generator的返回值确定的
+              // 判断是否已经执行完成
+              if (done) {
+                return resolve(value)
+              } else {
+                // 继续调用
+                return Promise.resolve(value).then(
+                  res => autoNext(res),
+                  err => autoNext(err),
+                )
+              }
+            }
+            autoNext()
+          })
+        }
+      }
+      async function asyncP1() {
+        return 1
+      }
+
+      async function asyncP2() {
+        return Promise.resolve(2)
+      }
+
+      async function asyncP3() {
+        return await Promise.resolve(3)
+      }
+
+      // Output: p1、p3、p2
+      // asyncP2().then(o => console.log(o, 'p2'))
+      // asyncP1().then(o => console.log(o, 'p1'))
+      // asyncP3().then(o => console.log(o, 'p3'))
+
+      function* genP1() {
+        return 1
+      }
+      function* genP2() {
+        return Promise.resolve(2)
+      }
+      function* genP3() {
+        const result = yield Promise.resolve(3)
+        return result
+      }
+      const selfP2 = autoGenerator(genP2)
+      const selfP3 = autoGenerator(genP3)
+      const selfP1 = autoGenerator(genP1)
+
+      const p2 = selfP2() // 此时 p2 是一个pending状态的promise
+
+      p2.then(o => console.log(o, 'p2'))
+
+      const p3 = selfP3()
+
+      const p1 = selfP1()
+      console.log('p1', p1)
+      console.log('p2', p2)
+      console.log('p3', p3)
+
+      p3.then(o => console.log(o, 'p3'))
+      p1.then(o => console.log(o, 'p1'))
+
+      /* // =================================================================
+      // 操作是同步的
+      const result1 = Promise.resolve(1)
+      const result2 = Promise.resolve(2)
+      const result3 = 3
+
+      const p1 = new Promise(resolve => {
+        // resolve(result1)
+        // 相当于↓
+        // resolve 处理一个promise的时候会进行异步的处理
+        result1.then().then(resolve)
+      })
+
+      // 立刻就返回了一个成功的Promise
+      // const p2 = Promise.resolve(result2)
+
+      // 此时还是一个pending的promise,等待执行then的回调才是一个成功的promise
+      const p2 = new Promise(resolve => {
+        // 此处的then同步中的异步
+        Promise.resolve(result2).then(result => {
+          resolve(result)
+        })
+      })
+
+      const p3 = new Promise(resolve => {
+        // resolve 处理一个promise的时候会进行异步的处理
+        resolve(result3)
+      })
+
+      p1.then(o => console.log('p1then', o)) // 此处的then异步中的异步
+      p2.then(o => console.log('p2then', o))
+      p3.then(o => console.log('p3then', o))
+
+      console.log(p1, p2, p3) // 第一个输出的代码 */
+    </script>
+  </body>
+</html>

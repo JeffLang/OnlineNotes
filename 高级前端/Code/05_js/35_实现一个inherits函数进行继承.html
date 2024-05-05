@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>35_实现一个inherits函数进行继承</title>
+  </head>
+  <body>
+    <script>
+      // 实现继承, 第一个参数是需要被继承的type,第二个是需要继承的type
+      function inherits(SuperType, SubType) {
+        // 实现继承
+        const subPrototype = Object.create(SuperType.prototype)
+        // 重新定义 constructor
+        subPrototype.constructor = SubType
+        SubType.prototype = subPrototype
+      }
+    </script>
+  </body>
+</html>

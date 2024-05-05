@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>43_关于事件循环，仅有 Promise，判断以下代码输出</title>
+  </head>
+  <body>
+    <script>
+      Promise.resolve(console.log(0))
+        .then(() => {
+          console.log(1)
+          Promise.resolve(console.log(5))
+            .then(() => console.log(3))
+            .then(() => console.log(4))
+            .then(() => console.log(6))
+        })
+        .then(() => console.log(2))
+        .then(() => console.log(7))
+
+      // 0 -> 1 -> 5 -> 3 -> 2 ->  4 -> 7 -> 6
+    </script>
+  </body>
+</html>

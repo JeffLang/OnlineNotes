@@ -13,14 +13,15 @@
 
       function getMostTag() {
         // 获取全部的标签
-        // 将出现的tag的次数做成键值对的形式key为标签名称,value为出现的次数
+        // 将出现的tag的次数做成键值对的形式key为标签名称,value为出现的次数 , 这个操作可以统计出所有的标签出现的次数,结果是键值对的对象
         const tags = [...document.querySelectorAll('*')]
           .map(x => x.tagName)
           .reduce((prev, now) => {
             prev[now] = prev[now] ? prev[now] + 1 : 1
             return prev
           }, {})
-        // 然后遍历所有的标签,找出最大的数量
+        console.log('tags', tags)
+        // 然后遍历所有的标签,找出最大的数量,是一个数组的形式,第一个元素是元素名称
         return Object.entries(tags).reduce((prev, now) => {
           return now[1] > prev[1] ? now : prev
         })
@@ -40,7 +41,8 @@
         const children = Array.prototype.flatMap.call(el.children, x => getAllTags(x))
         return [el, ...children]
       }
-      console.log('getAllTags', getAllTags())
+      console.log('getAllTags', getMostTag())
+      console.log('document.all', document.all)
     </script>
   </body>
 </html>

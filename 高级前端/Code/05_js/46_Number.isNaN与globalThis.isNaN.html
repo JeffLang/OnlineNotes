@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>46_Number.isNaN与globalThis.isNaN</title>
+  </head>
+  <body>
+    <script>
+      // Number.isNaN 不会对数据进行类型转换
+      console.log('Number.isNaN', Number.isNaN('NaN'))
+      // globalThis.isNaN 会对数据进行类型转换
+      console.log('globalThis.isNaN', globalThis.isNaN('NaN'))
+    </script>
+  </body>
+</html>

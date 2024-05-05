@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>42_深比较</title>
+  </head>
+  <body>
+    <script>
+      const obj1 = {
+        name: 'John',
+        age: 30,
+        address: {
+          city: 'New York',
+          country: 'USA',
+        },
+        hobbies: ['reading', 'cooking', 'hiking'],
+        friends: [
+          { name: 'Alice', age: 28 },
+          { name: 'Bob', age: 32 },
+          { name: 'Charlie', age: 30 },
+        ],
+      }
+
+      const obj2 = {
+        name: 'John',
+        age: 30,
+        address: {
+          city: 'New York',
+          country: 'USA',
+        },
+        hobbies: ['reading', 'cooking', 'hiking'],
+        friends: [
+          { name: 'Alice', age: 28 },
+          { name: 'Bob', age: 32 },
+          { name: 'Charlie', age: 30 },
+        ],
+      }
+
+      // 不光只判断对象的内存地址,还需要判断内部的内容是否相等
+      function deepEqual(x, y) {
+        // 首先判断两个对象是都相等
+        if (x === y) return true
+        // 判断对象
+        if (typeof x === 'object' && x !== null && typeof y === 'object' && y !== null) {
+          // 进行递归比较
+          // 先获取keys
+          const xKeys = Object.keys(x)
+          const yKeys = Object.keys(y)
+          // 如果key的长度都不相等,肯定整个对象也不相等
+          if (xKeys.length !== yKeys.length) return false
+          // 遍历数组进行比较,只要遇到一个不相等则肯定不等
+          for (const key of xKeys) {
+            if (!deepEqual(x[key], y[key])) {
+              return false
+            }
+          }
+          // 如果整个for...of没找到不同,则返回true
+          return true
+        }
+        console.log('else')
+        return false
+      }
+
+      function test() {
+        for (const key in obj) {
+          console.log('key', key)
+          // for in 可以使用break进行中断,在函数中,也可以直接使用return进行中断
+          return '结束了'
+        }
+      }
+
+      console.log(deepEqual(obj1, obj2))
+    </script>
+  </body>
+</html>

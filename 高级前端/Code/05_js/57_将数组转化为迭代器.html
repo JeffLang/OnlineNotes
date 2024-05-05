@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>57_将数组转化为迭代器</title>
+  </head>
+  <body>
+    <script>
+      // 将数组转换为迭代器
+      const arr1 = [1, 2, 3, 4, 5]
+
+      const t1 = arr1[Symbol.iterator]()
+      console.log(t1.next())
+      console.log(t1.next())
+      console.log(t1.next())
+      console.log(t1.next())
+      console.log(t1.next())
+      console.log(t1.next())
+    </script>
+  </body>
+</html>
