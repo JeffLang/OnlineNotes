@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue 中的 router 实现原理如何</title>
+  </head>
+  <body>
+    <button onclick="handlePopState()">跳转测试</button>
+    <script>
+      const handlePopState = () => {
+        var stateObj = { foo: 'bar' }
+        var title = 'Page Title'
+        var url =
+          'http://127.0.0.1:5500/%E9%AB%98%E7%BA%A7%E5%89%8D%E7%AB%AF/Code/07_React/01_React/Vue%20%E4%B8%AD%E7%9A%84%20router%20%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E5%A6%82%E4%BD%95.html/123'
+        history.pushState(stateObj, title, url)
+      }
+
+      window.addEventListener('popstate ', function () {
+        console.log('popstate ', pushstate)
+      })
+    </script>
+  </body>
+</html>

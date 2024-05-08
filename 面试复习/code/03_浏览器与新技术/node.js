@@ -7,9 +7,7 @@ const server = http.createServer((req, res) => {
   if (req.url.includes('/test')) {
     // 设置响应头
     res.writeHead(200, {
-      'Content-Type': 'text/plain',
-      'Access-Control-Allow-Origin': 'http://127.0.0.1:5500',
-      'Access-Control-Allow-Headers': 'content-type',
+      'Access-Control-Allow-Origin': '*',
     })
 
     // 判断服务
