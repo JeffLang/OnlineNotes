@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>66_绑定事件</title>
+  </head>
+  <body>
+    <ul id="test">
+      <li>这是第一项</li>
+      <li>这是第二项</li>
+      <li>这是第三项</li>
+      <li>这是第四项</li>
+    </ul>
+    <script>
+      const list = document.getElementById('test')
+      list.addEventListener('click', event => {
+        // 检查点击的目标是否是 li 元素
+        if (event.target.tagName === 'LI') {
+          // 获取所有的 li 元素
+          const listItems = document.getElementsByTagName('li')
+          // 转换 NodeList 为数组并找到点击的 li 元素的索引
+          const index = [...listItems].indexOf(event.target)
+          // 输出当前 li 元素的索引
+          alert(index)
+        }
+      })
+    </script>
+  </body>
+</html>

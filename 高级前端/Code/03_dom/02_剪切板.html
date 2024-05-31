@@ -13,11 +13,14 @@
     <div>这是一段文字</div>
 
     <button onclick="copyText()">复制文字</button>
-    <textarea id="textarea">我是textarea</textarea>
+    <textarea id="textarea">
+我是text
+      area</textarea
+    >
 
     <button onclick="copyImg()">复制图片</button>
     <!-- <div id="img"> -->
-    <img id="img" src="https://img0.baidu.com/it/u=2687431006,3654583729&fm=253&fmt=auto&app=138&f=JPEG?w=768&h=500" alt="" />
+    <img id="img" src="https://img0.baidu.com/it/u=2687431006,3654583729&fm=253&fmt=auto&app=138&f=JPEG?w=768&h=500" crossorigin="anonymous" alt="" />
     <!-- </div> -->
     <script>
       async function handlerClipboard() {
@@ -45,23 +48,47 @@
 
       function copyText() {
         const input = document.getElementById('textarea')
-        console.log('input', input)
-
         window.getSelection().selectAllChildren(input)
         // input.select()
         document.execCommand('copy')
       }
+
       async function copyImg() {
+        const img = document.getElementById('img')
+
+        console.log('img', img)
+
+        // 创建一个新的 canvas 元素
+        var canvas = document.createElement('canvas')
+        var context = canvas.getContext('2d')
+
+        // 设置 canvas 大小和图片大小一致
+        canvas.width = img.width
+        canvas.height = img.height
+
+        // 在 canvas 上绘制图片
+        context.drawImage(img, 0, 0)
+
+        // 将图片转换为 Blob 对象，格式为 image/png
+        canvas.toBlob(function (blob) {
+          // 将图片复制到剪贴板
+          var item = new ClipboardItem({ 'image/png': blob })
+          navigator.clipboard.write([item]).then(
+            function () {
+              console.log('图片已复制到剪贴板')
+            },
+            function (err) {
+              console.error('复制图片失败:', err)
+            },
+          )
+        }, 'image/png')
+
         // 获取图片元素或者图片的 URL
-        var imageUrl = 'https://img0.baidu.com/it/u=2687431006,3654583729&fm=253&fmt=auto&app=138&f=PNG?w=768&h=500'
-        const data = await fetch(imageUrl)
-        const blob = await data.blob()
-        await navigator.clipboard.write([
-          new ClipboardItem({
-            [blob.type]: blob,
-          }),
-        ])
-        console.log('Image copied.')
+        // var imageUrl = ''
+        // const data = await fetch(imageUrl)
+        // const blob = await data.blob()
+        // await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+        // console.log('Image copied.')
       }
     </script>
   </body>

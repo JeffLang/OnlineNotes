@@ -3,14 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>27_过滤数组中的faly value</title>
+    <title>12_DOMPurify</title>
+    <script type="text/javascript" src="src/purify.js"></script>
   </head>
   <body>
     <script>
-      const arr1 = [null, false, '', 0, '0', NaN]
-
-      const arr2 = arr1.filter(item => Boolean(item))
-      console.log(arr2)
+      const clean = DOMPurify.sanitize('<b>hello there</b>')
+      console.log('clean', clean)
     </script>
   </body>
 </html>

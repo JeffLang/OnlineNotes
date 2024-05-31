@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>环状DNA展示</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+      .gene {
+        cursor: pointer;
+      }
+      #gene-info {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="dna-container"></div>
+    <div id="gene-info"></div>
+    <script>
+      const dnaData = [
+        { sequence: 'A', basePairs: 50000, color: 'red', heritability: '可遗传', expressivity: '不可表达' },
+        { sequence: 'B', basePairs: 120000, color: 'orange', heritability: '不可遗传', expressivity: '可表达' },
+        { sequence: 'C', basePairs: 30000, color: 'yellow', heritability: '可遗传', expressivity: '不可表达' },
+        { sequence: 'D', basePairs: 60000, color: 'green', heritability: '不可遗传', expressivity: '可表达' },
+        { sequence: 'E', basePairs: 150000, color: 'cyan', heritability: '可遗传', expressivity: '不可表达' },
+        { sequence: 'F', basePairs: 330000, color: 'blue', heritability: '不可遗传', expressivity: '可表达' },
+        { sequence: 'G', basePairs: 210000, color: 'purple', heritability: '可遗传', expressivity: '不可表达' },
+        { sequence: 'H', basePairs: 20000, color: 'black', heritability: '不可遗传', expressivity: '可表达' },
+        { sequence: 'I', basePairs: 30000, color: 'white', heritability: '可遗传', expressivity: '不可表达' },
+      ]
+
+      const width = 500
+      const height = 500
+      const radius = Math.min(width, height) / 2 - 50
+
+      const svg = d3
+        .select('#dna-container')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', `translate(${width / 2},${height / 2})`)
+
+      const arc = d3
+        .arc()
+        .innerRadius(radius - 50)
+        .outerRadius(radius)
+
+      const pie = d3
+        .pie()
+        .sort(null)
+        .value(d => d.basePairs)
+
+      const arcs = svg
+        .selectAll('.arc')
+        .data(pie(dnaData))
+        .enter()
+        .append('g')
+        .attr('class', 'arc')
+        .on('click', (event, d) => {
+          d3.select('#gene-info').html(`
+                    <h3>基因序列: ${d.data.sequence}</h3>
+                    <p>碱基对数量: ${d.data.basePairs}</p>
+                    <p>遗传性: ${d.data.heritability}</p>
+                    <p>表达性: ${d.data.expressivity}</p>
+                `)
+        })
+
+      arcs
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', d => d.data.color)
+        .attr('class', 'gene')
+    </script>
+  </body>
+</html>

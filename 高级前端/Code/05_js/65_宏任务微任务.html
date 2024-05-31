@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>65_宏任务微任务</title>
+  </head>
+  <body>
+    <script>
+      console.log('script1 start')
+      console.log('scripts1')
+      Promise.resolve('promise').then(res => console.log(res))
+      console.log('script1 end')
+    </script>
+    <script>
+      console.log('script2 start')
+      console.log('script2 end')
+    </script>
+  </body>
+</html>

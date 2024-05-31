@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>04_防抖节流</title>
+  </head>
+  <body>
+    <script>
+      // 防抖: 事件再ns后触发,如果n秒内触发时间重新计算
+      function debounce(func, delay) {
+        let timer = null
+        return (...args) => {
+          const _this = this
+          timer = setTimeout(() => {
+            // 一进来就清除
+            clearTimeout(timer)
+            func.apply(_this, args)
+          }, delay)
+        }
+      }
+      // 节流: 一段时间内事件只触发一次
+      // 有两种方法一种是时间戳一种是定时器
+      function throttle1(func, args) {
+        let timer = null
+        return (...args) => {
+          // 判断是否为null
+          if (timer !== null) return
+          const _this = this
+          timer = setTimeout(() => {
+            func.apply(_this, args)
+            timer = null
+          }, delay)
+        }
+      }
+
+      // 使用时间戳
+      function throttle2(func, delay) {
+        // 定义一个开始时间
+        let starTime = 0
+        // 返回一个函数
+        return function (...args) {
+          // 定义一个
+          const _this = this
+        }
+      }
+    </script>
+  </body>
+</html>

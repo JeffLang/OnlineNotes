@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>67_await return</title>
+  </head>
+  <body>
+    <script>
+      async function p1() {
+        return 3
+      }
+
+      async function p2() {
+        return Promise.resolve(3)
+      }
+
+      async function p3() {
+        return await Promise.resolve(3)
+      }
+
+      // Output: p1、p3、p2
+      p2().then(o => console.log(o, 'p2'))
+      p3().then(o => console.log(o, 'p3'))
+      p1().then(o => console.log(o, 'p1'))
+    </script>
+  </body>
+</html>

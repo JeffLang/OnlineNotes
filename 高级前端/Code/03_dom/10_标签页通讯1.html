@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10_标签页通讯1</title>
+  </head>
+  <body>
+    <button onclick="handlePostMessage()">我收藏了</button>
+    <button onclick="handleClose()">关闭</button>
+    <script>
+      const channel = new BroadcastChannel('myChannel')
+
+      const handlePostMessage = () => {
+        channel.postMessage('Hello from Tab 1!')
+      }
+
+      const handleClose = () => {
+        channel.close()
+      }
+    </script>
+  </body>
+</html>

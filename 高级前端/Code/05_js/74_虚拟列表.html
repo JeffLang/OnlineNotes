@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual List Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      #list {
+        height: 300px;
+        overflow: auto;
+        position: relative;
+        -webkit-overflow-scrolling: touch;
+      }
+      #items {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+      #content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: -1;
+      }
+      .list-item {
+        height: 30px;
+        line-height: 30px;
+        border-bottom: 1px solid #eee;
+        padding: 0 10px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Virtual List Demo</h1>
+    <div id="list">
+      <div id="items"></div>
+      <div id="content"></div>
+    </div>
+
+    <script>
+      const startIndex = 0
+      const itemHeight = 30 // 每一项高度30
+      const visibleItems = 11 // 列表中显示12个
+      // 获取各个元素
+      const listNode = document.getElementById('list')
+      const itemsNode = document.getElementById('items')
+      const contentNode = document.getElementById('content')
+
+      // 添加元素
+      const addNode = function () {
+        // 创建一个frame
+        const fragment = document.createDocumentFragment()
+        // 循环调用添加div
+        for (let i = 0; i < visibleItems; i++) {
+          const item = document.createElement('div')
+          item.className = 'list -item'
+          item.textContent = `Item ${i}`
+          fragment.appendChild(item)
+        }
+        itemsNode.appendChild(fragment)
+      }
+
+      // 修改index
+      const changeIndex = function (startIndex) {
+        const listItemNode = document.getElementsByClassName('list-item') ?? []
+        ;[...listItemNode].forEach((element, index) => {
+          element.textContent = 'Item ' + (startIndex + index)
+        })
+      }
+
+      const dataList = Array.from({ length: 100 }, () => 1)
+      contentNode.style.height = itemHeight * dataList.length + 'px'
+      function onScroll(e) {
+        const oldScrollTop = e.target.scrollTop
+        if (oldScrollTop >= contentNode.clientHeight - 300) return
+        const scrollTop = oldScrollTop - (oldScrollTop % itemHeight)
+        itemsNode.style.transform = 'translateY(' + scrollTop + 'px) '
+        changeIndex(Math.floor(scrollTop / itemHeight))
+        console.log('scrollTop', scrollTop)
+      }
+
+      // 向
+      addNode()
+      listNode.onscroll = onScroll
+    </script>
+  </body>
+</html>

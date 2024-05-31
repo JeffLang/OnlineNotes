@@ -3,14 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>27_过滤数组中的faly value</title>
+    <title>07_随机字符串</title>
   </head>
   <body>
     <script>
-      const arr1 = [null, false, '', 0, '0', NaN]
+      function randomString(len) {
+        return Math.random()
+          .toString(36)
+          .slice(2, len + 2)
+      }
 
-      const arr2 = arr1.filter(item => Boolean(item))
-      console.log(arr2)
+      console.log(randomString(4))
     </script>
   </body>
 </html>

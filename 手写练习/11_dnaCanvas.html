@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>环状DNA展示</title>
+    <style>
+      .box {
+        display: flex;
+      }
+      #gene-info {
+        margin-top: 20px;
+      }
+      #canvas {
+        border: 1px solid black;
+        background-color: rgb(246, 246, 246);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <canvas id="canvas" width="500" height="500"></canvas>
+      <div id="gene-info"></div>
+    </div>
+    <script>
+      // 定义一个dna数据
+      const dnaData = [
+        { sequence: 'A', basePairs: 50000, color: 'red', heritability: '可遗传', expressivity: '不可表达' },
+        { sequence: 'B', basePairs: 120000, color: 'orange', heritability: '不可遗传', expressivity: '可表达' },
+        { sequence: 'C', basePairs: 30000, color: 'yellow', heritability: '可遗传', expressivity: '不可表达' },
+        { sequence: 'D', basePairs: 60000, color: 'green', heritability: '不可遗传', expressivity: '可表达' },
+        { sequence: 'E', basePairs: 150000, color: 'cyan', heritability: '可遗传', expressivity: '不可表达' },
+        { sequence: 'F', basePairs: 330000, color: 'blue', heritability: '不可遗传', expressivity: '可表达' },
+        { sequence: 'G', basePairs: 210000, color: 'purple', heritability: '可遗传', expressivity: '不可表达' },
+        { sequence: 'H', basePairs: 20000, color: 'black', heritability: '不可遗传', expressivity: '可表达' },
+        { sequence: 'I', basePairs: 30000, color: 'white', heritability: '可遗传', expressivity: '不可表达' },
+      ]
+
+      // 定义一个获取补色的函数
+      function getComplementaryColor(color) {
+        const colorNamesToRGB = {
+          black: { r: 0, g: 0, b: 0 },
+          white: { r: 255, g: 255, b: 255 },
+          red: { r: 255, g: 0, b: 0 },
+          lime: { r: 0, g: 255, b: 0 },
+          blue: { r: 0, g: 0, b: 255 },
+          yellow: { r: 255, g: 255, b: 0 },
+          cyan: { r: 0, g: 255, b: 255 },
+          magenta: { r: 255, g: 0, b: 255 },
+          silver: { r: 192, g: 192, b: 192 },
+          gray: { r: 128, g: 128, b: 128 },
+          maroon: { r: 128, g: 0, b: 0 },
+          olive: { r: 128, g: 128, b: 0 },
+          orange: { r: 255, g: 165, b: 0 },
+          green: { r: 0, g: 128, b: 0 },
+          purple: { r: 128, g: 0, b: 128 },
+          teal: { r: 0, g: 128, b: 128 },
+          navy: { r: 0, g: 0, b: 128 },
+        }
+
+        function rgbToComplementary(r, g, b) {
+          const rComplement = 255 - r
+          const gComplement = 255 - g
+          const bComplement = 255 - b
+
+          return `rgb(${rComplement}, ${gComplement}, ${bComplement})`
+        }
+
+        if (typeof color === 'string') {
+          color = color.toLowerCase()
+          if (color in colorNamesToRGB) {
+            color = colorNamesToRGB[color]
+          } else {
+            throw new Error('未知的颜色名称')
+          }
+        }
+
+        const complementaryColor = rgbToComplementary(color.r, color.g, color.b)
+        return complementaryColor
+      }
+
+      const canvas = document.getElementById('canvas')
+      const ctx = canvas.getContext('2d')
+      const width = canvas.width
+      const height = canvas.height
+      const outerRadius = Math.min(width, height) / 2 - 20
+      const innerRadius = outerRadius - 40
+      const centerX = width / 2
+      const centerY = height / 2
+
+      const totalBasePairs = dnaData.reduce((prev, item) => (prev += item.basePairs), 0)
+      let startAngle = 0
+
+      dnaData.forEach(gene => {
+        const proportion = gene.basePairs / totalBasePairs
+        const endAngle = startAngle + proportion * 2 * Math.PI
+
+        // 绘制外弧
+        ctx.beginPath()
+        ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle)
+        ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true)
+        ctx.closePath()
+        ctx.fillStyle = gene.color
+        ctx.fill()
+
+        // 添加标注文本
+        const midAngle = (startAngle + endAngle) / 2
+        const textX = centerX + ((outerRadius + innerRadius) / 2) * Math.cos(midAngle)
+        const textY = centerY + ((outerRadius + innerRadius) / 2) * Math.sin(midAngle)
+
+        ctx.fillStyle = getComplementaryColor(gene.color)
+        ctx.font = '14px Arial'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(gene.sequence, textX, textY)
+
+        // 保存起始和结束角度以便于点击检测
+        gene.startAngle = startAngle
+        gene.endAngle = endAngle
+
+        startAngle = endAngle
+      })
+
+      // 点击事件检测
+      canvas.addEventListener('click', event => {
+        // 计算所处的
+        const x = event.offsetX - centerX
+        const y = event.offsetY - centerY
+        const angle = Math.atan2(y, x)
+        const normalizedAngle = angle < 0 ? angle + 2 * Math.PI : angle
+
+        const distanceFromCenter = Math.sqrt(x * x + y * y)
+        if (distanceFromCenter >= innerRadius && distanceFromCenter <= outerRadius) {
+          dnaData.forEach(gene => {
+            if (normalizedAngle >= gene.startAngle && normalizedAngle <= gene.endAngle) {
+              document.getElementById('gene-info').innerHTML = `
+                            <h3>基因序列: ${gene.sequence}</h3>
+                            <p>碱基对数量: ${gene.basePairs}</p>
+                            <p>遗传性: ${gene.heritability}</p>
+                            <p>表达性: ${gene.expressivity}</p>
+                        `
+            }
+          })
+        }
+      })
+    </script>
+  </body>
+</html>

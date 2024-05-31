@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>13_copy加后缀</title>
+  </head>
+  <body>
+    <div>text</div>
+    <script>
+      window.addEventListener('copy', function (event) {
+        const clipboard = navigator.clipboard
+        clipboard.readText().then(text => {
+          console.log('text', text)
+          const res = clipboard.writeText([text + '\n' + 'jeff copy'])
+          console.log(res)
+        })
+      })
+    </script>
+  </body>
+</html>

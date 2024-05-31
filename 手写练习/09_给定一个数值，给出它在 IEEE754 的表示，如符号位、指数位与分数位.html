@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>09_给定一个数值，给出它在 IEEE754 的表示，如符号位、指数位与分数位</title>
+  </head>
+  <body>
+    <script>
+      function formatToBinaryExponent(num) {
+        // 将小数和整数部分分开
+        const [int = '0', dec = '.0'] = String(num)
+          // 从.截取,但是不会被替换
+          .split(/(?=\.)/)
+          // 转换为二进制
+          .map(x => Number(x).toString(2))
+        // 如果整数为0
+        const decOffset = dec.findIndex(x => x === '1') - 1
+        // 指数
+        const exponent = int === '0' ? 1 : (int.length - 1).toString(2)
+        // 尾数
+        const fraction = int?.slice(1) + dec?.slice(2)
+
+        return {
+          exponent,
+          fraction: fraction.slice(0, 52),
+          sign: num > 0,
+          exact: fraction.length < 52,
+        }
+      }
+      formatToBinaryExponent(0.1)
+    </script>
+  </body>
+</html>

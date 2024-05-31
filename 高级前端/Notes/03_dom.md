@@ -4,7 +4,7 @@
 
 故问题拆分成两个：
 
-1.  如何判断图片出现在了当前视口（即如何判断我们能够看到图片）
+1. 如何判断图片出现在了当前视口（即如何判断我们能够看到图片）
 2. 如何控制图片的加载
 
 ### 方案一：位置计算+滚动事件+DataSet API
@@ -44,7 +44,8 @@ img.src = img.datset.src
 那如何判断图片出现在了当前视口呢，根据示例图示意，代码如下，这个就比较好理解了，就可以很容易地背会(就可以愉快地去面试了)。
 
 ```
-// clientHeight 代表当前视口的高度img.getBoundingClientRect().top < document.documentElement.clientHeight;
+// clientHeight 代表当前视口的高度
+img.getBoundingClientRect().top < document.documentElement.clientHeight;
 ```
 
 **监听 `window.scroll` 事件也优化一下**
@@ -118,8 +119,8 @@ Cookie曾一度用于客户端数据的存储，因当时并没有其它合适�
 ```javascript
 // 旧方式
 document.cookie = "a=3"; 
-// 也可以使用新的 
-APIcookieStore.set("a", 3);
+// 也可以使用新的 API
+cookieStore.set("a", 3);
 ```
 
 ## 03、如何删除一个 cookie
@@ -135,8 +136,6 @@ APIcookieStore.set("a", 3);
 // max-age 设置为 -1 即可成功
 document.cookie = "a=3; max-age=-1";
 ```
-
-
 
 ```javascript
 > document.cookie
@@ -362,8 +361,6 @@ img.onload = function() {
 
 ```
 
-
-
 #### 3. 优缺点
 
 ##### ① 优点
@@ -432,8 +429,6 @@ selection.addRange(range);
 document.getSelection().selectAllChildren(document.getElementById('box'))
 ```
 
-
-
 #### 4. 优缺点
 
 ##### ①  优点
@@ -445,8 +440,6 @@ document.getSelection().selectAllChildren(document.getElementById('box'))
 
 > - 只能将选中的内容复制到剪贴板;
 > - 同步操作，如果复制/粘贴大量数据，页面会出现卡顿。
-
-
 
 ## 12、简单介绍 requestIdleCallback 及使用场景
 
@@ -544,7 +537,7 @@ function getAllTags(el = document) {
 }
 ```
 
-使用`document.querySelectorAll`实现如下（包括可能次数一样多的标签）
+使用 `document.querySelectorAll`实现如下（包括可能次数一样多的标签）
 
 ```javascript
 function getMostFrequentTag() {
@@ -699,16 +692,16 @@ console.log("Async Script");
 
 当初始的 `HTML` 文档被完全加载和解析完成之后，`DOMContentLoaded` 事件被触发，而无需等待样式表、图像和子框架的完全加载.
 
-当整个页面及所有依赖资源如样式表和图片都已完成加载时，将触发`load`事件
+当整个页面及所有依赖资源如样式表和图片都已完成加载时，将触发 `load`事件
 
 ## 21、React/Vue 中的 router 实现原理如何
 
-前端路由实现的本质是**监听url变化**，实现方式有两种：Hash模式和History模式，无需刷新页面就能重新加载相应的页面。 Hash url的格式为`www.a.com/#/`，当#后的哈希值发生变化时，通过hashchange事件监听，然后页面跳转。 History url通过`history.pushState`和`history.replaceState`改变url。 两种模式的区别：
+前端路由实现的本质是**监听url变化**，实现方式有两种：Hash模式和History模式，无需刷新页面就能重新加载相应的页面。 Hash url的格式为 `www.a.com/#/`，当#后的哈希值发生变化时，通过hashchange事件监听，然后页面跳转。 History url通过 `history.pushState`和 `history.replaceState`改变url。 两种模式的区别：
 
 - hash只能改变#后的值，而history模式可以随意设置同源url；
 - hash只能添加字符串类的数据，而history可以通过API添加多种类型的数据；
-- hash的历史记录只显示之前的`www.a.com`而不会显示hash值，而history的每条记录都会进入到历史记录；
-- hash无需后端配置且兼容性好，而history需要配置`index.html`用于匹配不到资源的情况。
+- hash的历史记录只显示之前的 `www.a.com`而不会显示hash值，而history的每条记录都会进入到历史记录；
+- hash无需后端配置且兼容性好，而history需要配置 `index.html`用于匹配不到资源的情况。
 
 ## 22、什么是 HTML 的实体编码 (HTML Entity Encode)
 
@@ -740,8 +733,13 @@ const controller = new AbortController()const signal = controller.signal const d
 
 `Axios` 中通过 `cancelToken` 取消请求发送
 
-```
-const CancelToken = axios.CancelToken;const source = CancelToken.source(); axios  .get("/user/12345", {    cancelToken: source.token,  })  .catch(function (thrown) {    if (axios.isCancel(thrown)) {      console.log("Request canceled", thrown.message);    } else {      // handle error    }  }); axios.post(  "/user/12345",  {    name: "new name",  },  {    cancelToken: source.token,  },); // cancel the request (the message parameter is optional)source.cancel("Operation canceled by the user.");
+```javascript
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source(); 
+axios.get("/user/12345", {    cancelToken: source.token,  }).catch(function (thrown) {    if (axios.isCancel(thrown)) {      console.log("Request canceled", thrown.message);
+                                                                                                                      } else {      // handle error    }  }); 
+                                                                                                                        axios.post(  "/user/12345",  {    name: "new name",  },  {    cancelToken: source.token,  },); // cancel the request (the message parameter is optional)
+                                                                                                                        source.cancel("Operation canceled by the user.");
 ```
 
 而其中的原理可分为两部分
@@ -834,7 +832,6 @@ dispatch flag
 
 ## 25、什么是事件冒泡和事件捕获
 
-
 ## 26、什么是事件委托，e.currentTarget 与 e.target 有何区别
 
 ![img](https://static.shanyue.tech/images/23-02-11/clipboard-0095.c66057.webp)
@@ -915,7 +912,7 @@ Element 继承于 Node，具有Node的方法，同时又拓展了很多自己的
 
 - `None`: 任何情况下都会向第三方网站请求发送 `Cookie`
 - `Lax`: 只有导航到第三方网站的 `Get` 链接会发送 `Cookie`，跨域的图片、`iframe`、`form`表单都不会发送 `Cookie`
-- `Strict`: 任何情况下都不会向第三方网站请求发送`Cookie`
+- `Strict`: 任何情况下都不会向第三方网站请求发送 `Cookie`
 
 目前，主流浏览器 `Same-Site` 的默认值为 `Lax`，而在以前是 `None`，将会预防大部分 `CSRF` 攻击，如果需要手动指定 `Same-Site` 为 `None`，需要指定 `Cookie` 属性 `Secure`，即在 `https` 下发送
 
@@ -925,7 +922,7 @@ Element 继承于 Node，具有Node的方法，同时又拓展了很多自己的
 
 他们均只能存储字符串类型的对象
 
-不同浏览器无法共享`localStorage`或`sessionStorage`中的信息。相同浏览器的不同页面间可以共享相同的 `localStorage`（页面属于相同域名和端口），但是不同页面或标签页间无法共享`sessionStorage`的信息。这里需要注意的是，页面及标 签页仅指顶级窗口，如果一个标签页包含多个`iframe`标签且他们属于同源页面，那么他们之间是可以共享`sessionStorage`的。 [https://www.php.cn/faq/463215.html(opens in a new tab)](https://www.php.cn/faq/463215.html)
+不同浏览器无法共享 `localStorage`或 `sessionStorage`中的信息。相同浏览器的不同页面间可以共享相同的 `localStorage`（页面属于相同域名和端口），但是不同页面或标签页间无法共享 `sessionStorage`的信息。这里需要注意的是，页面及标 签页仅指顶级窗口，如果一个标签页包含多个 `iframe`标签且他们属于同源页面，那么他们之间是可以共享 `sessionStorage`的。 [https://www.php.cn/faq/463215.html(opens in a new tab)](https://www.php.cn/faq/463215.html)
 
 ## 32、如何封装一个支持过期时间的 localStorage
 
@@ -1065,8 +1062,6 @@ Worker 接收到主线程发送的消息后，通过监听 `onmessage` 事件来
 
 这样，主线程和 Worker 之间就成功地进行了通信。
 
-
-
 ## 40、浏览器中监听事件函数 addEventListener 第三个参数有那些值
 
 - capture。监听器会在时间捕获阶段传播到event.target时触发。
@@ -1076,7 +1071,7 @@ Worker 接收到主线程发送的消息后，通过监听 `onmessage` 事件来
 
 ## 41、浏览器中 Frame 与 Event Loop 的关系是什么
 
-## Native Import: Import from URL
+### Native Import: Import from URL
 
 通过 `script[type=module]`，可直接在浏览器中使用原生 `ESM`。这也使得前端不打包 (`Bundless`) 成为可能。
 
@@ -1101,7 +1096,7 @@ Worker 接收到主线程发送的消息后，通过监听 `onmessage` 事件来
 
 ![img](https://cdn.jsdelivr.net/gh/shfshanyue/assets/2021-11-22/clipboard-2865.638ba7.webp)
 
-## [#](https://shanyue.tech/frontend-engineering/esm.html#importmap)ImportMap
+### [#](https://shanyue.tech/frontend-engineering/esm.html#importmap)ImportMap
 
 但 `Http Import` 每次都需要输入完全的 URL，相对以前的裸导入 (`bare import specifiers`)，很不太方便，如下例:
 
@@ -1155,7 +1150,7 @@ import get from 'lodash/get.js'
 </script>
 ```
 
-## [#](https://shanyue.tech/frontend-engineering/esm.html#import-assertion)Import Assertion
+### [#](https://shanyue.tech/frontend-engineering/esm.html#import-assertion)Import Assertion
 
 通过 `script[type=module]`，不仅可引入 Javascript 资源，甚至可以引入 JSON/CSS，示例如下
 

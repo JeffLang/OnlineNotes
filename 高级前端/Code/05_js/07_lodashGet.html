@@ -11,7 +11,7 @@
         // 将a[3].b => a.3.b ,然后保存到数组中
         const paths = path.replace(/\[(\d+)\]/g, '.$1').split('.')
         // 层层迭代将
-        const result = obj
+        let result = obj
         // 遍历paths依次拿值
         for (const key of paths) {
           result = Object(result)[key]

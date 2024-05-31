@@ -58,8 +58,7 @@
         return Promise.resolve(2)
       }
       function* genP3() {
-        const result = yield Promise.resolve(3)
-        return result
+        return yield Promise.resolve(3)
       }
       const selfP2 = autoGenerator(genP2)
       const selfP3 = autoGenerator(genP3)

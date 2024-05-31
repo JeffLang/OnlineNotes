@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>27_resize配合requestAnimationFrame</title>
+  </head>
+  <body>
+    <script>
+      window.addEventListener('resize', () => {
+        console.log('resize')
+      })
+      window.addEventListener('resize', () => {
+        requestAnimationFrame(() => console.log('requestAnimationFrameResize'))
+      })
+    </script>
+  </body>
+</html>

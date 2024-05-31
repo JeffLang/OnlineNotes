@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>环状DNA图</title>
+    <!-- 引入 ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+  </head>
+  <body>
+    <div id="dnaChart" style="width: 600px; height: 400px"></div>
+    <script>
+      // 在这里编写 JavaScript 代码
+      // 基因数据
+      const dnaData = [
+        { name: 'A', value: 50000, color: 'red' },
+        { name: 'B', value: 120000, color: 'orange' },
+        { name: 'C', value: 30000, color: 'yellow' },
+        { name: 'D', value: 60000, color: 'green' },
+        { name: 'E', value: 150000, color: 'cyan' },
+        { name: 'F', value: 330000, color: 'blue' },
+        { name: 'G', value: 210000, color: 'purple' },
+        { name: 'H', value: 20000, color: 'black' },
+        { name: 'I', value: 30000, color: 'white' },
+      ]
+
+      // 计算总碱基对数量
+      const totalBasePairs = dnaData.reduce((acc, cur) => acc + cur.value, 0)
+
+      // 计算每个基因段的起始角度和结束角度
+      let startAngle = 0
+      const angles = dnaData.map(gene => {
+        const proportion = gene.value / totalBasePairs
+        const endAngle = startAngle + proportion * 360
+        const angle = [startAngle, endAngle]
+        startAngle = endAngle
+        return angle
+      })
+
+      // 创建 ECharts 实例
+      const chartDom = document.getElementById('dnaChart')
+      const myChart = echarts.init(chartDom)
+
+      // 配置环形图
+      const option = {
+        title: {
+          text: '环状DNA图',
+          left: 'center',
+        },
+        series: [
+          {
+            name: 'DNA',
+            type: 'pie',
+            radius: ['40%', '60%'],
+            avoidLabelOverlap: false,
+            label: {
+              show: true,
+              position: 'outside',
+              formatter: '{b}: {d}%',
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '20',
+                fontWeight: 'bold',
+              },
+            },
+            labelLine: {
+              show: true,
+            },
+            data: dnaData.map((gene, index) => ({
+              value: gene.value,
+              name: gene.name,
+              itemStyle: {
+                color: gene.color,
+              },
+              emphasis: {
+                itemStyle: {
+                  color: gene.color,
+                },
+              },
+            })),
+            // 添加点击事件
+            onclick: params => {
+              const dataIndex = params.dataIndex
+              const gene = dnaData[dataIndex]
+              const geneInfo = document.getElementById('gene-info')
+              geneInfo.innerHTML = `
+                    <h3>基因序列: ${gene.name}</h3>
+                    <p>碱基对数量: ${gene.value}</p>
+                    <p>颜色: ${gene.color}</p>
+                `
+            },
+          },
+        ],
+      }
+
+      // 使用配置项设置图表
+      myChart.setOption(option)
+    </script>
+  </body>
+</html>

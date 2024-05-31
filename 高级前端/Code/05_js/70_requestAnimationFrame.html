@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>70_requestAnimationFrame</title>
+  </head>
+  <body>
+    <script>
+      const fn1 = () => {
+        console.log('requestAnimationFrame', new Date().toLocaleString())
+        requestAnimationFrame(fn1)
+      }
+      const fn2 = () => {
+        console.log('timeout', new Date().toLocaleString())
+        setTimeout(fn2, 10)
+      }
+      requestAnimationFrame(fn1)
+
+      setTimeout(fn2, 10)
+    </script>
+  </body>
+</html>

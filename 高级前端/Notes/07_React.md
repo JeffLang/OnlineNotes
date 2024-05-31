@@ -584,7 +584,7 @@ React diff 的执行情况：**create G -> create E -> create F -> delete D**
 
 （2）、移动（MOVE_EXISTING）：该节点存在于旧集合中且是可更新的类型，此时可复用之前的node节点，更新属性，执行移动操作。
 
-（3）、删除（REMOVE_NODE）：原节点不在新的集合中，或者在新的集合中不能直接复用或更新，对原节点执行删除操作。
+（3）、删除（REMOVE_NODE）：原节 删除操作。
 
 element层级下node节点移动遵循的算法条件（规则）：
 
@@ -860,3 +860,8 @@ function App() {
 export default App;
 ```
 
+总结一下我的理解： 
+
+1. useEffect 通过 scheduleCallback调度的，是异步执行的，也就是在渲染到页面后执行 而useLayoutEffect 是同步执行的，发生在dom mutation更新了dom结构，但是还未绘制到屏幕之前 
+2. useEffect 和 useLayoutEffect 都是递归执行的，先执行子组件 
+3. 有useEffect 和 useLayoutEffect的fiber会被打上标记，加入到effectList中, 每次更新都会都会处理, 两个函数都会处理成effectObject, 包含create、destory属性，其中create是useEffect 和 useLayoutEffect传入的函数，destory对应传入的函数执行返回的函数，在commit阶段，每次都是先执行destory清理函数，然后执行create， 挂载时destory为undefined，跳过清理函数执行，执行create，执行后把return的函数复制给destory， 下一次更新时destory不为undefined就会执行destory销毁函数，如果dep有变化接下来执行create

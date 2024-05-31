@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>64_弱引用</title>
+  </head>
+  <body>
+    <script>
+      // 弱引用
+      let obj1 = { key: 'obj1' }
+      const map = new WeakMap()
+      // const obj2 = { obj1 }
+      map.set(obj1, 'obj1')
+      obj1 = null
+
+      setTimeout(() => {
+        console.log('map', map)
+        console.log('obj2', obj2)
+      }, 3000)
+    </script>
+  </body>
+</html>

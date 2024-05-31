@@ -24,30 +24,68 @@
         min-height: 100vh;
       }
       /* Dark mode */
-      @media (prefers-color-scheme: dark) {
+      /* @media (prefers-color-scheme: dark) {
         body {
           color: white;
           background-color: black;
         }
-      }
+      } */
       /* Light mode */
-      @media (prefers-color-scheme: light) {
+      /* @media (prefers-color-scheme: light) {
         body {
-          color: black;
-          background-color: #bfa;
+          background-color: white;
         }
+      } */
+      html[data-theme='dark'] > body {
+        background-color: #000;
       }
     </style>
   </head>
-  <body></body>
+  <body>
+    <div>
+      <button onclick="handleDark()">Dark</button>
+      <button onclick="handleLight()">Light</button>
+      <button onclick="handleSystem()">System</button>
+    </div>
+  </body>
   <script>
     const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: light)')
-    console.log('darkModeMediaQuery', darkModeMediaQuery)
+    console.log('removeEventListener', darkModeMediaQuery.removeEventListener)
+    console.log('darkModeMediaQuery', darkModeMediaQuery.removeListener)
     // var mqList = window.matchMedia('(prefers-color-scheme: dark)')
 
-    darkModeMediaQuery.addEventListener('change', event => {
+    const htmlNode = document.documentElement
+
+    const darkModeMediaQueryHandler = event => {
       // is dark mode
-      console.log('event', event)
-    })
+      console.log('系统主体变化了', event)
+      // 判断系统的主体模式
+      const dataScheme = darkModeMediaQuery.matches
+      htmlNode.setAttribute('data-theme', dataScheme ? 'light' : 'dark')
+    }
+
+    // Dark
+    function handleDark() {
+      console.log('htmlNode', htmlNode)
+      htmlNode.setAttribute('data-theme', 'dark')
+      darkModeMediaQuery.removeEventListener('change', darkModeMediaQueryHandler)
+    }
+
+    // Light
+    function handleLight() {
+      console.log('htmlNode', htmlNode)
+      htmlNode.setAttribute('data-theme', 'light')
+      darkModeMediaQuery.removeEventListener('change', darkModeMediaQueryHandler)
+    }
+
+    // System
+    function handleSystem() {
+      console.log('htmlNode', htmlNode)
+      // 判断系统的主体模式
+      const dataScheme = darkModeMediaQuery.matches
+      htmlNode.setAttribute('data-theme', dataScheme ? 'light' : 'dark')
+      // 监听
+      darkModeMediaQuery.addEventListener('change', darkModeMediaQueryHandler)
+    }
   </script>
 </html>

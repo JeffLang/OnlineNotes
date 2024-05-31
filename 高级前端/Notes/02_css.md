@@ -233,6 +233,8 @@ div {
 }
 ```
 
+`:root`表示根元素
+
 同一个 `CSS` 变量，可以在多个选择器内声明。读取的时候，优先级最高的声明生效。这与 `CSS` 的"层叠"（`cascade`）规则是一致的。
 
 
@@ -808,7 +810,7 @@ position: absolute;top: -9000px;left: -9000px;
 
 ## 28、⭐多主体适配方案
 
-`antv4`自带有一套``
+`antv4`自带有一套
 
 ## 29、如何自定义滚动条的样式
 
@@ -864,7 +866,7 @@ position: absolute;top: -9000px;left: -9000px;
         border: 1px solid #ccc;
         box-sizing: border-box;
       }
-      /*前3个flex：1*/
+      /*前3/2个flex：33.3*/
       .item:nth-child(-n + 3) {
         flex: 33%;
       }

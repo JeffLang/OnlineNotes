@@ -280,11 +280,15 @@ http缓存分为以下两种，两者都是http响应头控制缓存
 
    ![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/5/6/16a8bdbc4b9c8720~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp#?w=280&h=96&s=7498&e=png&b=fdfdfd)
 
+
    > 200 form memory cache : 不访问服务器，一般已经加载过该资源且缓存在了内存当中，直接从内存中读取缓存。浏览器关闭后，数据将不存在（资源被释放掉了），再次打开相同的页面时，不会出现from memory cache。
+   >
 
    > 200 from disk cache： 不访问服务器，已经在之前的某个时间加载过该资源，直接从硬盘中读取缓存，关闭浏览器后，数据依然存在，此资源不会随着该页面的关闭而释放掉下次打开仍然会是from disk cache。
+   >
 
    > 优先访问memory cache,其次是disk cache，最后是请求网络资源
+   >
 
    与之相关的response header有两个
 
@@ -297,15 +301,13 @@ http缓存分为以下两种，两者都是http响应头控制缓存
      ```
      Expires: Mon, 25 Oct 2021 20:11:12 GMT
      ```
-
-   - `Cache-Control`，具有强大的缓存控制能力，`Cache-Control`会覆盖掉`Expires`
+   - `Cache-Control`，具有强大的缓存控制能力，`Cache-Control`会覆盖掉 `Expires`
 
      常用的有以下两个
 
      - `no-cache`，每次请求需要校验服务器资源的新鲜度（协商缓存）
      - `no-store`，不适用任何缓存，每次都直接读取最新。
      - `max-age=31536000`，浏览器在一年内都不需要向服务器请求资源（在失效时间之前都执行强制缓存）
-
 2. 协商缓存
 
    Last-Modifed/If-Modified-Since和Etag/If-None-Match是分别成对出现的，呈一一对应关系
@@ -315,26 +317,31 @@ http缓存分为以下两种，两者都是http响应头控制缓存
    Etag：
 
    > Etag舒服http1.1属性，它由服务器生成返回给前端，用来帮助服务器控制web端的缓存验证。Apach中，Etag的值，默认是对文件的索引节（INode），大小（Size）和最后修改时间（MTime）进行Hash后得到的。
+   >
 
    If-None-Match：
 
    > 当资源过期时（Express过期/浏览器判断Cache-Control标识的max-age过期），浏览器发现响应头中带有，则再次请求服务器是请求头带上If-Node-Match（值是Etag）。服务器收到请求进行对比时，决定返回200或304
+   >
 
    **Last-Modified/If-Modified-Since**
 
    Last-Modified：
 
    > 服务器向浏览器发送最后的修改时间
+   >
 
    If-Modified-Since
 
    > 当资源过期时（Express过期/浏览器判断Cache-Control标识的max-age过期），浏览器发现响应头中带有Last-Modified，则再次请求时，请求头将带上If-Modified-Since（值是上一次响应头中），如果最后修改时间比If-Modified-Since大，说明资源被修改过，返回新的资源，HTTP200，否则304走缓存
+   >
 
    > Last-Modifed/If-Modified-Since的时间精度是秒，而Etag可以更精确。
    >
-   > Etag优先级是高于Last-Modifed的，所以服务器会优先验证Etag
+   > Etag优先级是高于Last-Modifed的，所以服务器会优先验证Etag，是1.1的头段
    >
    > Last-Modifed/If-Modified-Since是http1.0的头字段
+   >
 
 ## 05、http proxy的原理是什么
 
@@ -355,7 +362,7 @@ HTTP代理步骤
 - 服务器接收代理的连接；
 - 代理向服务器发送HTTP请求（这个HTTP请求是基于用户的HTTP请求，可能会有修改）
 - 服务器发送响应给代理；
-- 代理相应给客户端  
+- 代理相应给客户端
 
 HTTP代理功能上名称的区别：
 
@@ -371,7 +378,7 @@ HTTP代理功能上名称的区别：
 
 HTTPS代理
 
-HTTPS代理有多种做法，通常使用`CONNECT method`，通过proxy建立一条隧道(隧道代理)，这样，`proxy无法解密数据`；此外，还有一种类似于中间人攻击的代理手法。
+HTTPS代理有多种做法，通常使用 `CONNECT method`，通过proxy建立一条隧道(隧道代理)，这样，`proxy无法解密数据`；此外，还有一种类似于中间人攻击的代理手法。
 
 ## 06、HTTP/2带来的加载优化
 
@@ -385,7 +392,7 @@ HTTPS代理有多种做法，通常使用`CONNECT method`，通过proxy建立一
 
 影响一个http请求的主要因素有两个带宽和延迟
 
-**带宽：**如果说我们还停留在拨号上网的阶段，带宽可能会成为一个比较严重影响请求的问题，但是现在网络基础建设已经使得带宽得到极大的提升，我们不再会担心由带宽而影响网速，那么就只剩下延迟了
+**带宽**：如果说我们还停留在拨号上网的阶段，带宽可能会成为一个比较严重影响请求的问题，但是现在网络基础建设已经使得带宽得到极大的提升，我们不再会担心由带宽而影响网速，那么就只剩下延迟了 
 
 - **浏览器阻塞（HOL blocking）**：浏览器会因为一些原因阻塞请求。浏览器对于同一个域名，同时只能有 4 ~6个连接（这个根据浏览器内核不同可能会有所差异），超过浏览器最大连接数限制，后续请求就会被阻塞
 - **DNS 查询（DNS Lookup）**：浏览器需要知道目标服务器的 IP 才能建立连接。将域名解析为 IP 的这个系统就是 DNS。这个通常可以利用DNS缓存结果来达到减少这个时间的目的
@@ -393,11 +400,10 @@ HTTPS代理有多种做法，通常使用`CONNECT method`，通过proxy建立一
 
 ### HTTP1.0和HTTP1.1的一些区别
 
-- **相应状态码：**HTTP/1.1 中新加入了大量的状态码
-
-- **缓存处理：**在http1.0主要使用If-Modified-Since，Expires来做缓存判断标准，HTTP1.1则引入了更多的缓存控制策略例如：Etag，If-None-Match等更多可供选择的缓存头来控制缓存
-- **连接方式**：HTTP1.0默认是用短链接，HTTP 1.1支持长连接（PersistentConnection）和请求的流水线（Pipelining）在一个TCP连接上可以传送多个HTTP请求和响应，减少了建立和关闭连接的消耗和延迟，在HTTP1.1中默认开启Connection： keep-alive，一定程度上弥补了HTTP1.0每次请求都要创建连接的缺点
-- **带宽优化及网络连接的使用:**HTTP1.0中，存在一些浪费带宽的现象，例如客户端只是需要某个对象的一部分，而服务器却将整个对象送过来了，并且不支持断点续传功能，HTTP1.1则在请求头引入了**range头域**，它允许只请求资源的**某个部分**，即返回码是**206（Partial Content）**，这样就方便了开发者自由的选择以便于充分利用带宽和连接
+- **相应状态码：** HTTP/1.1 中新加入了大量的状态码
+- **缓存处理：** 在http1.0主要使用If-Modified-Since，Expires来做缓存判断标准，HTTP1.1则引入了更多的缓存控制策略例如：Etag，If-None-Match等更多可供选择的缓存头来控制缓存
+- **连接方式（长连接）**：HTTP1.0默认是用短链接，HTTP 1.1支持长连接（PersistentConnection）和请求的流水线（Pipelining）在一个TCP连接上可以传送多个HTTP请求和响应，减少了建立和关闭连接的消耗和延迟，在HTTP1.1中默认开启Connection： keep-alive，一定程度上弥补了HTTP1.0每次请求都要创建连接的缺点
+- **带宽优化及网络连接的使用（206状态码）:**HTTP1.0中，存在一些浪费带宽的现象，例如客户端只是需要某个对象的一部分，而服务器却将整个对象送过来了，并且不支持断点续传功能，HTTP1.1则在请求头引入了**range头域**，它允许只请求资源的**某个部分**，即返回码是**206（Partial Content）**，这样就方便了开发者自由的选择以便于充分利用带宽和连接
 - **Host头处理**，在HTTP1.0中认为每台服务器都绑定一个唯一的IP地址，因此，请求消息中的URL并没有传递主机名（hostname）。但随着虚拟主机技术的发展，在一台物理服务器上可以存在多个虚拟主机（Multi-homed Web Servers），并且它们共享一个IP地址。HTTP1.1的请求消息和响应消息都应支持Host头域，且请求消息中如果没有Host头域会报告一个错误（400 Bad Request）
 
 ### HTTP2.0和HTTP1.X相比的新特性
@@ -419,7 +425,7 @@ HTTPS代理有多种做法，通常使用`CONNECT method`，通过proxy建立一
 
 #### 帧（frame）和流（stream）
 
-------
+---
 
 在 HTTP/2 中，有两个非常重要的概念：帧（frame）和流（stream）。
 
@@ -443,31 +449,23 @@ HTTP/2 中**数据传输的最小单位**，因此帧不仅要细分表达 HTTP/
 
 #### 发展历程
 
-------
+---
 
 从 Http/0.9 到 Http/2 要发送多个请求，从**多个 Tcp 连接=>keep-alive=>管道化=>多路复用**不断的减少多次创建 Tcp 等等带来的性能损耗。
 
 #### 多个 Tcp 连接
 
-在最早的时候没有`keep-alive`只能创建多个`Tcp`连接来做多次请求。多次 http 请求效果如下图所示：
-
-
+在最早的时候没有 `keep-alive`只能创建多个 `Tcp`连接来做多次请求。多次 http 请求效果如下图所示：
 
 ![http2.0](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/9/5/16cff87b23f02791~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp)
-
-
 
 一次请求完成就会关闭本次的 Tcp 连接，下个请求又要从新建立 Tcp 连接传输完成数据再关闭，造成很大的性能损耗。
 
 #### Keep-Alive
 
-`Keep-Alive`解决的核心问题是： 一定时间内，同一域名多次请求数据，只建立一次 HTTP 请求，其他请求可复用每一次建立的连接通道，以达到提高请求效率的问题。这里面所说的一定时间是**可以配置**的，不管你用的是`Apache`还是`nginx`。 以往，浏览器判断响应数据是否接收完毕，是看连接是否关闭。在使用持久连接后，就不能这样了，这就要求服务器对持久连接的响应头部一定要返回`content-length`标识`body的`长度，供浏览器判断界限。有时，`content-length`的方法并不是太准确，也可以使用 `Transfer-Encoding: chunked` 头部发送一串一串的数据，最后由长度为 0 的`chunked`标识结束。 多次 http 请求效果如下图所示：
-
-
+`Keep-Alive`解决的核心问题是： 一定时间内，同一域名多次请求数据，只建立一次 HTTP 请求，其他请求可复用每一次建立的连接通道，以达到提高请求效率的问题。这里面所说的一定时间是**可以配置**的，不管你用的是 `Apache`还是 `nginx`。 以往，浏览器判断响应数据是否接收完毕，是看连接是否关闭。在使用持久连接后，就不能这样了，这就要求服务器对持久连接的响应头部一定要返回 `content-length`标识 `body的`长度，供浏览器判断界限。有时，`content-length`的方法并不是太准确，也可以使用 `Transfer-Encoding: chunked` 头部发送一串一串的数据，最后由长度为 0 的 `chunked`标识结束。 多次 http 请求效果如下图所示：
 
 ![http2.0](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/9/5/16cff86d8df7b4d8~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp)
-
-
 
 上图：设置 Connection:Keep-Alive，保持连接在一段时间内不断开。
 
@@ -480,11 +478,7 @@ HTTP/2 中**数据传输的最小单位**，因此帧不仅要细分表达 HTTP/
 
 HTTP 管线化可以克服同域并行请求限制带来的阻塞，它是建立在**持久连接**之上，是把所有请求一并发给服务器，但是服务器需要按照**顺序一个一个响应**，而不是等到一个响应回来才能发下一个请求，这样就节省了很多请求到服务器的时间。不过，HTTP 管线化**仍旧**有阻塞的问题，若上一响应迟迟不回，**后面的响应**都会被阻塞到。
 
-
-
 ![http2.0](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/9/5/16cff88261c5b7b3~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp)
-
-
 
 上图：HTTPpipelining：建立多个连接
 
@@ -492,11 +486,7 @@ HTTP 管线化可以克服同域并行请求限制带来的阻塞，它是建立
 
 多路复用代替原来的序列和阻塞机制。所有就是请求的都是通过一个 TCP 连接并发完成。因为在多路复用之前所有的传输是基于基础文本的，在多路复用中是基于二进制数据帧的传输、消息、流，所以可以做到乱序的传输。多路复用对同一域名下所有请求都是基于流，所以不存在同域并行的阻塞。多次请求如下图：
 
-
-
 ![http2.0](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/9/5/16cff873bf2ec175~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp)
-
-
 
 上图：多路复用
 
@@ -571,7 +561,7 @@ no-cache 可以在本地缓存，可以在代理服务器缓存，但是这个�
 
 相当于以下响应头
 
-```
+```http
 Cache-Control: max-age=0, must-revalidate
 ```
 
@@ -631,17 +621,15 @@ TTP的响应报文也由四部分组成（ 响应行+响应头+空行+响应体�
 
 **真实数据**
 
-
-
 ![img](https://pic2.zhimg.com/80/v2-2f86d3626184a4fc8b8fed6008419055_720w.webp)
 
 ## 15、HTTP响应头中的Etag值是如何生成的
 
-关于`etag`的生成需要满足几个条件
+关于 `etag`的生成需要满足几个条件
 
 1. 当文件更改时，`etag`值必须改变
 2. 尽量便于计算，不会特别耗CPU。这样利用摘要算法生成需要慎重考虑，因为他们是CPU密集型运算。
-3. 必须横向扩展，分布式部署时多个服务器节点上生成`etag`值保持一致，这样子`inode`就排除了
+3. 必须横向扩展，分布式部署时多个服务器节点上生成 `etag`值保持一致，这样子 `inode`就排除了
 
 > 关于服务器中 `etag` 如何生成可以参考 [HTTP: Generating ETag Header(opens in a new tab)](https://stackoverflow.com/questions/4533/http-generating-etag-header)
 
@@ -692,7 +680,7 @@ $ curl --head 10.97.109.49HTTP/1.1 200 OKServer: nginx/1.16.0Date: Tue, 10 Dec 2
 
 不能。由服务器中 `ETag` 的生成算法决定，比如 `nginx` 中的 `etag` 由 `last_modified` 与 `content_length` 组成，而 `last_modified` 又由 `mtime` 组成
 
-当编辑文件却未更改文件内容时，`mtime` 也会改变，此时 `etag` 改变，但是文件内容没有更改。HTTP服务中静态文件的`Last-Modified`一般根据文件的 `mtime`生成，表示文件内容的修改时间
+当编辑文件却未更改文件内容时，`mtime` 也会改变，此时 `etag` 改变，但是文件内容没有更改。HTTP服务中静态文件的 `Last-Modified`一般根据文件的 `mtime`生成，表示文件内容的修改时间
 
 `nginx` 也是这样处理的，源码见: [ngx_http_static_module.c](https://github.com/nginx/nginx/blob/4bf4650f2f10f7bbacfe7a33da744f18951d416d/src/http/modules/ngx_http_static_module.c#L217)
 
@@ -749,7 +737,7 @@ Birth: -
 
 ### 1. HTTP存在的问题
 
-传统的不使用`SSL/TLS`的HTTP协议，是不加密的通信。无论是客户端发送给服务端的请求体，还是服务端响应给客户端的响应体，都是明文传输的，这会带来几个问题：
+传统的不使用 `SSL/TLS`的HTTP协议，是不加密的通信。无论是客户端发送给服务端的请求体，还是服务端响应给客户端的响应体，都是明文传输的，这会带来几个问题：
 
 **1. 窃听** 第三方劫持请求后可以获取通信内容。对于一些敏感数据，这是不被允许的。
 
@@ -847,10 +835,53 @@ CA就类似于「公证处」，也是一台服务器，它自己本身也有一
 
 了解了底层的实现，加密、加签、证书等概念后，再来看SSL/TLS协议就很容易理解了。SSL/TLS需要四次握手的过程：
 
-1. 客户端向服务端索要证书。
-2. 服务端发送证书。
-3. 客户端验证证书，提取公钥，发送对称加密的密钥。
-4. 服务端收到密钥，响应OK。
+##### 1）客户端发出请求Client Hello
+
+首先，客户端先向服务器发出加密通信的请求，这被叫做clienthello请求。
+
+在这一步，客户端主要向服务器提供以下信息：
+
+- 支持的**协议版本**，比如TLS1.0版本；
+- 支持的**加密方法**，比如RSA公钥加密；
+- 一个客户端生成的**随机数**(client random), 稍后用于生成对话密钥(session key)
+
+由于客户端(如浏览器)对一些加解密算法的支持程度不一样，但是**在TLS协议**传输过程中必须使用**同一套加解密算法**才能保证数据能够正常的加解密。在TLS握手阶段，客户端首先要告知服务端，自己支持哪些加密算法，所以客户端需要将**本地支持的加密套件(Cipher Suite)的列表**传送给服务端。除此之外，客户端还要产生**一个随机数**，这个随机数一方面需要在客户端保存，另一方面需要传送给服务端，客户端的随机数需要跟服务端产生的随机数结合起来产生后面要讲到的Master Secret。
+
+##### （2）服务器回应Server Hello
+
+服务器收到客户端请求后，向客户端发出回应，这叫做serverhello。
+
+这一步服务器主要干三件事：
+
+- 确认使用的**加密通信协议版本**，比如TLS1.00版本。如果游览器与服务器支持的版本不一致，服务器关闭加密通信；
+- 确认使用的**加密方法**（客户端所支持），比如RSA公钥加密；
+- 将**服务器证书**、**非对称加密的公钥**，以及**一个随机数(Server random)**发送给客户端游览器
+
+服务端在接收到客户端的Client Hello之后，服务端需要将**自己的证书**发送给客户端。这个证书是对于服务端的一种认证。例如，客户端收到了一个来自于称自己是[http://www.alipay.com](https://link.zhihu.com/?target=http%3A//www.alipay.com)的数据，但是如何证明对方是合法的alipay支付宝呢？这就是证书的作用，支付宝的证书可以证明它是alipay，而不是财付通。证书是需要申请，并由专门的数字证书认证机构(CA)通过非常严格的审核之后颁发的电子证书。**颁发证书的同时会产生一个私钥和公钥。私钥由服务端自己保存，不可泄漏。公钥则是附带在证书的信息中，可以公开的**。**证书本身也附带一个证书电子签名**，这个签名用来验证证书的完整性和真实性，可以防止证书被串改。另外，证书还有个有效期。
+
+##### （3）客户端回应
+
+客户端收到服务器回应以后，首先验证服务器证书，验证手段就是执行如下三种检查：
+
+- **检查证书是否已过期**；
+- **检查证书中的域名与实际域名是否一致**；
+- **检查证书是否是可信机构颁布的；**
+
+如果，上述过程中有任何一个环节发现问题，那么浏览器就会向访问者显示一个警告，由其选择是否还要继续通信。如果证书受信任，或者是用户接受了不受信的证书，**浏览器会生成一串新的随机数（Premaster secret ），并用证书中提供的公钥加密，发送给服务器**。
+
+此时，浏览器会根据前三次握手中的三个随机数：
+
+- **Client random**
+- **Server random**
+- **Premaster secret**
+
+通过一定的算法来**生成 “会话密钥” （Session Key）**，这个会话密钥就是接下来双方进行**对称加密解密**使用的密钥！
+
+##### （4）服务端回应
+
+服务端收到客户端的回复，利用已知的加密解密方式进行解密，服务器收到客户端的第三个随机数（ Premaster secret） 之后，使用同样的算法计算出 “会话密钥” （Session Key）。
+
+至此，整个握手阶段全部结束。接下来，客户端与服务器进入加密通信，就完全是使用普通的 HTTP 协议，只不过用 “会话密钥” 加密内容。（非对称加密解密将不再使用，接下来完全由对称加密接手了，因为密钥已经安全的传送给了通信的双方）
 
 ![在这里插入图片描述](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9c3d8bf5d7694215a9b552927355ae34~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp)
 
@@ -859,6 +890,8 @@ CA就类似于「公证处」，也是一台服务器，它自己本身也有一
 了解SSL/TLS，再回过头来看HTTPS就很简单了，HTTPS=HTTP+SSL/TLS。
 
 使用HTTPS进行通信时，先是建立传输层TCP的连接，完成三次握手，然后再是SSL/TLS协议的四次握手，双方协商出对称加密的密钥，之后的通信数据会利用该密钥进行加密传输。 ![在这里插入图片描述](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e6ea1e26a955433abe3d86c446ef0a71~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp) HTTP1.1开始支持长连接了，只要连接不关闭，七次握手只需要执行一次，性能损耗不会太大，而且数据传输采用的是对称加密，相比于非对称加密，性能损耗也小得多。因此HTTPS相比于HTTP，性能会有一定影响，但不会太大，相比之下，数据传输安全显得更加重要！
+
+总结
 
 ## 20、我们如何从 http 的报文中得知该服务使用的技术栈
 
@@ -944,7 +977,7 @@ Content-Security-Policy: default-src 'none';  base-uri 'self';  block-all-mixed-
 > - **`font-src`**：字体文件
 > - **`object-src`**：插件（比如 Flash）
 > - **`child-src`**：框架
-> - **`frame-ancestors`**：嵌入的外部资源（比如<frame>、<iframe>、<embed>和<applet>）
+> - **`frame-ancestors`**：嵌入的外部资源（比如`<frame>`、`<iframe>`、`<embed>`和`<applet>`）
 > - **`connect-src`**：HTTP 连接（通过 XHR、WebSockets、EventSource等）
 > - **`worker-src`**：`worker`脚本
 > - **`manifest-src`**：manifest 文件
@@ -959,7 +992,7 @@ Content-Security-Policy: default-src 'none';  base-uri 'self';  block-all-mixed-
 
 上面代码限制**所有的**外部资源，都只能从当前域名加载。
 
-如果同时设置某个单项限制（比如`font-src`）和`default-src`，前者会覆盖后者，即字体文件会采用`font-src`的值，其他资源依然采用`default-src`的值。
+如果同时设置某个单项限制（比如 `font-src`）和 `default-src`，前者会覆盖后者，即字体文件会采用 `font-src`的值，其他资源依然采用 `default-src`的值。
 
 ### 相关链接
 
@@ -1029,7 +1062,7 @@ https://www.ruanyifeng.com/blog/2008/06/base64.html
 
 1. 将每三个字节作为一组，一共是24个二进制位。
 2. 将这24个二进制位分为四组，每个组有6个二进制位。
-3. 在每组前面加`00`，扩展成32个二进制位，即四个字节。
+3. 在每组前面加 `00`，扩展成32个二进制位，即四个字节。
 4. 根据下表，得到扩展后的每个字节的对应符号，这就是Base64的编码值。
 
 > 　　0　A　　17　R　　　34　i　　　51　z
@@ -1072,25 +1105,22 @@ https://www.ruanyifeng.com/blog/2008/06/base64.html
 
 ![image-20240415212039954](./01_http.assets/image-20240415212039954.png)
 
-1. 第一步，"M"、"a"、"n"的`ASCII`值分别是77、97、110，对应的二进制值是01001101、01100001、01101110，将它们连成一个24位的二进制字符串010011010110000101101110。
-
+1. 第一步，"M"、"a"、"n"的 `ASCII`值分别是77、97、110，对应的二进制值是01001101、01100001、01101110，将它们连成一个24位的二进制字符串010011010110000101101110。
 2. 第二步，将这个24位的二进制字符串分成4组(010011,010110,000101,101110)，每组6个二进制位：010011、010110、000101、101110。
-
 3. 第三步，在每组前面加两个00，扩展成32个二进制位，即四个字节：00010011、00010110、00000101、00101110。它们的十进制值分别是19、22、5、46。
-
 4. 第四步，根据上表，得到每个值对应Base64编码，即T、W、F、u。
 
 如果字节数不足三，则这样处理：
 
 > a）二个字节的情况：将这二个字节的一共16个二进制位，按照上面的规则，转成三组，最后一组除了前面加两个0以外，后面也要加两个0。这样得到一个三位的Base64编码，再在末尾补上一个"="号。
 >
-> 比如，"Ma"这个字符串是两个字节，可以转化成三组00010011、00010110、00010000以后，对应Base64值分别为T、W、E，再补上一个"="号，因此"Ma"的Base64编码就是TWE=。
+> 比如，"Ma"这个字符串是两个字节，可以转化成三组00010011、00010110、00000100以后，对应Base64值分别为T、W、E，再补上一个"="号，因此"Ma"的Base64编码就是TWE=。
 
 > b）一个字节的情况：将这一个字节的8个二进制位，按照上面的规则转成二组，最后一组除了前面加二个0以外，后面再加4个0。这样得到一个二位的Base64编码，再在末尾补上两个"="号。
 >
 > 比如，"M"这个字母是一个字节，可以转化为二组00010011、00010000，对应的Base64值分别为T、Q，再补上二个"="号，因此"M"的Base64编码就是TQ==。
 
-### 中文转码问题
+### 中文转码问题 
 
 这一节介绍如何用Javascript语言进行Base64编码。
 
@@ -1312,7 +1342,7 @@ sDecoded=utf8to16(base64decode(sEncoded));
 - `Access-Control-Allow-Headers`：如果为非简单请求的请求头，此字段也必须设置头名称
 - **Access-Control-Request-Headers**：预检"请求的头信息特殊字段。指定浏览器CORS请求会额外发送的头信息字段
 - `Access-Control-Allow-Credentials`：是否携带cookie
-- `Access-Control-Expose-Headers`：除了基本头部之外的字段，比如`FooBar`
+- `Access-Control-Expose-Headers`：除了基本头部之外的字段，比如 `FooBar`
 - `Access-Control-Max-Age`：复杂请求预检请求有效期
 
 浏览器将CORS请求分成两类：简单请求（simple request）和非简单请求（not-so-simple request）。
@@ -1331,7 +1361,7 @@ sDecoded=utf8to16(base64decode(sEncoded));
 - Accept-Language
 - Content-Language
 - Last-Event-ID
-- Content-Type：只限于三个值`application/x-www-form-urlencoded`、`multipart/form-data`、`text/plain`
+- Content-Type：只限于三个值 `application/x-www-form-urlencoded`、`multipart/form-data`、`text/plain`
 
 [参考资料](https://ruanyifeng.com/blog/2016/04/cors.html)
 
@@ -1377,7 +1407,7 @@ location / {
 
 满足以下请求就是简单请求：
 
-1. `GET`、`POST`及`HEAD`
+1. `GET`、`POST`及 `HEAD`
 2. `Header`: 请求头是 `Content-Type`、`Accept-Language`、`Content-Language` 等
 3. `Content-Type`: 请求类型是 `application/x-www-form-urlencoded`、`multipart/form-data` 或 `text/plain`
 
@@ -1470,12 +1500,11 @@ CSRF：**跨站请求伪造（CSRF）**是一种冒充受信任用户，向服�
 
   - `HTTP/2` 之前访问一个站点：
     - 服务器返回对应的 `xxx.html` 文件
-    - 客户端[预解析](https://www.zhihu.com/search?q=预解析&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2870340749}) `xxx.html` 文件
+    - 客户端[预解析](https://www.zhihu.com/search?q=预解析&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={) `xxx.html` 文件
     - 根据预解析的识别到的 `link、script` 标签等并行加载文件资源
     - ...
   - `HTTP/2` 后访问一个站点:
     - 服务器返回对应的 `xxx.html` 文件，同时可以返回相应的 `x.css、x.js` 等资源，即实现了静态资源的 **提前请求**，于是就能加快页面的渲染和显示
-
 - websocket，用以服务器与客户端手动编写代码去推送进行数据通信
 
 ## 38、简单介绍一下 RSA 算法
@@ -1891,14 +1920,14 @@ TCP 是按照 4 要素（客户端 IP、端口, 服务器 IP、端口）确定�
 
 ### 1 Data URL是什么
 
-Data URL 是前缀为`data:`协议的 URL，可以使用 Data URL 将小文件嵌入到文档中。
+Data URL 是前缀为 `data:`协议的 URL，可以使用 Data URL 将小文件嵌入到文档中。
 
 ```abnf
 data:[<mediatype>][;base64],<data>
 mediatype`是一个MIME类型的字符串，表示内容类型。被省略时默认值为 `text/plain;charset=US-ASCII
 ```
 
-如果数据是文本数据，可以直接作为`data`嵌入。如果是二进制数据，需要将二进制数据进行 base64 编码后再嵌入。
+如果数据是文本数据，可以直接作为 `data`嵌入。如果是二进制数据，需要将二进制数据进行 base64 编码后再嵌入。
 
 ```text
 // 宽高为 1x1 的黑色png图片
@@ -1907,10 +1936,10 @@ data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs
 
 ### 2 Data URL使用场景
 
-Data URL 也是URL，可以用在所有 URL 能用到的地方。使用Data URL 可以减少`HTTP`请求，是一种优化加载速度的手段。
+Data URL 也是URL，可以用在所有 URL 能用到的地方。使用Data URL 可以减少 `HTTP`请求，是一种优化加载速度的手段。
 
 1. 直接通过浏览器地址栏打开
-2. 作为`img`标签的`src`属性
+2. 作为 `img`标签的 `src`属性
 3. css中作为背景图片
 4. css中作为字体文件
 
@@ -1940,11 +1969,11 @@ Blob 对象包含数据的大小。
 
 ### 1.4 text
 
-返回一个`promise`,包含 Blob 内容的 UTF-8 格式的`USVString`。
+返回一个 `promise`,包含 Blob 内容的 UTF-8 格式的 `USVString`。
 
 ### 1.5 arrayBuffer
 
-返回一个`promise`,包含 Blob 内容的二进制格式的 `ArrayBuffer` 。
+返回一个 `promise`,包含 Blob 内容的二进制格式的 `ArrayBuffer` 。
 
 ### 2 创建和读取Blob
 
@@ -1973,7 +2002,7 @@ b.stream().getReader().read().then(res => {
 
 ### 2.2 Response.blob
 
-`fetch`请求的响应对象`Response`的`blob`方法, 会返回一个promise, 包含请求资源的 `Blob`对象
+`fetch`请求的响应对象 `Response`的 `blob`方法, 会返回一个promise, 包含请求资源的 `Blob`对象
 
 ```js
 fetch('http://localhost:8090/static/1x1.png')
@@ -1995,7 +2024,7 @@ cvs.toBlob(function(b) {
 
 ### 2.4 File
 
-`File`对象是`Blob`对象的子类，可以用在任何`Blob`类型的上下文中。对象扩展了`lastModified`和`name`属性，用来表示文件最后修改时间和文件名称。`File`对象可以从input元素获取，也可以来自拖放操作产生的`DataTransfer`对象。
+`File`对象是 `Blob`对象的子类，可以用在任何 `Blob`类型的上下文中。对象扩展了 `lastModified`和 `name`属性，用来表示文件最后修改时间和文件名称。`File`对象可以从input元素获取，也可以来自拖放操作产生的 `DataTransfer`对象。
 
 ![img](https://pic3.zhimg.com/80/v2-8040273bfefd22c1bfb351a44c34d8e6_720w.webp)
 
@@ -2015,7 +2044,7 @@ xhr.send();
 
 ### 3 Blob URL 的生成和使用
 
-Blob URL 是前缀为 `blob:`的 URL， 用来表示关联的`Blob`对象，这个 URL 的生命周期和创建它的窗口的 document 绑定。
+Blob URL 是前缀为 `blob:`的 URL， 用来表示关联的 `Blob`对象，这个 URL 的生命周期和创建它的窗口的 document 绑定。
 
 ```js
 var b = new Blob(['hello, world'], { type: 'text/plain' });
@@ -2073,7 +2102,7 @@ fetch('http://localhost:8090/static/1x1.png')
     });
 ```
 
-3.2 和 3.3都是将Blob URL用在css中，不能使用`URL.revokeObjectURL(imgsrc)`释放图片数据, 否则会报找不到资源的错误。
+3.2 和 3.3都是将Blob URL用在css中，不能使用 `URL.revokeObjectURL(imgsrc)`释放图片数据, 否则会报找不到资源的错误。
 
 ![img](https://pic4.zhimg.com/80/v2-669999640c4625f876b589bb061cd8df_720w.webp)
 
@@ -2140,7 +2169,6 @@ get请求的过程：
 也就是说，目测get的总耗是post的2/3左右，这个口说无凭，网上已经有网友进行过测试。
 
 **3.get会将数据缓存起来，而post不会**
-
 
 可以做个简短的测试，使用ajax采用get方式请求静态数据（比如html页面，图片）的时候，如果两次传输的数据相同，第二次以后消耗的时间将会在10ms以内（chrome测试），而post每次消耗的时间都差不多。经测试，chrome和firefox下如果检测到get请求的是静态资源，则会缓存，如果是数据，则不会缓存，但是IE什么都会缓存起来，当然，应该没有人用post去获取静态数据吧，反正我是没见过。
 
@@ -2214,38 +2242,24 @@ content-encoding: gzip
 ### 常见的请求头
 
 - Accept：浏览器支持的MIME媒体类型，比如：text/html，application/json,
-
 - Accept-Encoding: 浏览器发给服务器,声明浏览器支持的编码类型，gzip, deflate
-
 - Accept-Language: 客户端接受的语言格式,比如 zh-CN
-
 - Connection: keep-alive , 开启HTTP持久连接
-
 - Host：服务器的域名
-
 - Origin：告诉服务器请求从哪里发起的，仅包括协议和域名 CORS跨域请求中可以看到response有对应的header，Access-Control-Allow-Origin
-
 - Referer：告诉服务器请求的原始资源的URI，其用于所有类型的请求，并且包括：协议+域名+查询参数； 很多抢购服务会用这个做限制，必须通过某个入来进来才有效
-
 - User-Agent: 服务器通过这个请求头判断用户的软件的应用类型、操作系统、软件开发商以及版本号、浏览器内核信息等； 风控系统、反作弊系统、反爬虫系统等基本会采集这类信息做参考
-
 - Cookie: 表示服务端给客户端传的http请求状态,也是多个key=value形式组合，比如登录后的令牌等
 - Content-Type： HTTP请求提交的内容类型，一般只有post提交时才需要设置，比如文件上传，表单提交等
 
 ### 响应头
 
 - Allow: 服务器支持哪些请求方法
-
 - Content-Length: 响应体的字节长度
-
 - Content-Type: 响应体的MIME类型
-
 - Content-Encoding: 设置数据使用的编码类型
-
 - Date: 设置消息发送的日期和时间
-
 - Expires: 设置响应体的过期时间,一个GMT时间，表示该缓存的有效时间
-
 - cache-control: Expires的作用一致，都是指明当前资源的有效期, 控制浏览器是否直接从浏览器缓存取数据还是重新发请求到服务器取数据,优先级高于Expires,控制粒度更细，如max-age=240，即4分钟
 - Location：表示客户应当到哪里去获取资源，一般同时设置状态代码为3xx
 - Server: 服务器名称
@@ -2287,8 +2301,6 @@ HSTS是HTTP严格传输安全（HTTP Strict Transport Security）的缩写。这
 1. 打点
 2. 防盗链
 
-
-
 ## 63、在nginx中如何配置HTTP协商缓存
 
 Nginx 中在 1.3.3 后已默认开启了协商缓存，手动配置如下：
@@ -2323,7 +2335,6 @@ http3是基于UDP协议的。 它主要解决了http1.1和http2都存在的队�
 ## 68、http2 中 Stream 与 Frame 是什么关系
 
 - Stream 为 Request/Response 报文的双向通道，一个完整资源的请求与相应是一个 stream，特殊的 stream 作为 Settings、Window_Update 等 Frame 发送的通道
-
 - Frame 为 http2 通信的最小单位，有 Data、Headers 等，一个 Stream 包含多个 Frame，如一条 http 请求包含 Header、Data Frame 等
 
 ## 69、什么是点击劫持(ClickJacking)，如何预防
@@ -2371,13 +2382,7 @@ Content-Security-Policy: frame-ancestors 'self' https://www.example.org;
 
 首先，我们先了解一下互联网PKI证书的生命周期。
 
-
-
 ![img](https://pic3.zhimg.com/80/v2-cfdb96e2929b6522bcf1e5bc6351802a_720w.webp)
-
-
-
-
 
 对于一个可信任的 CA 机构颁发的有效证书，在证书到期之前，只要 CA 没有将该证书吊销，那么这个证书就是有效可信任的。但是，由于某些特殊原因（比如私钥泄漏，证书信息有误，CA 有漏洞被黑客利用，颁发了其他域名的证书等等），需要吊销某些证书。那浏览器或者客户端如何知道当前使用的证书已经被吊销了呢？通常有两种方式：CRL和 OCSP。
 
@@ -2399,13 +2404,9 @@ OCSP（Online Certificate Status Protocol，在线证书状态协议），是一
 
 OCSP Stapling 就是为了解决 OCSP 隐私问题和性能问题而生的。其原理是：**网站服务器将自行查询OCSP服务器并缓存响应结果，然后在与浏览器进行TLS连接时返回给浏览器，这样浏览器就不需要再去查询了**。因此，浏览器客户端也不再需要向任何第三方披露用户的浏览习惯，完美解决了隐私问题。同时，当有客户端向服务器发起 SSL 握手请求时，服务器将证书的 OCSP 信息随证书链一同发送给客户端，从而避免了客户端验证会产生的阻塞问题，提升了HTTPS性能。由于 OCSP 响应是无法伪造的，因此这一过程也不会产生额外的安全问题。
 
-
-
 ![img](https://pic2.zhimg.com/80/v2-5a694b87ab2b861c27b793a8445fb9c9_720w.webp)
 
 （OCSP与OCSP Stapling对比图）
-
-
 
 所以，在服务器上部署OCSP Stapling能极大的提高安全稳定性能、使网站访问速度更快，用户体验更好。
 
@@ -2433,3 +2434,64 @@ const formData = new FormData();
 formData.append('file', param);
 ```
 
+## 74、TCP
+
+### 1.TCP简介
+TCP协议，传输控制协议（英语：Transmission Control Protocol，缩写为：TCP）是一种面向连接的、可靠的、基于字节流的通信协议
+
+TCP把连接作为最基本的抽象单元，每条TCP连接有两个端点，TCP连接的端点即套接字。
+套接字socket = （IP地址+端口号）
+TCP连接={socket1，socket2}={（IP1:port1），（IP2,port2）}
+TCP提供全双工通信。
+
+### 2.TCP报文
+
+![img](https://img-blog.csdnimg.cn/20200416192534946.png)
+
+首部中的重要概念
+
+- 序号：Seq序号，占32位。用于说明当前数据第一个字节所在数据（整个文件）中的位置。
+- 确认号：Ack序号，占32位。用于高速发送者接下来需要发送的数据序号。
+- 数据偏移：用于说明首部长度。比如1111说明首部长度15*4字节
+- 标志位：tcp标志位有4种
+  - SYN（synchronous 发起一个新连接）
+  - ACK(acknowledgement 确认)
+  - PSH(push传送)  
+  - FIN(finish结束) 
+  - RST(reset重置)  
+  - URG(urgent紧急)
+
+​		**不要将确认序号Ack与标志位中的ACK搞混**
+
+- 窗口：表示发送/接收缓存窗口大小。如下图。
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200416193208670.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMTQ1MDcy,size_16,color_FFFFFF,t_70)
+
+### 3.TCP建立与断开连接
+
+#### 3.1 TCP的三次握手
+
+三次握手其实就是建立连接的过程。其过程如图：
+
+![img](https://img-blog.csdnimg.cn/20200416212900129.png)
+
+1. 第一次握手：Client将标志位**SYN(建立新连接)置为1**，随机产生一个值序号seq=x，并将该数据包发送给Server，Cilent进入SYN_SENT（等待服务器）状态，等待Server确认。
+2. 第二次握手：Server收到数据包之后由标志位SYN=1知道client请求建立连接，Server将SYN和ACK标志位都设置为1，确认号ack=x+1，并随机产生一个seq=y，并将该数据包发送给Client以确认连接请求，Server进入SYN_RCVD（中间）状态。
+3. 第三次握手：Client收到确认后，**检查ack是否为x+1，ACK是否为1**，如果正确则将标志位**ACK置为1，ack=y+1**，并将该数据包发送给Server，，Server检查ack是否为y+1，ACK是否为1，如果正确则连接建立成功，Client和Server进入ESTABLISHED状态，完成三次握手，随后Client与Server之间可以开始传输数据了。
+
+![img](https://img-blog.csdnimg.cn/20200416215538806.png)
+
+#### 3.2 TCP的四次挥手
+
+**四次挥手其实就是断开连接的过程**。过程如图：
+
+ ![img](https://img-blog.csdnimg.cn/20200416213807250.png)
+
+- 第一次挥手：客户端向服务器发起请求释放连接的TCP报文，置FIN为1。**客户端进入终止等待-1阶段**。
+- 第二次挥手：服务器端接收到从客户端发出的TCP报文之后，确认了客户端想要释放连接，**服务器端进入CLOSE-WAIT阶段**，并向客户端发送一段TCP报文。**客户端收到后进入种植等待-2阶段**。
+- 第三次挥手：服务器做好了释放服务器端到客户端方向上的连接准备，再次向客户端发出一段TCP报文。。此时服务器**进入最后确认阶段**。
+- 第四次挥手：客户端收到从服务器端发出的TCP报文，确认了服务器端已做好释放连接的准备，于是**进入时间等待阶段**，并向服务器端发送一段报文。**注意：第四次挥手后客户端不会立即进入closed阶段，而是等待2MSL再关闭。**
+
+**四次挥手的通俗理解**：
+
+![img](https://img-blog.csdnimg.cn/2020041621561498.png)
