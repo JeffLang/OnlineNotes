@@ -19,3 +19,11 @@ type MyPick<O extends object, K extends keyof O> = {
 type MyOmit<O extends object, K extends keyof O> = {
   [P in Exclude<keyof O, K>]: O[P]
 }
+
+type MyOmit1<O extends object, K extends keyof O> = {
+  [P in Exclude<keyof O, K>]: O[P]
+}
+
+type MyPartial<T> = {
+  [P in keyof T]?: T[P]
+}
